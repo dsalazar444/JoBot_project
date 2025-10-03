@@ -1,0 +1,87 @@
+.hero {
+  padding: 150px 0 60px;
+  background: var(--background);
+  text-align: center;
+}
+
+.hero_container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 16px);
+}
+
+.hero_title {
+  font-size: clamp(28px, 4.5vw, 48px);
+  line-height: 1.15;
+  font-weight: 500;
+  margin: 0 0 14px;
+  color: var(--text);
+}
+
+.hero_brand {
+  background: linear-gradient(90deg, #9ED6F0 0%, #B3C9FF 50%, #BFA9FF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.hero_subtitle {
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.8;
+  color: var(--text);
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: .9;
+}
+
+/* Contenedor de acciones: botones uno debajo del otro */
+.hero_buttons {
+  display: flex;
+  flex-direction: column;     /* apilados vertical */
+  align-items: center;        /* centrados */
+  gap: 25px;                  /* espacio entre botones */
+  margin-top: 18px;           /* separación con el párrafo */
+}
+
+/* Botón base */
+.hero_btn {
+  --radius: 10px;
+  display: inline-block;
+  min-width: 230px;
+  padding: 14px 18px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: background-color .18s ease, color .18s ease, transform .02s ease, border-color .18s ease;
+  border: 1px solid transparent;
+  color: var(--text);
+}
+
+.game {
+  background: var(--btn-bg-1);
+}
+
+.interview {
+  background: var(--btn-bg-2);
+}
+/* Micro-interacción + accesibilidad */
+.hero_btn:active { transform: translateY(1px); }
+.hero_btn:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Opcional: que ocupen todo el ancho en móvil */
+@media (max-width: 480px) {
+  .hero_btn {
+    width: 100%;
+  }
+}
+

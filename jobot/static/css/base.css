@@ -3,5 +3,129 @@
   --text: #000000;
   --btn-bg-1: #AFE4ED;
   --btn-bg-2: #AFEDE3;
+  --text-2: #828282;
+  --btn-hover-bg: #D3D3D3;
 }
 
+/* ===== Reset básico ===== */
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* ===== Header (pegajoso) ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  background: var(--background);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* ===== Navbar ===== */
+.header .navbar {
+  background: var(--background);
+  padding: 10px 0;
+}
+
+
+.header .container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 14px 20px;
+}
+
+/* Brand */
+.logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+}
+
+.brand-text {
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: .2px;
+  color: var(--text);
+}
+
+/* Links del nav: aspecto unificado */
+.navbar .link {
+  --radius: 10px;
+  display: inline-block;
+  padding: 10px 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--background);
+  border-radius: var(--radius);
+  transition: background-color .18s ease, color .18s ease, transform .02s ease;
+  text-align: center;
+  min-width: 160px;
+}
+.navbar .link:hover {
+  background: var(--text-2);
+  color: var(--background);
+}
+.navbar .link:active {
+  transform: translateY(1px);
+}
+.navbar .link:focus-visible,
+.navbar-brand:focus-visible,
+.cta:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* CTA */
+.cta.btn {
+  --radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  border-radius: var(--radius);
+  background: var(--btn-bg-1);
+  color: var(--text);
+  border: none;
+  min-width: 160px;
+  transition: background-color .18s ease, transform .02s ease;
+}
+.cta.btn:hover {
+  background: var(--btn-bg-2);
+}
+.cta.btn:active {
+  transform: translateY(1px);
+}
+
+/* Toggler: usa el ícono por defecto de Bootstrap; asegúrate de que sea visible en fondo claro */
+.navbar-toggler {
+  border-color: rgba(0,0,0,.15);
+}
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 .15rem rgba(0,0,0,.12);
+}
+
+/* Estado "active" de Bootstrap para el link actual (opcional) */
+.navbar .active {
+  outline: 2px solid rgba(0,0,0,0.12);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+/* ===== Responsivo ===== */
+/* En móvil, que los items ocupen ancho completo y tengan separación vertical */
+@media (max-width: 991.98px) { /* breakpoint de navbar-expand-lg */
+  .navbar .link,
+  .cta.btn {
+    min-width: 100%;
+    width: 100%;
+  }
+  .navbar-nav {
+    gap: .5rem !important;
+    padding-top: .75rem;
+    padding-bottom: .5rem;
+  }
+}
