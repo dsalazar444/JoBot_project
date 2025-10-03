@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}JoBot — Asistente de entrevistas{% endblock %}</title>
+
+    <!-- Inter -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'jobot/css/base.css' %}">
+</head>
+
+<body>
+    <!-- Header -->
+    {% block content %}
+    <header class="header">
+        <div class="container">
+        <a class="brand" href="#">
+            <img src="{% static 'images/logo.png' %}" alt="JoBot" class="logo">
+            <span class="brand-text">Jobot</span>
+        </a>
+        <nav class="nav">
+            <a href="{% url 'home' %}" class="link">Inicio</a>
+            <a href="{% url 'about' %}" class="link">Sobre nosotros</a>
+            <a href="{% url 'reviews' %}" class="link">Opiniones</a>
+            <a href="{% url 'login' %}" class="link">Iniciar sesión</a>
+            <a href="{% url 'signup' %}" class="cta">Crear cuenta</a>
+        </nav>
+        </div>
+    </header>
+    {% endblock %}
+
+    <!-- JS  -->
+    <script src="{% static 'jobot/js/base.js' %}"></script>
+</body>
+</html>
