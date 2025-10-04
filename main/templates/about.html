@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sobre nosotros • JoBot{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="about">
+    <div class="container about_container">
+        <h1 class="about_title">Sobre nosotros</h1>
+
+        <p class="about_intro">
+            Somos un servicio web que entrenará tus habilidades blandas para tu puesto.<br>
+            Usamos IA avanzada para ofrecerte:
+        </p>
+
+        <div class="about_grid">
+
+            <!-- Modo Juego -->
+            <article class="feature-card">
+                <header class="feature-card_head --game">
+                    <span class="feature-card_emoji" aria-hidden="true">🎮</span>
+                    <span class="feature-card_title">Modo Juego</span>
+                </header>
+                <div class="feature-card_body">
+                    <ul>
+                        <li>Aprende con <strong>niveles</strong> desafiantes</li>
+                        <li><strong>Compite</strong> en partidas 1 vs 1</li>
+                        <li>Supera tus <strong>puntajes</strong> mientras desarrollas habilidades</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Modo Entrevista -->
+            <article class="feature-card">
+                <header class="feature-card_head --interview">
+                    <span class="feature-card_emoji" aria-hidden="true">👔</span>
+                    <span class="feature-card_title">Modo Entrevista</span>
+                </header>
+                <div class="feature-card_body">
+                    <ul>
+                        <li>Prepárate para puestos específicos</li>
+                        <li>Simula entrevistas reales</li>
+                        <li>Recibe feedback instantáneo de nuestra IA</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+
+        <section class="about_why">
+            <h3>¿Por qué funciona?</h3>
+            <p>Porque combinamos:</p>
+            <ul class="dash-list">
+                <li>Técnicas probadas por reclutadores</li>
+                <li>Tecnología de vanguardia en IA</li>
+                <li>Un enfoque gamificado que hace que aprender sea adictivo</li>
+            </ul>
+        </section>
+    </div>
+</section>
+{% endblock %}

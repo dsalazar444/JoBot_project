@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home • JoBot{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero_container">
+        <h1 class="hero_title">
+            Bienvenido a <span class="hero_brand">JoBot</span>
+        </h1>
+        <p class="hero_subtitle">
+            Potencia tus habilidades blandas con IA y haz que tu próxima entrevista sea tu mejor oportunidad.
+            ¡Y sí, también puedes divertirte en el proceso!
+        </p>
+
+        <!-- Botones -->
+        <div class="hero_buttons">
+            <a class="hero_btn game" href="{% url 'game' %}">Modo Juego</a>
+            <a class="hero_btn interview" href="{% url 'interview' %}">Modo Entrevista</a>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

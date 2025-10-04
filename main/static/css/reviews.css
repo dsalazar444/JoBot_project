@@ -1,0 +1,125 @@
+
+.wrap {
+  max-width: 1000px;
+  margin-inline: auto;
+  padding: 2rem 1.25rem;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  line-height: 1.2;
+  margin: 0 0 .75rem;
+}
+
+.hint {
+  color: var(--muted-fg, #475569);
+  margin: 0 0 1.5rem;
+  font-size: .95rem;
+}
+
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 560px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 2rem;
+  border: 1px dashed var(--border, #e2e8f0);
+  border-radius: 12px;
+  background: var(--empty-bg, #f8fafc);
+  color: var(--muted-fg, #475569);
+  text-align: center;
+}
+
+.empty p { margin: .25rem 0; }
+
+
+#reviews[aria-busy="true"]::after {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 1rem auto 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--spinner, #94a3b8);
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Tarjeta de review */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: .875rem;
+  padding: 1rem;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 14px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.03);
+}
+
+.card:focus-within {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px color-mix(in oklab, canvasText 20%, transparent);
+}
+
+/* Cita */
+.quote {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--quote-fg, #0f172a);
+}
+
+/* Autor */
+.author {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: .75rem;
+  align-items: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1px solid var(--border, #e2e8f0);
+  object-fit: cover;
+}
+
+.meta { min-width: 0; }
+.name {
+  font-weight: 600;
+  color: var(--name-fg, #0f172a);
+  line-height: 1.2;
+}
+.role {
+  font-size: .9rem;
+  color: var(--muted-fg, #64748b);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Interacciones */
+.card a, .card button, .card [tabindex]:not([tabindex="-1"]) {
+  border-radius: 8px;
+}
+:focus-visible {
+  outline: 3px solid color-mix(in oklab, #6366f1 70%, white);
+  outline-offset: 2px;
+}
