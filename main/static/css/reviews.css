@@ -1,87 +1,125 @@
-:root{
-  --bg: #ffffff;
-  --fg: #0f172a;
-  --muted:#475569;
-  --border:#e2e8f0;
-  --card:#f8fafc;
-  --brand:#111827;
-  --radius:16px;
+
+.wrap {
+  max-width: 1000px;
+  margin-inline: auto;
+  padding: 2rem 1.25rem;
 }
-*, *::before, *::after{ box-sizing: border-box; }
-body{
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
-  color:var(--fg);
-  background:var(--bg);
-  line-height:1.6;
+
+h1 {
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  line-height: 1.2;
+  margin: 0 0 .75rem;
 }
-.wrap{
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 0 20px;
+
+.hint {
+  color: var(--muted-fg, #475569);
+  margin: 0 0 1.5rem;
+  font-size: .95rem;
 }
-h1{
-  font-size: clamp(28px, 3vw, 40px);
-  letter-spacing: -0.02em;
-  margin: 0 0 24px;
-}
-.hint{
-  color: var(--muted);
-  margin-bottom: 24px;
-  font-size: 0.95rem;
-}
-.grid{
+
+
+.grid {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 20px;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
-.card{
-  grid-column: span 12;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px 22px 18px;
-  box-shadow: 0 1px 0 rgba(15,23,42,.02);
+
+@media (min-width: 560px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
 }
-.quote{
-  font-size: 1.05rem;
-  margin: 0 0 18px;
+@media (min-width: 900px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
 }
-.author{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-top: 8px;
+
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 2rem;
+  border: 1px dashed var(--border, #e2e8f0);
+  border-radius: 12px;
+  background: var(--empty-bg, #f8fafc);
+  color: var(--muted-fg, #475569);
+  text-align: center;
 }
-.avatar{
-  width:36px;height:36px;border-radius:999px;border:1px solid var(--border);background:#fff;display:block;
+
+.empty p { margin: .25rem 0; }
+
+
+#reviews[aria-busy="true"]::after {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 1rem auto 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--spinner, #94a3b8);
+  animation: spin .8s linear infinite;
 }
-.author .meta{ line-height:1.2; }
-.author .name{ font-weight: 600; font-size: 0.95rem; }
-.author .role{ color: var(--muted); font-size: 0.85rem; }
-.empty{
-  grid-column: span 12;
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  text-align:center;
-  color: var(--muted);
-  background: #fff;
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Tarjeta de review */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: .875rem;
+  padding: 1rem;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 14px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.03);
 }
-.empty strong{ color: var(--fg); }
-.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-@media (min-width: 720px){
-  .card{ grid-column: span 4; }
-  .empty{ grid-column: span 12; }
+
+.card:focus-within {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px color-mix(in oklab, canvasText 20%, transparent);
 }
-footer{
-  margin: 36px 0 10px;
-  color: var(--muted);
+
+/* Cita */
+.quote {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--quote-fg, #0f172a);
+}
+
+/* Autor */
+.author {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: .75rem;
+  align-items: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1px solid var(--border, #e2e8f0);
+  object-fit: cover;
+}
+
+.meta { min-width: 0; }
+.name {
+  font-weight: 600;
+  color: var(--name-fg, #0f172a);
+  line-height: 1.2;
+}
+.role {
   font-size: .9rem;
+  color: var(--muted-fg, #64748b);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-code{
-  background:#f1f5f9;
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:2px 6px;
+
+/* Interacciones */
+.card a, .card button, .card [tabindex]:not([tabindex="-1"]) {
+  border-radius: 8px;
+}
+:focus-visible {
+  outline: 3px solid color-mix(in oklab, #6366f1 70%, white);
+  outline-offset: 2px;
 }

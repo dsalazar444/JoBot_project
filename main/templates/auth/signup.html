@@ -1,1 +1,62 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registro • JoBot{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth/signup.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="auth auth-signup" aria-labelledby="signup-title">
+    <section class="auth-card" role="form">
+        <div class="auth-card_avatar" aria-hidden="true">
+
+            <!-- ícono simple de usuario -->
+            <svg viewBox="0 0 24 24" class="auth-card_avatar-icon" aria-hidden="true">
+                <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+        </div>
+
+        <h1 id="signup-title" class="auth-card_title">Registrate</h1>
+
+        <form id="signupForm" method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="field">
+                <label for="username" class="field_label">Nombre</label>
+                <input id="username" name="username" type="text"
+                       class="field_input --username"
+                       placeholder="Ingrese su nombre" required autocomplete="name">
+            </div>
+
+            <div class="field">
+                <label for="email" class="field_label">Email</label>
+                <input id="email" name="email" type="text"
+                    class="field_input --email"
+                    placeholder="Ingrese su email" required autocomplete="email">
+            </div>
+
+            <div class="field">
+                <label for="password" class="field_label">Contraseña</label>
+                <div class="password">
+                    <input id="password" name="password" type="password"
+                           class="field_input --password"
+                           placeholder="Ingrese su contraseña" required
+                           autocomplete="new-password" minlength="8">
+                    <button type="button" class="password_toggle"
+                            aria-controls="password" aria-label="Mostrar contraseña">
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Crear cuenta</button>
+        </form>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script defer src="{% static 'js/signup.js' %}"></script>
+{% endblock %}

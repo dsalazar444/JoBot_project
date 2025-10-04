@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Reviews • JoBot{% endblock %}
+{% block title %}Opiniones • JoBot{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
@@ -15,14 +15,13 @@
     Hasta que las recopilemos, verás un estado vacío. Nada de testimonios inventados 🫶
   </p>
 
-  <section id="reviews" class="grid" aria-live="polite" aria-busy="true">
+  <section id="reviews" class="grid" aria-live="polite" data-src="{% static 'data/reviews.json' %}">
     <div class="empty" id="empty">
       <p><strong>Todavía no hay reseñas publicadas.</strong></p>
       <p>En cuanto tengamos opiniones verificadas, aparecerán aquí automáticamente.</p>
     </div>
   </section>
 </main>
-
 {% endblock %}
 
 {% block extra_js %}

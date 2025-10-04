@@ -125,6 +125,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'main' / 'static',
     BASE_DIR / 'game_mode' / 'static',
     BASE_DIR / 'interview_mode' / 'static',
+    BASE_DIR / 'data',
 ]
 
 # Default primary key field type

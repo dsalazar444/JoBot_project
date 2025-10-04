@@ -90,8 +90,8 @@ body {
   background: var(--btn-bg-1);
   color: var(--text);
   border: none;
-  min-width: 160px;
   transition: background-color .18s ease, transform .02s ease;
+  min-width: 160px;
 }
 .cta.btn:hover {
   background: var(--btn-bg-2);
