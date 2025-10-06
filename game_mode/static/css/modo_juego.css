@@ -1,0 +1,70 @@
+/* -------------------------- Base -------------------------------------- */
+.izq {
+    height: max-content;
+    width:25vw;
+    background-color: #FAFAFA;
+    padding: 13px;
+}
+
+.main {
+    height: max-content;
+    background-color: blueviolet;
+}
+
+/* ---------------------------- Panel lateral (izq) ------------------------- */
+ /* ---- Sección de titulo ---- */
+.titulo {
+    /* Lo convertimos en un contenedor en línea */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* se aplica a hijos directos de titulo */
+.titulo > * {
+    margin: 13px;
+    margin-bottom: 1px;
+}
+
+.titulo h4 {
+    font-family: "Roboto", sans-serif;
+    color: #49454F;
+    font-weight: 500;
+}
+
+.titulo i {
+    font-size: 1.5rem;
+}
+
+.hr-titulo {
+    color: #959595;
+    margin: 0px 0px 2vh 0px;
+}
+
+/* ---- Sección de niveles ---- */
+.overflow-autom {
+    max-height: 25vh;
+}
+
+.nivel-item {
+    display: flex; /*Para que salga en una sola linea*/
+    align-items: center;
+    font-family: "Roboto", sans-serif;
+    color: #49454F;
+    font-weight: 500;
+    gap: 0.5vw;
+    border-radius: 35px;
+    /* background-color: aqua; */
+}
+
+.nivel-item:hover {
+    background-color: #F2F2F2;
+}
+
+.nivel-item.active {
+    background-color: #BAEAD5;
+}
+
+.nivel-item i {
+    font-size: 1.5rem;
+}
