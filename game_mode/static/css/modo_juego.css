@@ -121,6 +121,17 @@
   color: #8370B4 !important;
 }
 
+.racha-dias {
+    display: flex;
+    align-items: flex-end; 
+    justify-content: center;
+}
+
+.racha-dias .bi {
+    font-size: 3rem;
+    line-height: 1;
+}
+/* ----------------- Responsive ---------------------- */
 @media (max-width: 576px) {
   .izq {
     width: 100%;
