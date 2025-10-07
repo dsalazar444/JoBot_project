@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JoBot — Iniciar sesión</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <!-- Logo arriba a la derecha -->
+  <header class="header">
+    <img src="img/jobot-logo.png?v=4" alt="JoBot" class="brand-img">
+  </header>
+
+  <!-- Columna centrada en pantalla -->
+  <main class="container">
+    <div class="card" role="form" aria-labelledby="titulo">
+      <!-- Avatar -->
+      <div class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 96 96" width="92" height="92">
+          <circle cx="48" cy="48" r="44" fill="#E8EBFF"/>
+          <path d="M48 26a11 11 0 1 1 0 22a11 11 0 1 1 0-22Z"
+                fill="#ffffff" stroke="#0f172a" stroke-width="4"/>
+          <path d="M22 70c6-12 18-15 26-15s20 3 26 15"
+                fill="#ffffff" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <h1 id="titulo">Inicia sesión</h1>
+
+      <form id="loginForm" novalidate>
+        <label for="usuario" class="label">Usuario</label>
+        <input id="usuario" name="usuario" type="email" placeholder="Ingrese su usuario"
+               class="input input--user" required />
+
+        <label for="contrasena" class="label">Contraseña</label>
+        <input id="contrasena" name="contrasena" type="password" placeholder="Ingrese su contraseña"
+               class="input input--pass" required />
+
+        <a href="#" class="link">¿Olvidó su contraseña?</a>
+
+        <button id="btnLogin" class="btn" type="submit" disabled>Iniciar sesión</button>
+        <p id="msg" class="msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const usuario = document.getElementById('usuario');
+    const pass = document.getElementById('contrasena');
+    const btn = document.getElementById('btnLogin');
+    const form = document.getElementById('loginForm');
+    const msg = document.getElementById('msg');
+
+    function validar(){ btn.disabled = !(usuario.value.trim() && pass.value.trim()); }
+    usuario.addEventListener('input', validar);
+    pass.addEventListener('input', validar);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (btn.disabled) return;
+      btn.disabled = true;
+      msg.textContent = 'Validando…';
+      setTimeout(() => {
+        msg.textContent = 'UI lista para integrar con backend';
+        btn.disabled = false;
+      }, 700);
+    });
+  </script>
+</body>
+</html>
