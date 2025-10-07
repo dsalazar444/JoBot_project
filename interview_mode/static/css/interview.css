@@ -1,4 +1,218 @@
-header - parte superior
-aside - parte izquierda
-main - parte derecha
-crear las clases
+body {
+    background-color: #fff;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 270px;
+    background-color: #f7f7f7;
+    border-right: 1px solid #e5e5e5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem 0.8rem;
+    box-sizing: border-box;
+}
+
+.list-group-item {
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    transition: background 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f3f3f3;
+}
+
+.list-group-item.active {
+    background-color: #b6e7d6;
+    color: #000;
+}
+
+/* Calendar Box */
+.calendar-box {
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e3e3e3;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* ───── NUEVO DISEÑO PARA EL CALENDARIO DINÁMICO ───── */
+
+.streak-calendar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Header */
+.sc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.sc-nav {
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.sc-nav:hover {
+    background-color: #f3f3f3;
+}
+
+.sc-month {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Weekdays row */
+.sc-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    width: 105%;
+    margin-bottom: 0.4rem;
+    color: #777;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.sc-weekday {
+    text-align: center;
+}
+
+/* Days grid */
+.sc-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    width: 108%;
+    gap: 0;
+}
+
+.sc-day {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #333;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.sc-day--empty {
+    visibility: hidden;
+}
+
+.sc-day:hover {
+    background-color: #e7e7e7;
+}
+
+/* Today */
+.sc-today {
+    border: 2px solid #b39ddb;
+    color: #4a148c;
+    font-weight: 600;
+}
+
+/* Streak (días marcados) */
+.sc-streak {
+    background-color: #b6e7d6;
+    color: #000;
+    font-weight: 500;
+}
+
+/* Chat */
+.chat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: #fff;
+  height: calc(100vh - 70px);
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.chat-messages {
+  overflow-y: auto;
+  padding: 1rem;
+  flex: 1;
+}
+
+.message {
+  max-width: 60%;
+  border-radius: 15px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.message.bot {
+  background-color: #f3ebf7;
+  align-self: flex-start;
+}
+
+.message.user {
+  background-color: #cdeef2;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+/* input real */
+.input-chat {
+  width: 100%;
+  background-color: #d9d4f0;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input-chat::placeholder {
+    color: #4a4a4a;
+}
+
+/* Buttons */
+.btn-info {
+    background-color: #AFE4ED !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: normal !important;
+}
+
+.btn-info:hover {
+    background-color: #9ccdd5 !important;
+}
+
+.btn-outline-dark {
+    border: none !important;
+    color: #000 !important;
+}
+
+.btn-outline-dark:hover {
+    background-color: #f3f3f3 !important;
+}
