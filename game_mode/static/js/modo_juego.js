@@ -9,3 +9,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+
+// -------------- Calendario ------------
+$(document).ready(function() {
+  $('#calendario').datepicker({
+    todayHighlight: true ,
+    language: "es",
+  });
+});

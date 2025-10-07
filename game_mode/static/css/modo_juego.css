@@ -4,6 +4,9 @@
     width:25vw;
     background-color: #FAFAFA;
     padding: 13px;
+    min-width: 250px; /* asegura que nunca sea demasiado angosto */
+    max-width: 400px; /* evita que crezca demasiado */
+    overflow: hidden; /* evita que los hijos se salgan */
 }
 
 .main {
@@ -26,7 +29,7 @@
     margin-bottom: 1px;
 }
 
-.titulo h4 {
+.izq h4 {
     font-family: "Roboto", sans-serif;
     color: #49454F;
     font-weight: 500;
@@ -43,7 +46,7 @@
 
 /* ---- Sección de niveles ---- */
 .overflow-autom {
-    max-height: 25vh;
+    max-height: 22vh;
 }
 
 .nivel-item {
@@ -67,4 +70,65 @@
 
 .nivel-item i {
     font-size: 1.5rem;
+}
+
+.boton {
+    padding: 4vh 3vw;
+}
+
+.boton button {
+    background-color: #AFE4ED;
+    border-color: #AFE4ED;
+    font-family: "Roboto", sans-serif;
+    color: #49454F;
+    font-weight: 500;
+}
+
+.boton button:hover, button:active {
+    background-color: #a8dbe4 !important;
+    border-color: #a8dbe4 !important;
+    color: #49454F !important;
+}
+
+/* ---- Sección de racha ---- */
+.racha h4 {
+    margin-left: 0.8vw;
+}
+
+/* ---- Sección de calendario ---- */
+#calendario {
+    display: flex;
+    align-items: center; /* Centra en eje y a los hijos dentro de este contenedor.*/
+    justify-content: center; /* Centra en eje x */
+}
+
+.datepicker table tr td.day {
+  padding: 0.5rem; 
+}
+
+
+.datepicker table tr td.active.day,
+.datepicker table tr td.today.active.day {
+  background: #C5E7ED !important;
+  border: 2px solid #C5E7ED !important;
+  color: black !important;
+}
+
+/* Día actual sin seleccionar */
+.datepicker table tr td.today.day {
+  background: #FAFAFA !important;
+  border: 2px solid #8370B4 !important;
+  color: #8370B4 !important;
+}
+
+@media (max-width: 576px) {
+  .izq {
+    width: 100%;
+    min-width: auto;
+    max-width: 100%;
+  }
+
+  .overflow-autom {
+    max-height: 40vh;
+  }
 }
