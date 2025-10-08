@@ -1,17 +1,31 @@
+/* Vars globales */
+:root {--header-h: 102px; }
+/* Para que el html/body ocupen el 100% */
+html, body { height: 100%;}
+
 /* -------------------------- Base -------------------------------------- */
 .izq {
-    height: max-content;
+
+    position: fixed; /*Fijamos elemento en pantalla, para que no se mueva incluso con scroll*/
+    top: var(--header-h); /*Lo posicionamos justo debajo del header fijo*/
+    left: 0;
+    bottom: 0;
     width:25vw;
-    background-color: #FAFAFA;
-    padding: 13px;
     min-width: 250px; /* asegura que nunca sea demasiado angosto */
     max-width: 400px; /* evita que crezca demasiado */
-    overflow: hidden; /* evita que los hijos se salgan */
+    overflow-y: auto; /* Si el contenido es más alto que el panel, aparece scroll en y */
+    overflow-x: hidden;
+
+    background-color: #FAFAFA;
+    box-sizing: border-box;
+    padding: 13px;
+    z-index: 1000;
 }
 
 .main {
     height: max-content;
     background-color: blueviolet;
+    margin-left: 25vw;
 }
 
 /* ---------------------------- Panel lateral (izq) ------------------------- */
@@ -45,8 +59,16 @@
 }
 
 /* ---- Sección de niveles ---- */
-.overflow-autom {
-    max-height: 22vh;
+.nivel .overflow-autom {
+    max-height: 26vh;
+    overflow-y: auto;
+    scrollbar-width: none; /*Oculta scroll bar en Firefox*/
+}
+
+
+/* Oculta scroll en Webkit (Chrome, Edge, Safari) */
+.nivel .overflow-autom::-webkit-scrollbar {
+    display: none;
 }
 
 .nivel-item {
