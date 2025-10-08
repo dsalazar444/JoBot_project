@@ -24,7 +24,6 @@ html, body { height: 100%;}
 
 .main {
     height: max-content;
-    background-color: blueviolet;
     margin-left: 25vw;
 }
 
@@ -154,6 +153,21 @@ html, body { height: 100%;}
     font-size: 3rem;
     line-height: 1;
 }
+
+/* ---------------------------- Main ------------------------- */
+.puntaje {
+    display: flex;
+    justify-content: end;
+}
+
+.puntaje p {
+    margin-right: 2vw;
+    margin-top: 2vh;
+    background-color: #F2F2F2;
+    color: #767676;
+    padding: 1vh 1.5vw;
+}
+
 /* ----------------- Responsive ---------------------- */
 @media (max-width: 576px) {
   .izq {
