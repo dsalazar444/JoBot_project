@@ -1,22 +1,36 @@
 /* Vars globales */
-:root {--header-h: 102px; }
-/* Para que el html/body ocupen el 100% */
+:root { 
+    --background_sb: #FAFAFA;
+    --text_sb: #49454F; 
+    --btn-bg-1: #AFE4ED;
+    --btn-bg-2: #AFEDE3;
+    --text-2: #828282;
+    --text-1: black;
+    --btn-hover-bg: #D3D3D3;
+    --sidebar-h: 25vw;
+    --btn-bg-1-hover: #a8dbe4;
+    --background-item-nivel: #F2F2F2;
+    --background-item-nivel-hov: #BAEAD5;
+    --background-calend: #C5E7ED;
+}
+
+/* Para que el html/body ocupen el 100% o 100vh o dvh <- mejor */
 html, body { height: 100%;}
 
 /* -------------------------- Base -------------------------------------- */
 .izq {
-
     position: fixed; /*Fijamos elemento en pantalla, para que no se mueva incluso con scroll*/
-    top: var(--header-h); /*Lo posicionamos justo debajo del header fijo*/
+    /*top: var(--header-h); /*Lo posicionamos justo debajo del header fijo*/
+    top: 0;
     left: 0;
     bottom: 0;
-    width:25vw;
+    width:var(--sidebar-h);
     min-width: 250px; /* asegura que nunca sea demasiado angosto */
     max-width: 400px; /* evita que crezca demasiado */
     overflow-y: auto; /* Si el contenido es más alto que el panel, aparece scroll en y */
     overflow-x: hidden;
 
-    background-color: #FAFAFA;
+    background-color: var(--background_sb);
     box-sizing: border-box;
     padding: 13px;
     z-index: 1000;
@@ -24,7 +38,7 @@ html, body { height: 100%;}
 
 .main {
     height: max-content;
-    margin-left: 25vw;
+    margin-left: var(--sidebar-h);
 }
 
 /* ---------------------------- Panel lateral (izq) ------------------------- */
@@ -36,16 +50,11 @@ html, body { height: 100%;}
     align-items: center;
 }
 
-/* se aplica a hijos directos de titulo */
-.titulo > * {
-    margin: 13px;
-    margin-bottom: 1px;
-}
-
-.izq h4 {
-    font-family: "Roboto", sans-serif;
-    color: #49454F;
+.izq h5 {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--text_sb);
     font-weight: 500;
+    margin-left: 0.8vw;
 }
 
 .titulo i {
@@ -73,20 +82,19 @@ html, body { height: 100%;}
 .nivel-item {
     display: flex; /*Para que salga en una sola linea*/
     align-items: center;
-    font-family: "Roboto", sans-serif;
-    color: #49454F;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--text_sb);
     font-weight: 500;
     gap: 0.5vw;
     border-radius: 35px;
-    /* background-color: aqua; */
 }
 
 .nivel-item:hover {
-    background-color: #F2F2F2;
+    background-color: var(--background-item-nivel);
 }
 
 .nivel-item.active {
-    background-color: #BAEAD5;
+    background-color: var(--background-item-nivel-hov);
 }
 
 .nivel-item i {
@@ -94,26 +102,22 @@ html, body { height: 100%;}
 }
 
 .boton {
-    padding: 4vh 3vw;
+    padding: 2vh 1.5vw;
 }
 
 .boton button {
-    background-color: #AFE4ED;
-    border-color: #AFE4ED;
-    font-family: "Roboto", sans-serif;
-    color: #49454F;
+    background-color: var(--btn-bg-1);
+    border-color: var(--btn-bg-1);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--text_sb);
     font-weight: 500;
+    font-size: medium;
 }
 
 .boton button:hover, button:active {
-    background-color: #a8dbe4 !important;
-    border-color: #a8dbe4 !important;
-    color: #49454F !important;
-}
-
-/* ---- Sección de racha ---- */
-.racha h4 {
-    margin-left: 0.8vw;
+    background-color: var(--btn-bg-1-hover) !important;
+    border-color: var(--btn-bg-1-hover) !important;
+    color: var(--text_sb) !important;
 }
 
 /* ---- Sección de calendario ---- */
@@ -124,20 +128,20 @@ html, body { height: 100%;}
 }
 
 .datepicker table tr td.day {
-  padding: 0.5rem; 
+  padding: 0.2rem; 
 }
 
 
 .datepicker table tr td.active.day,
 .datepicker table tr td.today.active.day {
-  background: #C5E7ED !important;
-  border: 2px solid #C5E7ED !important;
-  color: black !important;
+  background: var(--background-calend) !important;
+  border: 2px solid var(--background-calend) !important;
+  color: var(--text-1) !important;
 }
 
 /* Día actual sin seleccionar */
 .datepicker table tr td.today.day {
-  background: #FAFAFA !important;
+  background: var(--background_sb) !important;
   border: 2px solid #8370B4 !important;
   color: #8370B4 !important;
 }
@@ -147,26 +151,98 @@ html, body { height: 100%;}
     align-items: flex-end; 
     justify-content: center;
     margin-bottom: 2vh;
+    font-size: medium;
 }
 
+
 .racha-dias .bi {
-    font-size: 3rem;
+    font-size: 2rem;
     line-height: 1;
 }
 
 /* ---------------------------- Main ------------------------- */
-.puntaje {
+/*corregir*/
+#puntaje {
     display: flex;
-    justify-content: end;
+    align-items: center;    /* Centra verticalmente el enlace dentro del li */
+    justify-content: center; 
+    /* position: fixed;
+    top: var(--header-h);
+    right: 0px; */
 }
 
-.puntaje p {
+#puntaje p {
     margin-right: 2vw;
     margin-top: 2vh;
-    background-color: #F2F2F2;
-    color: #767676;
+    background-color: var(--background-item-nivel);
+    color: var(--text-2);
     padding: 1vh 1.5vw;
+    border-radius: 10px;
 }
+
+/* ------------------------ barra de input ------------------------*/
+.input-groupm {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: calc(100% - var(--sidebar-h));
+
+    /* Diseño de hijos */
+    /* display: flex;
+    justify-content: space-between !important;
+    gap: 1vw; */
+}
+
+.input-groupm .form-controlm {
+    /* margin-right: 2vw; */
+    background-color: #C6CFF2;
+}
+
+.input-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.input-icon i {
+    position: absolute;
+    right: 1vw;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    background-color: gray;
+}
+
+.input-icon input {
+    padding-right: 2vw;
+}
+
+.input-groupm > * {
+    color: #303030;
+}
+
+#btn-pista {
+    background-color: #AFD1ED;
+    border-color: #AFD1ED ;
+}
+
+#btn-refor {
+    background-color: #AFBDED;
+    border-color: #AFBDED;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ----------------- Responsive ---------------------- */
 @media (max-width: 576px) {
