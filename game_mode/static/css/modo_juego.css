@@ -7,11 +7,13 @@
     --text-2: #828282;
     --text-1: black;
     --btn-hover-bg: #D3D3D3;
-    --sidebar-h: 25vw;
+    --sidebar-w: 25vw;
     --btn-bg-1-hover: #a8dbe4;
     --background-item-nivel: #F2F2F2;
     --background-item-nivel-hov: #BAEAD5;
     --background-calend: #C5E7ED;
+
+    --sidebar-collapsed-w: 5vw;
 }
 
 /* Para que el html/body ocupen el 100% o 100vh o dvh <- mejor */
@@ -24,7 +26,7 @@ html, body { height: 100%;}
     top: 0;
     left: 0;
     bottom: 0;
-    width:var(--sidebar-h);
+    width:var(--sidebar-w);
     min-width: 250px; /* asegura que nunca sea demasiado angosto */
     max-width: 400px; /* evita que crezca demasiado */
     overflow-y: auto; /* Si el contenido es más alto que el panel, aparece scroll en y */
@@ -34,11 +36,104 @@ html, body { height: 100%;}
     box-sizing: border-box;
     padding: 13px;
     z-index: 1000;
+    transition: width 0.3s ease;
 }
+
+#sidebar.collapsed {
+    width: var(--sidebar-collapsed-w);
+    flex-direction: column;
+    align-items:start;
+    justify-content: center;
+    gap: 0.5rem;
+    /* padding-bottom: 0.75em;  */
+}
+
+/* allow the sidebar to shrink below the previous min-width when collapsed */
+#sidebar.collapsed {
+    min-width: 0 !important;
+    overflow: hidden;
+}
+
+/* Accedemos a navbar definida en header, hijo de body cuando este tenga como clase sidebar-collapsed  */
+/*Para reubicar main section*/
+/* Cuando el body tiene la clase sidebar-collapsed, reajusta el header (posición/anchura) */
+body.sidebar-collapsed .header,
+body.sidebar-collapsed .mensajes {
+    left: var(--sidebar-collapsed-w); /*Para que se reubique en la izquierda*/
+    width: calc(100vw - var(--sidebar-collapsed-w));
+}
+
+body.sidebar-collapsed .input-groupm,
+body.sidebar-collapsed .mensajes {
+    justify-content: center;
+    right: 0.5vw;
+    left: calc(var(--sidebar-collapsed-w) + 0.5vw);
+}
+
+
+/* move the main content over when the sidebar is collapsed */
+body.sidebar-collapsed .main {
+    margin-left: var(--sidebar-collapsed-w);
+    width: calc(100vw - var(--sidebar-collapsed-w));
+}
+
+/*Para colapsar lo que no necesitamos */
+#sidebar.collapsed .sidebar-text,
+#sidebar.collapsed #calendario {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    transition: opacity 0.2s ease, visibility 0s 0.2s, width 0s 0.2s;
+}
+
+#sidebar.collapsed .icon-hidden {
+    display: inline-block; /* Necesario para width en <i*/
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    transition: opacity 0.2s ease, visibility 0s 0.2s, width 0s 0.2s;
+}
+
+#sidebar.collapsed .btn-hidden {
+    display: inline-block; /* Necesario para width en <i*/
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    padding: 0;
+    min-width: 0;
+    border: none;
+    transition: opacity 0.2s ease, visibility 0s 0.2s, width 0s 0.2s, padding 0.2s ease;
+}
+
+#sidebar.collapsed .hr-hidden {
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  margin: 0;              /* Para evitar que deje espacio vertical */
+  padding: 0;
+  border: none;           /* para que no se vea nada */
+  transition: opacity 0.2s ease, visibility 0s 0.2s, width 0.2s ease;
+}
+
+#sidebar.collapsed .div-hidden {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, visibility 0s 0.2s;
+}
+
+
+/*-----*/
 
 .main {
     height: max-content;
-    margin-left: var(--sidebar-h);
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
 }
 
 /* ---------------------------- Panel lateral (izq) ------------------------- */
@@ -59,6 +154,11 @@ html, body { height: 100%;}
 
 .titulo i {
     font-size: 1.5rem;
+}
+
+.titulo i:hover {
+    background-color: lightgray;
+    border-radius: 30%;
 }
 
 .hr-titulo {
@@ -127,6 +227,10 @@ html, body { height: 100%;}
     justify-content: center; /* Centra en eje x */
 }
 
+#calendario .datepicker {
+    transform: scale(0.8);
+}
+
 .datepicker table tr td.day {
   padding: 0.2rem; 
 }
@@ -150,7 +254,6 @@ html, body { height: 100%;}
     display: flex;
     align-items: flex-end; 
     justify-content: center;
-    margin-bottom: 2vh;
     font-size: medium;
 }
 
@@ -184,13 +287,8 @@ html, body { height: 100%;}
 .input-groupm {
     position: fixed;
     bottom: 0px;
-    right: 0px;
-    width: calc(100% - var(--sidebar-h));
-
-    /* Diseño de hijos */
-    /* display: flex;
-    justify-content: space-between !important;
-    gap: 1vw; */
+    right: 0.5vw;
+    left: calc(var(--sidebar-w) + 0.5vw);
 }
 
 .input-groupm .form-controlm {
@@ -209,7 +307,6 @@ html, body { height: 100%;}
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.5rem;
-    background-color: gray;
 }
 
 .input-icon input {
@@ -231,6 +328,7 @@ html, body { height: 100%;}
 }
 
 
+/*---------SIDEBAR-------*/
 
 
 

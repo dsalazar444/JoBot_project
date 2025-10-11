@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}JoBot — Asistente de entrevistas{% endblock %}</title>
-
+    <link rel="shortcut icon" href="{% static 'img/logo_head.png' %}">
+    
     <!-- Inter -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +19,7 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body id="body">
     <!--  Header -->
     <header class="header">
         <nav class="navbar navbar-expand-lg">

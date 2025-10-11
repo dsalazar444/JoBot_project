@@ -27,31 +27,37 @@
 
 {% block content %}
 <!-- Etiquetas dentro del main -->
- 
-<aside class="izq">
+ <!-- Usamos el sidebar-text para indicar en css lo que queremos que se oculte cuando la barra colapsa-->
+<aside id="sidebar" class="izq">
     <section class="nivel">
-        <div class="titulo">
-            <h5>Niveles</h5>
-            <i class="bi bi-layout-sidebar"></i>
+        <div class="titulo d-flex justify-content-end">
+            <i id="sidebarToggle" class="bi bi-layout-sidebar align-self-end fs-4 p-2"></i>
         </div>
-        <hr class="hr-titulo">
-        <div class="overflow-auto overflow-autom">
+        <div class="titulo d-flex justify-content-start gap-1 ">
+            <i class="bi bi-controller p-2"></i>
+            <h5 class="sidebar-text">Niveles</h5>
+        </div>
+        <hr class="hr-titulo hr-hidden">
+        <div class="overflow-auto overflow-autom div-hidden">
             <!-- Contenido que puede desbordarse -->
             {% for nivel in niveles %}
                 <div class="nivel-item p-2">
-                    <i class="bi bi-controller"></i>
-                    <p class="mb-0">{{ nivel.titulo }}</p>
+                    <i class="bi bi-joystick fs-6 "></i>
+                    <p class="mb-0 ">{{ nivel.titulo }}</p>
                 </div>
             {% endfor %}
         </div>
-        <div class="boton">
+        <div class="boton div-hidden">
             <button type="button" class="btn btn-info btn-lg w-100">Multijugador</button>
         </div>
     </section>
     <section class="racha">
-        <h5>Racha</h5>
-        <hr class="hr-titulo">
-        <div class="racha-dias">
+        <div class="titulo d-flex justify-content-start gap-1">
+            <i class="bi bi-award p-2"></i>
+            <h5 class="sidebar-text">Racha</h5>
+        </div>
+        <hr class="hr-titulo hr-hidden">
+        <div class="racha-dias d-flex gap-1 div-hidden">
             <i class="bi bi-fire"></i>
             <p class="mb-0 fw-semibold">n DÍAS</p>
         </div>
@@ -63,7 +69,7 @@
     <div class="mb-3 input-groupm d-flex gap-2">
         <button id="btn-pista" class="btn btn-outline-secondary" type="button">Pista</button>
         <button id="btn-refor" class="btn btn-outline-secondary" type="button">Reformular</button>
-        <div class = "input-icon me-1 w-100">
+        <div class = "input-icon w-100">
             <input type="text" class="form-control form-controlm" placeholder="Escribe tu respuesta aquí..." aria-label="Example text with two button addons">
             <i class="bi bi-mic"></i>
         </div>

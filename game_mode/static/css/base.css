@@ -3,9 +3,10 @@
   --text: #000000;
   --btn-bg-1: #AFE4ED;
   --btn-bg-2: #AFEDE3;
+  --btn-bg-2-hov:  #a8dbe4;
   --text-2: #828282;
   --btn-hover-bg: #D3D3D3;
-  --sidebar-h: 25vw;
+  --sidebar-w: 25vw;
 }
 
 /* ===== Reset básico ===== */
@@ -19,11 +20,11 @@ body {
 .header {
    position: fixed;
     top: 0;
-    left: var(--sidebar-h);
+    left: var(--sidebar-w);
     z-index: 1050;
     background: var(--background);
     border-bottom: 1px solid rgba(0,0,0,0.06);
-    width: calc(100% - var(--sidebar-h));
+    width: calc(100vw - var(--sidebar-w));
 }
 
 /* ===== Navbar ===== */
@@ -97,7 +98,7 @@ body {
   min-width: 160px;
 }
 .cta.btn:hover {
-  background: var(--btn-bg-2);
+  background: var(--btn-bg-2-hov);
 }
 .cta.btn:active {
   transform: translateY(1px);
