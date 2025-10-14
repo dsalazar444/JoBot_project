@@ -1,2 +1,5 @@
 *.pyc
 *.ini
+*.env
+*.sqlite3
+*.log

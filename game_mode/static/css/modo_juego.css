@@ -12,8 +12,10 @@
     --background-item-nivel: #F2F2F2;
     --background-item-nivel-hov: #BAEAD5;
     --background-calend: #C5E7ED;
-
+    --navbar-h: 76px;
     --sidebar-collapsed-w: 5vw;
+    --input-h: 60px;
+
 }
 
 /* Para que el html/body ocupen el 100% o 100vh o dvh <- mejor */
@@ -65,7 +67,7 @@ body.sidebar-collapsed .mensajes {
 
 body.sidebar-collapsed .input-groupm,
 body.sidebar-collapsed .mensajes {
-    justify-content: center;
+    /* justify-content: center; */
     right: 0.5vw;
     left: calc(var(--sidebar-collapsed-w) + 0.5vw);
 }
@@ -128,14 +130,25 @@ body.sidebar-collapsed .main {
 
 
 /*-----*/
-
+/* 
 .main {
     height: max-content;
     margin-left: var(--sidebar-w);
     flex: 1;
     display: flex;
-}
+} */
 
+.mensajes {
+    position: fixed;                  /* lo mantiene siempre visible */
+    top: var(--navbar-h);             /* empieza justo debajo del navbar */
+    left: var(--sidebar-w);           /* deja espacio para el sidebar */
+    bottom: var(--input-h);            /*termina en la seccion de inputs*/
+    width: calc(100vw - var(--sidebar-w)); /* ancho total menos el sidebar */
+    overflow-y: auto;                  /* permite scroll si hay muchos mensajes */
+    padding: 2vh 7vw ; 
+    box-sizing: border-box;
+    /* background-color: #8370B4; */
+}
 /* ---------------------------- Panel lateral (izq) ------------------------- */
  /* ---- Sección de titulo ---- */
 .titulo {
@@ -263,7 +276,6 @@ body.sidebar-collapsed .main {
     line-height: 1;
 }
 
-/* ---------------------------- Main ------------------------- */
 /*corregir*/
 #puntaje {
     display: flex;
@@ -283,6 +295,7 @@ body.sidebar-collapsed .main {
     border-radius: 10px;
 }
 
+/* ---------------------------- Main ------------------------- */
 /* ------------------------ barra de input ------------------------*/
 .input-groupm {
     position: fixed;
@@ -328,22 +341,23 @@ body.sidebar-collapsed .main {
 }
 
 
-/*---------SIDEBAR-------*/
+/* ---------------------------- Mensajes ------------------------- */
 
+.mensaje {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 
+.mensaje.usuario {
+    background-color: var(--background-calend);
+}
 
-
-
-
-
-
-
-
-
-
-
+.mensaje.robot {
+    background-color: #ECE6F0;
+}
+/*Idea: que en celular, si o si el sidebar este colapsado, usar js para que
+obtenga viewport, si es 576... que se agrege clase, y resto se maneja acá, en media*/
 /* ----------------- Responsive ---------------------- */
-@media (max-width: 576px) {
+/* @media (max-width: 576px) {
   .izq {
     width: 100%;
     min-width: auto;
@@ -353,4 +367,113 @@ body.sidebar-collapsed .main {
   .overflow-autom {
     max-height: 40vh;
   }
-}
+} 
+
+Additional mobile overrides for collapsed sidebar and puntaje
+     Appended separately so we don't replace the existing @media above 
+@media (max-width: 576px) {
+    /* Force the sidebar to behave like .collapsed on small screens 
+    #sidebar.collapsed,
+    #sidebar {
+        width: 56px !important;
+        min-width: 56px !important;
+        padding: 0.25rem 0.125rem !important;
+        left: 0;
+        top: 48px; /* adjust if you have a header 
+        bottom: 0;
+        overflow: hidden;
+    }
+
+    /* Keep sidebar content hidden but keep icons visible and large enough for touch 
+    #sidebar.collapsed .sidebar-text,
+    #sidebar.collapsed .div-hidden,
+    #sidebar.collapsed .btn-hidden,
+    #sidebar.collapsed .hr-hidden,
+    #sidebar .sidebar-text,
+    #sidebar .div-hidden,
+    #sidebar .btn-hidden,
+    #sidebar .hr-hidden {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    /* Nivel items: center icons and increase tap area 
+    #sidebar.collapsed .nivel-item,
+    #sidebar .nivel-item {
+        justify-content: center;
+        padding: 0.5rem 0;
+    }
+
+    /* Make icons easier to tap 
+    #sidebar.collapsed .nivel-item i,
+    #sidebar.collapsed .bi,
+    #sidebar .nivel-item i,
+    #sidebar .bi {
+        font-size: 1.3rem;
+        display: block;
+        margin: 0 auto;
+        line-height: 1;
+    }
+
+    /* Ensure main content sits to the right of the compact sidebar on small screens 
+    /* Apply both when body has class and globally on small screens so layout is never cramped 
+    body.sidebar-collapsed .main,
+    body.sidebar-collapsed .mensajes,
+    body.sidebar-collapsed .input-groupm,
+    .main,
+    .mensajes,
+    .input-groupm {
+        left: 56px !important;
+        margin-left: 56px !important;
+        width: calc(100vw - 56px) !important;
+    }
+
+    /* Show puntaje in a small fixed badge top-right on mobile 
+    #puntaje {
+        display: block !important;
+        position: fixed !important;
+        right: 0.6rem !important;
+        top: 8px !important;
+        background: rgba(255,255,255,0.95) !important;
+        padding: 0.25rem 0.6rem !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.08) !important;
+        z-index: 1060 !important;
+        font-size: 0.85rem !important;
+    }
+
+    #puntaje p {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        color: var(--text-2) !important;
+    }
+
+    /* Compact input area at bottom with appropriate left offset 
+    .input-groupm {
+        left: 56px !important;
+        right: 0.5rem !important;
+        padding: 0.25rem !important;
+    }
+
+    .input-groupm .form-controlm,
+    .input-groupm .btn {
+        height: 42px !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Slightly reduce calendar scale to fit mobile 
+    #calendario .datepicker {
+        transform: scale(0.75) !important;
+        transform-origin: left top !important;
+    }
+
+    /* Messages area: use remaining vertical space 
+    .mensajes {
+        max-height: calc(100vh - 140px) !important;
+        padding: 0.5rem !important;
+    }
+}*/

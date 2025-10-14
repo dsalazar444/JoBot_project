@@ -28,7 +28,7 @@
 {% block content %}
 <!-- Etiquetas dentro del main -->
  <!-- Usamos el sidebar-text para indicar en css lo que queremos que se oculte cuando la barra colapsa-->
-<aside id="sidebar" class="izq">
+<aside data-usuario="{{ request.user }}" id="sidebar" class="izq">
     <section class="nivel">
         <div class="titulo d-flex justify-content-end">
             <i id="sidebarToggle" class="bi bi-layout-sidebar align-self-end fs-4 p-2"></i>
@@ -41,7 +41,7 @@
         <div class="overflow-auto overflow-autom div-hidden">
             <!-- Contenido que puede desbordarse -->
             {% for nivel in niveles %}
-                <div class="nivel-item p-2">
+                <div class="nivel-item p-2" data-nivel="{{ forloop.counter }}">
                     <i class="bi bi-joystick fs-6 "></i>
                     <p class="mb-0 ">{{ nivel.titulo }}</p>
                 </div>
@@ -65,12 +65,12 @@
     </section>
 </aside>
 <article class="main">
-    <div class="mensajes"></div>
+    <div class="mensajes d-flex flex-column" id="chat-container"></div>
     <div class="mb-3 input-groupm d-flex gap-2">
         <button id="btn-pista" class="btn btn-outline-secondary" type="button">Pista</button>
         <button id="btn-refor" class="btn btn-outline-secondary" type="button">Reformular</button>
         <div class = "input-icon w-100">
-            <input type="text" class="form-control form-controlm" placeholder="Escribe tu respuesta aquí..." aria-label="Example text with two button addons">
+            <input type="text" class="form-control form-controlm" id="input_chat" placeholder="Escribe tu respuesta aquí..." aria-label="Example text with two button addons">
             <i class="bi bi-mic"></i>
         </div>
     </div>
