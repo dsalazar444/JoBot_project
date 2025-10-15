@@ -129,7 +129,8 @@ async function enviarMensajeABackend(mensaje_estructurado){
   //Revisar si la respuesta fue exitosa
   if (data.success) {
     //Renderizamos respuesta
-    renderMensajeRobot(data.contenido);
+    
+    renderMensajeRobot(estructurarMensajeConEtiqueta(data.contenido));
   } else {
     console.error("Error al procesar el mensaje:", data.contenido);
     renderMensajeRobot("Lo siento, hubo un error al procesar tu mensaje.");
@@ -211,7 +212,7 @@ function designarDiseñoChatPasado(data){
         if (esPrimerItem){ 
           //Porque primer elemento es de Robot pero no tiene la misma estructura (dict con claves que genera la ia) que 
           // todas las respuestas de la IA
-          renderMensajeRobot(mensaje); //Pasamos un string.
+          renderMensajeRobot(mensaje); //Pasamos un string. No usamos estructurarMensajeConEtiqueta porque mensaje ya es un string
         } else {
           // Convertimos mensaje a json porque funcion estructurarMensajeConEtiqueta espera un json
           const mensaje_json = JSON.parse(mensaje);
@@ -336,8 +337,8 @@ document.addEventListener("DOMContentLoaded", function () {
       //Enviamos mensaje a backend, el cual nos retorna la respuesta de la ia, por lo que la guardamos en variable
       const respuesta_ia = await enviarMensajeABackend(mensaje_json); 
       
-      //Mostramos en interfaz la respuesta de la ia
-      renderMensajeRobot(respuesta_ia);
+      //Mostramos en interfaz la respuesta de la ia, la cual es un json -> lo mandamos a estructurarMensajeConEtiqueta para que lo convierta a string
+      renderMensajeRobot(estructurarMensajeConEtiqueta(respuesta_ia));
     }
   })
 });
