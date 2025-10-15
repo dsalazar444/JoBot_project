@@ -1,97 +1,293 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JoBot - Modo Entrevista</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="{% static 'css/interview.css' %}">
+{% endblock %}
 
-    <!-- CSS con Django -->
-    <link rel="stylesheet" href="{% static 'css/interview.css' %}">
-</head>
-<body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-light bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
-            <img src="{% static 'img/logo.png' %}" alt="JoBot Logo" height="50" class="me-2">
-            <span class="fs-5 fw-normal">JoBot</span>
+{% block content %}
+<aside id="sidebar" class="izq">
+    <section class="nivel">
+        <div class="titulo d-flex justify-content-end">
+            <i class="bi bi-chat-dots p-2"></i>
         </div>
-        <div>
-            <button class="btn btn-outline-dark me-3">Inicio</button>
-            <button class="btn btn-info text-dark fw-normal">Cerrar sesión</button>
+        <div class="titulo d-flex justify-content-start gap-1">
+            <h5 class="sidebar-text">Entrevistas</h5>
         </div>
-    </nav>
+        <hr class="hr-titulo">
 
-    <!-- Layout principal -->
-    <div class="d-flex">
-        <!-- Aside -->
-        <aside class="sidebar p-4">
-            <h6 class="fw-semibold mb-3">Entrevista</h6>
+        <div class="overflow-auto lista-entrevistas">
             <ul class="list-group mb-4">
-                <li class="list-group-item">Entrevista 1</li>
-                <li class="list-group-item">Entrevista 2</li>
-                <li class="list-group-item">Entrevista 3</li>
-                <li class="list-group-item">Entrevista 4</li>
-                <li class="list-group-item">Entrevista 5</li>
+                {% for user_session in user_sessions %}
+                <li class="list-group-item interview-session {% if user_session.id == session.id %}active{% endif %}"
+                    data-session-id="{{ user_session.id }}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>{{ user_session.title }}</strong>
+                            <br><small class="text-muted">{{ user_session.get_interview_type_display }}</small>
+                        </div>
+                        <small class="text-muted">{{ user_session.updated_at|date:"d/m" }}</small>
+                    </div>
+                </li>
+                {% endfor %}
             </ul>
+        </div>
 
-            <h6 class="fw-semibold mb-3">Racha</h6>
-            <div class="calendar-box mb-3 text-center">
-                <!-- aquí reemplazamos el placeholder estático por el container dinámico -->
-                <div id="streak-calendar" class="streak-calendar"></div>
-            </div>
+        <div class="boton">
+            <button class="btn btn-info btn-lg w-100" data-bs-toggle="modal" data-bs-target="#newInterviewModal">
+                Nueva Entrevista
+            </button>
+        </div>
+    </section>
 
-            <div class="text-center mt-4">
-                <img src="{% static 'img/fire.png' %}" alt="fire icon" height="45">
-                <p class="mb-0 text-muted">n DÍAS</p>
-            </div>
-        </aside>
+    <section class="racha">
+        <div class="titulo d-flex justify-content-start gap-1">
+            <i class="bi bi-award p-2"></i>
+            <h5 class="sidebar-text">Racha</h5>
+        </div>
+        <hr class="hr-titulo">
 
-        <!-- Chat -->
-        <main class="chat p-4 flex-grow-1">
-            <div class="chat-messages">
-                <div class="message bot">
-                    <p class="fw-semibold mb-1">JoBot</p>
-                    <p>Text</p>
-                </div>
-                <div class="message user">
-                    <p class="fw-semibold mb-1">Tú</p>
-                    <p>Text</p>
-                </div>
-            </div>
+        <div class="racha-dias d-flex gap-1 text-center">
+            <i class="bi bi-fire"></i>
+            <p class="mb-0 fw-semibold" id="streak-count">0 DÍAS</p>
+        </div>
 
-            <div class="chat-input">
-                <input type="text" class="form-control input-chat" placeholder="Mensaje para JoBot">
-            </div>
-        </main>
+        <div id="streak-calendar" class="streak-calendar"></div>
+    </section>
+</aside>
+
+<article class="main">
+    <div class="chat-header mb-3">
+        <h5 class="mb-0">{{ session.title }} - {{ session.get_interview_type_display }}</h5>
+        <small class="text-muted">Sesión activa</small>
     </div>
 
-    <!-- si desde la view Django pasas 'streak_dates_json' (json.dumps), lo inyectamos para que interview.js lo use -->
-    {% if streak_dates_json %}
-    <script>
-      window.initialStreak = ["2025-10-03", "2025-10-04", "2025-10-06"];
-    </script>
-    {% endif %}
+    <div class="mensajes d-flex flex-column" id="chat-messages">
+        {% for message in messages %}
+        <div class="message {{ message.sender }}">
+            <p class="fw-semibold mb-1">
+                {% if message.sender == 'bot' %}JoBot{% else %}Tú{% endif %}
+            </p>
+            <p>{{ message.content }}</p>
+            <small class="text-muted">{{ message.timestamp|date:"H:i" }}</small>
+        </div>
+        {% endfor %}
+    </div>
 
-    <!-- script actual para activar la selección de entrevistas -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active'));
-            document.querySelectorAll('.list-group-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                });
+    <div class="typing-indicator d-none" id="typing-indicator">
+        <div class="message bot">
+            <p class="fw-semibold mb-1">JoBot</p>
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+        </div>
+    </div>
+
+    <div class="chat-input">
+        <div class="input-group">
+            <input type="text" id="message-input" class="form-control" placeholder="Escribe tu respuesta..." maxlength="1000">
+            <button class="btn btn-primary" id="send-button" type="button">Enviar</button>
+        </div>
+    </div>
+</article>
+
+<!-- Modal para nueva entrevista -->
+<div class="modal fade" id="newInterviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva Entrevista</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="new-interview-form">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="interview-title" class="form-label">Título de la Entrevista</label>
+                        <input type="text" class="form-control" id="interview-title"
+                               placeholder="Ej: Entrevista Frontend Developer" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="interview-type" class="form-label">Tipo de Entrevista</label>
+                        <select class="form-select" id="interview-type" required>
+                            <option value="technical">Técnica</option>
+                            <option value="behavioral">Conductual</option>
+                            <option value="general">General</option>
+                            <option value="custom">Personalizada</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Crear Entrevista</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 🔹 Aquí se mantiene tu script original tal cual -->
+<script>
+    // Variables globales
+    const currentSessionId = {{ session.id }};
+    const csrfToken = '{{ csrf_token }}';
+    const sendMessageUrl = '/interview/api/send-message/' + currentSessionId + '/';
+    const createSessionUrl = '{% url "create_session" %}';
+
+    // Función para escapar HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Funciones del chat
+    async function sendMessage() {
+        const input = document.getElementById('message-input');
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        // Deshabilitar input mientras se procesa
+        input.disabled = true;
+        document.getElementById('send-button').disabled = true;
+
+        // Mostrar indicador de escritura
+        showTypingIndicator();
+
+        try {
+            const response = await fetch(sendMessageUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Agregar mensaje del usuario
+                addMessage('user', message);
+
+                // Ocultar typing y agregar respuesta de IA
+                hideTypingIndicator();
+                addMessage('bot', data.ai_response);
+
+                // Limpiar input
+                input.value = '';
+            } else {
+                alert('Error: ' + data.error);
+                hideTypingIndicator();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error de conexión. Inténtalo de nuevo.');
+            hideTypingIndicator();
+        }
+
+        // Rehabilitar input
+        input.disabled = false;
+        document.getElementById('send-button').disabled = false;
+        input.focus();
+    }
+
+    function addMessage(sender, content) {
+        const messagesContainer = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        messageDiv.innerHTML = `
+            <p class="fw-semibold mb-1">${sender === 'bot' ? 'JoBot' : 'Tú'}</p>
+            <p>${escapeHtml(content)}</p>
+            <small class="text-muted">${timeString}</small>
+        `;
+
+        messagesContainer.appendChild(messageDiv);
+        scrollToBottom();
+    }
+
+    function showTypingIndicator() {
+        document.getElementById('typing-indicator').classList.remove('d-none');
+        scrollToBottom();
+    }
+
+    function hideTypingIndicator() {
+        document.getElementById('typing-indicator').classList.add('d-none');
+    }
+
+    function scrollToBottom() {
+        const messagesContainer = document.getElementById('chat-messages');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Enviar con Enter
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Enviar con botón
+        sendButton.addEventListener('click', sendMessage);
+
+        // Cambiar entre sesiones
+        document.querySelectorAll('.interview-session').forEach(item => {
+            item.addEventListener('click', function() {
+                const sessionId = this.dataset.sessionId;
+                window.location.href = `/interview/${sessionId}/`;
             });
         });
-    </script>
 
-    <!-- carga el JS del calendario -->
-    <script src="{% static 'js/interview.js' %}" defer></script>
-</body>
-</html>
+        // Crear nueva entrevista
+        document.getElementById('new-interview-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('interview-title').value;
+            const type = document.getElementById('interview-type').value;
+
+            try {
+                const response = await fetch(createSessionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: new URLSearchParams({
+                        title: title,
+                        interview_type: type
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al crear la entrevista');
+            }
+        });
+
+        // Scroll inicial
+        scrollToBottom();
+    });
+</script>
+
+<script src="{% static 'js/interview.js' %}" defer></script>
+{{ block.super }}
+{% endblock %}
