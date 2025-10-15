@@ -1,5 +1,10 @@
+.venv/
+.idea/
+__pycache__/
+db.sqlite3
+.env
+staticfiles/
 *.pyc
 *.ini
 *.env
-*.sqlite3
 *.log

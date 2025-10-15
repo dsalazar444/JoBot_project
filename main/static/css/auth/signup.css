@@ -1,0 +1,124 @@
+:root{
+  --bg: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --email-bg: #E3F5F6;
+  --user-bg: #E2EAF7;
+  --pass-bg: #E5DBFA;
+  --btn-bg:  #C6EFE6;
+  --btn-bg-hover: #B0E7DC;
+  --radius: 12px;
+  --shadow: 0 6px 24px rgba(15, 23, 42, .08);
+}
+
+.auth{
+  display: grid;
+  place-items: start center;
+  background: var(--bg);
+  color: var(--text);
+  padding: 70px;
+}
+
+.auth-card{
+  width: min(520px, 100%);
+  border-radius: 40px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+.auth-card_avatar{
+  width: 96px; height: 96px;
+  border-radius: 999px;
+  background: #EAF2F4;
+  display: grid; place-items: center;
+  margin: 0 auto 12px;
+}
+
+.auth-card_avatar-icon{
+  width: 48px; height: 48px;
+  color: #1f2937;
+}
+
+.auth-card_title{
+  font-size: clamp(24px, 3.2vw, 32px);
+  font-weight: 700;
+  margin: 4px 0 20px;
+  text-align: left;
+}
+
+
+.--email{
+  margin-bottom: 26px;
+}
+
+.field{ margin-bottom: 18px; }
+
+.field_label{
+  display:block;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.field_input{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  outline: none;
+  font-size: 15px;
+  transition: box-shadow .2s, border-color .2s;
+  display: block;
+}
+
+.--username{ background: var(--user-bg); }
+.--email{ background: var(--email-bg); }
+.--password{ background: var(--pass-bg); }
+
+.field_input::placeholder{ color: #6b7280; }
+.field_input:focus{
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148,163,184,.25);
+}
+
+.password{
+  position: relative;
+  display: grid;
+}
+.password_toggle{
+  position: absolute;
+  right: 10px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  line-height: 1;
+  opacity: .7;
+}
+.password_toggle:hover{ opacity: 1; }
+
+.auth .btn{
+  min-width: 200px;
+  display: inline-block;
+  margin-top: 10px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+.auth .btn-primary{
+  background: var(--btn-bg);
+  color: #0b3b34;
+}
+.auth .btn-primary:hover{ background: var(--btn-bg-hover); }
+
+
+/* estados de error simples */
+.field_input--invalid{
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.15) !important;
+}

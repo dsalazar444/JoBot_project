@@ -1,4 +1,4 @@
-{% extends 'base.html'%}
+{% extends 'base_game_mode.html'%}
 {% load static %}
 
 {% block extra_css %}
@@ -75,6 +75,7 @@
         </div>
     </div>
     
+    <!-- JS  -->
+    <script src="{% static 'js/modo_juego.js' %}"></script>
 </article>
-<script src="{% static 'js/modo_juego.js' %}"></script>
 {% endblock %}

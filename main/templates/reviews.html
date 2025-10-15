@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Opiniones • JoBot{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="wrap" aria-labelledby="opiniones-heading">
+  <h1 id="opiniones-heading">Opiniones</h1>
+  <p class="hint">
+    Esta página solo mostrará <strong>reviews reales</strong> de usuarios verificados.
+    Hasta que las recopilemos, verás un estado vacío. Nada de testimonios inventados 🫶
+  </p>
+
+  <section id="reviews" class="grid" aria-live="polite" data-src="{% static 'data/reviews.json' %}">
+    <div class="empty" id="empty">
+      <p><strong>Todavía no hay reseñas publicadas.</strong></p>
+      <p>En cuanto tengamos opiniones verificadas, aparecerán aquí automáticamente.</p>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script defer src="{% static 'js/reviews.js' %}"></script>
+{% endblock %}

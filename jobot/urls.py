@@ -16,10 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from main import views as mainViews
 from django.contrib.auth.decorators import login_required
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', mainViews.home, name='home'),
+    path('about/', mainViews.about, name='about'),
+    path('reviews/', mainViews.reviews, name='reviews'),
+    path('signup/', mainViews.signup_view, name='signup'),
+    path('login/', mainViews.login_view, name='login'),
+    path('interview/', include('interview_mode.urls')),
     #Rutas de app game_mode
     path('game_mode/', include("game_mode.urls")), 
 ]

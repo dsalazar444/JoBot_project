@@ -6,7 +6,6 @@ import google.generativeai as genai
 from .models import Progreso, Nivel, Pregunta, Chat, Mensaje
 from user.models import Usuario
 from django.conf import settings
-import json
 
 
 NUM_PREGUNTAS_POR_NIVEL = 6

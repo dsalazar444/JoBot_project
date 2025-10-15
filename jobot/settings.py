@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'main',
     'game_mode',
+    'interview_mode',
     'user',
 ]
 
@@ -59,7 +61,7 @@ ROOT_URLCONF = 'jobot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'jobot/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,6 +123,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'jobot' / 'static',
+    BASE_DIR / 'main' / 'static',
+    BASE_DIR / 'game_mode' / 'static',
+    BASE_DIR / 'interview_mode' / 'static',
+    BASE_DIR / 'data',
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -134,4 +144,4 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 # Para que django redirija automaticamente acá al usuario si este intenta
 # acceder a una pagina que requiere login y el user no está logeado.
-LOGIN_URL = ''
+LOGIN_URL = '/login/'

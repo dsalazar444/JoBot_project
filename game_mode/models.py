@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+# Create your models here.
+
 class Nivel(models.Model):
     numero = models.IntegerField(unique=True)
     puntaje_minimo = models.IntegerField(default=0) #Para pasar de nivel

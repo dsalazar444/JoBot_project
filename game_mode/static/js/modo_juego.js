@@ -15,6 +15,10 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Guards to avoid duplicate or concurrent loading of past chats for the same level
+let isLoadingChatPast = false;
+let lastLoadedLevel = null;
+
 //------------------------------------ renderizar -------------------------------------
 
 /* Función: Estiliza y asigna contenedor para mensaje de Usuario, dentro del main
@@ -128,38 +132,30 @@ async function enviarMensajeABackend(mensaje_estructurado){
 
   //Revisar si la respuesta fue exitosa
   if (data.success) {
-    //Renderizamos respuesta
-    
-    renderMensajeRobot(estructurarMensajeConEtiqueta(data.contenido));
+    // Devolver el contenido para que el llamador sea quien renderice.
+    // Esto evita que la respuesta se renderice dos veces (dentro de la función y en el llamador).
+    return data.contenido;
   } else {
     console.error("Error al procesar el mensaje:", data.contenido);
-    renderMensajeRobot("Lo siento, hubo un error al procesar tu mensaje.");
+    // Retornamos null para que el llamador pueda decidir cómo mostrar el error
+    return null;
   }
 }
 
-// function limpiar_respuesta_ia(mensaje_json){
-//   console.log("mensaje_json -<<<<", mensaje_json);
-//   if (!mensaje_json) return {};
-
-//   delete mensaje_json.avanza;
-//   delete mensaje_json.nivel_acabo;
-  
-//   if (mensaje_json.siguiente_pregunta == null){
-//     delete mensaje_json.siguiente_pregunta;
-//   }
-
-//   if (mensaje_json.mensaje_despedida == null){
-//     delete mensaje_json.mensaje_despedida;
-//   }
-
-//   return mensaje_json
-// }
-
 /* Función: Obtiene historial de chats, para que al abrir nivel, salgan los mensajes anteriores */
 async function cargarChatPasado() {
+  // Evitar llamados duplicados si ya estamos cargando el mismo nivel
+  if (isLoadingChatPast && nivelSeleccionado === lastLoadedLevel) {
+    console.log('cargarChatPasado: ya se está cargando el historial para el nivel', nivelSeleccionado);
+    return;
+  }
+
+  isLoadingChatPast = true;
+  lastLoadedLevel = nivelSeleccionado;
+
   try{
     //Obtenemos historial de chats de nivel seleccionado, y lo "guardamos" en atributo de response 
-    const response = await fetch("/game_mode/api/cargarChats", {
+    const response = await fetch("/game_mode/api/cargarChats/", {
         method: 'POST',
         headers: {
           'Content-Type':'application/json', //para indicar envio de json
@@ -171,10 +167,14 @@ async function cargarChatPasado() {
     //Convertimos HTTP (response) a json
     const data = await response.json();
 
-    //Para que se renderizen según corresponda ('Robot' o 'Usuario')
+    //Para que se rendericen según corresponda ('Robot' o 'Usuario')
     designarDiseñoChatPasado(data);
   } catch (error) {
     console.error("Error obteniendo la lista para cargar chats anteriores:", error);
+  }
+  finally {
+    // Marcamos que ya no estamos cargando; permitimos cargar otro nivel si cambia
+    isLoadingChatPast = false;
   }
 }
 
@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       //Mandamos valor de nivel seleccionado a backend (django)
       //Esa es la url a la que mandaremos la info, la cual esta asociada a la función init
-      fetch("/game_mode/index", {
+      fetch("/game_mode/index/", {
         method: 'POST',
         headers: {
           'Content-Type':'application/json', //para indicar envio de json
@@ -337,11 +337,15 @@ document.addEventListener("DOMContentLoaded", function () {
       //Limpiamos barra de input
       input_chat.value="";
 
-      //Enviamos mensaje a backend, el cual nos retorna la respuesta de la ia, por lo que la guardamos en variable
-      const respuesta_ia = await enviarMensajeABackend(mensaje_json); 
-      
-      //Mostramos en interfaz la respuesta de la ia, la cual es un json -> lo mandamos a estructurarMensajeConEtiqueta para que lo convierta a string
-      renderMensajeRobot(estructurarMensajeConEtiqueta(respuesta_ia));
+      // Enviamos mensaje a backend; la función retorna el contenido de la IA (o null si hubo error)
+      const respuesta_ia = await enviarMensajeABackend(mensaje_json);
+
+      if (respuesta_ia) {
+        // respuesta_ia es un objeto JSON uniforme que estructurarMensajeConEtiqueta convierte a string
+        renderMensajeRobot(estructurarMensajeConEtiqueta(respuesta_ia));
+      } else {
+        renderMensajeRobot('Lo siento, hubo un error al procesar tu mensaje.');
+      }
     }
   })
 });

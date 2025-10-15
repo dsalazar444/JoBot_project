@@ -40,19 +40,19 @@
                 <div class="collapse navbar-collapse" id="Nav">
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav link" href="#">Sobre nosotros</a>
+                            <a class="nav link" href="{% url 'about' %}">Sobre nosotros</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav link" href="#">Opiniones</a>
+                            <a class="nav link" href="{% url 'reviews' %}">Opiniones</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav link" href="#">Iniciar sesión</a>
+                            <a class="nav link" href="{% url 'login' %}">Iniciar sesión</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="btn cta ms-lg-2" href="#">Crear cuenta</a>
+                            <a class="btn cta ms-lg-2" href="{% url 'signup' %}">Crear cuenta</a>
                         </li>
                     </ul>
                 </div>
@@ -68,7 +68,7 @@
         </div>
         {% endfor %}
     </div>
-{% endif %}
+    {% endif %}
     {% block content %}
     {% endblock %}
 
