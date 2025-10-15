@@ -6,3 +6,21 @@ db.sqlite3
 .env
 staticfiles/
 *.env
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Django
+db.sqlite3
+/media/
+staticfiles/
+
+# VSCode
+.vscode/

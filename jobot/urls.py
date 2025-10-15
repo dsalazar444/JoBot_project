@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from main import views as mainViews
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -26,6 +27,8 @@ urlpatterns = [
     path('reviews/', mainViews.reviews, name='reviews'),
     path('signup/', mainViews.signup_view, name='signup'),
     path('login/', mainViews.login_view, name='login'),
+    path('logout/', mainViews.logout_view, name='logout'),
+    path('forgot/', mainViews.forgot_view, name='forgot'),
     path('interview/', include('interview_mode.urls')),
     path('game/', include('game_mode.urls')),
 ]

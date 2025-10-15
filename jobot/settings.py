@@ -132,3 +132,10 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- Auth / Login ---
+LOGIN_URL = 'login'           # si visitas una vista protegida sin login, te manda a /login/
+LOGIN_REDIRECT_URL = '/'      # después de iniciar sesión, te envía al home
+LOGOUT_REDIRECT_URL = '/login/'  # al cerrar sesión, regresa al login
+LOGIN_REDIRECT_URL = 'home'     # a dónde enviar tras iniciar sesión
+LOGOUT_REDIRECT_URL = 'home'    # a dónde enviar tras cerrar sesión

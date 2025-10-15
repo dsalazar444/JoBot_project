@@ -1,9 +1,67 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
-{% block title %}Inicia sesión • JoBot{% endblock %}
+{% block title %}Inicia sesión — JoBot{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/auth/login.css' %}">
 {% endblock %}
 
+{% block content %}
+
+<section class="login-hero"></section>
+
+<main class="login-wrap">
+  <header class="login-head">
+    <div class="avatar" aria-hidden="true">
+      <svg viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="30" fill="#EEF2FF"/>
+        <circle cx="32" cy="26" r="9" fill="none" stroke="#0B2239" stroke-width="3.2"/>
+        <path d="M16 48c3.8-7.8 11-12 16-12s12.2 4.2 16 12"
+              fill="none" stroke="#0B2239" stroke-width="3.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>Inicia sesión</h1>
+  </header>
+
+  {% if messages %}
+    <ul class="messages">
+      {% for m in messages %}
+        <li class="msg {{ m.tags }}">{{ m }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="post" class="login-form" novalidate>
+    {% csrf_token %}
+
+    <label for="id_email">Usuario (email)</label>
+    <input
+      id="id_email"
+      name="email"                
+      type="email"
+      class="jb-input jb-input--user"
+      placeholder="Ingrese su usuario"
+      required
+      value="{{ request.POST.email|default:'' }}"
+    />
+
+    <label for="id_password">Contraseña</label>
+    <input
+      id="id_password"
+      name="password"            
+      type="password"
+      class="jb-input jb-input--pass"
+      placeholder="Ingrese su contraseña"
+      required
+    />
+
+    <p class="helper">
+      <a href="{% url 'forgot' %}">¿Olvidó su contraseña?</a>
+    </p>
+
+    <button class="btn-primary" type="submit">Iniciar sesión</button>
+  </form>
+</main>
+
+{% endblock %}
