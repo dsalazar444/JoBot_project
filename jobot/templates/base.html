@@ -39,21 +39,27 @@
                 <!-- Links -->
                 <div class="collapse navbar-collapse" id="Nav">
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-                        <li class="nav-item">
-                            <a class="nav link" href="{% url 'about' %}">Sobre nosotros</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav link" href="{% url 'reviews' %}">Opiniones</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav link" href="{% url 'login' %}">Iniciar sesión</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="btn cta ms-lg-2" href="{% url 'signup' %}">Crear cuenta</a>
-                        </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav link" href="{% url 'home' %}">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn cta ms-lg-2" href="{% url 'logout' %}">Cerrar sesión</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav link" href="{% url 'about' %}">Sobre nosotros</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav link" href="{% url 'reviews' %}">Opiniones</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav link" href="{% url 'login' %}">Iniciar sesión</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn cta ms-lg-2" href="{% url 'signup' %}">Crear cuenta</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
