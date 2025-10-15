@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}JoBot — Asistente de entrevistas{% endblock %}</title>
     <link rel="shortcut icon" href="{% static 'img/logo_head.png' %}">
+    
     <!-- Inter -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,15 +19,15 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body id="body">
     <!--  Header -->
     <header class="header">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <!-- Brand -->
-                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
-                    <img src="{% static 'images/logo.png' %}" alt="JoBot" class="logo">
-                    <span class="brand-text">Jobot</span>
+                <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                    <img src="{% static 'img/logor.png' %}" alt="JoBot" class="logo">
+                    <span class="brand-text">JoBot</span>
                 </a>
 
                 <!-- Toggler -->
@@ -39,20 +40,13 @@
                 <!-- Links -->
                 <div class="collapse navbar-collapse" id="Nav">
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                        {% block puntaje %}{% endblock %}
                         <li class="nav-item">
-                            <a class="nav link" href="{% url 'about' %}">Sobre nosotros</a>
+                            <a class="nav link" href="{% url 'home' %}">Inicio</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav link" href="{% url 'reviews' %}">Opiniones</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav link" href="{% url 'login' %}">Iniciar sesión</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="btn cta ms-lg-2" href="{% url 'signup' %}">Crear cuenta</a>
+                            <a class="btn cta ms-lg-2" href="#">Cerrar sesión</a>
                         </li>
                     </ul>
                 </div>
@@ -69,10 +63,13 @@
         {% endfor %}
     </div>
     {% endif %}
-    {% block content %}
-    {% endblock %}
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 
     <!-- JS  -->
-    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/modo_juego.js' %}"></script>
 </body>
 </html>
