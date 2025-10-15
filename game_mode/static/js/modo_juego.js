@@ -158,7 +158,6 @@ async function enviarMensajeABackend(mensaje_estructurado){
 /* Función: Obtiene historial de chats, para que al abrir nivel, salgan los mensajes anteriores */
 async function cargarChatPasado() {
   try{
-
     //Obtenemos historial de chats de nivel seleccionado, y lo "guardamos" en atributo de response 
     const response = await fetch("/game_mode/api/cargarChats", {
         method: 'POST',
@@ -272,6 +271,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const sidebar = document.getElementById('sidebar');
   const body = document.getElementById('body');
   const input_chat = document.getElementById('input_chat');
+  const main = document.getElementById('chat-container')
 
   // 1. Activar automáticamente el primer nivel cuando carga la página
   const primer_nivel = document.querySelector('.nivel-item')
@@ -280,6 +280,7 @@ document.addEventListener("DOMContentLoaded", function () {
     nivelSeleccionado = primer_nivel.getAttribute('data-nivel');
   }
 
+  //No hay necesidad de limpiar main div, porque no hay nada
   // Cargamos los mensajes pasados de ese chat:
   cargarChatPasado();
 
@@ -294,6 +295,8 @@ document.addEventListener("DOMContentLoaded", function () {
       //Obtenemos el número del nivel
       nivelSeleccionado = this.getAttribute('data-nivel');
       
+      //Limpiamos elementos html en div
+      main.innerHTML = "";
       //Cargamos chats de nivel seleccionado, haciendo que cuando cambie de nivel, actualice el historial
       cargarChatPasado();
 
