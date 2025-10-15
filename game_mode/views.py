@@ -123,6 +123,10 @@ def obtener_prompt_con_contexto(contexto):
     5. Si "siguiente_pregunta" es un string vacío, significa que el nivel acabó.
     6. Si el nivel acabó, genera un mensaje de despedida cálido, mencionando fortalezas del usuario con base en el resumen.
     7. NUNCA inventes preguntas nuevas ni cambies el orden.
+    8. Si deseas resaltar una parte del texto en negrilla dentro de tu
+       respuesta, coloca ese fragmento entre dos asteriscos al inicio y dos al
+       final. Ejemplo **Texto en negrilla**
+    
 
     FORMATO DE RESPUESTA OBLIGATORIO:
     Responde SIEMPRE estrictamente como te indico, sin texto adicional. Usa esta estructura:
