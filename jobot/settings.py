@@ -144,4 +144,4 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 # Para que django redirija automaticamente acá al usuario si este intenta
 # acceder a una pagina que requiere login y el user no está logeado.
-LOGIN_URL = ''
+LOGIN_URL = '/login/'

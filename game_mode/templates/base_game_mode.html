@@ -42,7 +42,7 @@
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                         {% block puntaje %}{% endblock %}
                         <li class="nav-item">
-                            <a class="nav link" href="#">Inicio</a>
+                            <a class="nav link" href="{% url 'home' %}">Inicio</a>
                         </li>
 
                         <li class="nav-item">
@@ -70,6 +70,6 @@
     </main>
 
     <!-- JS  -->
-    <!-- <script src="{% static 'js/modo_juego.js' %}"></script> -->
+    <script src="{% static 'js/modo_juego.js' %}"></script>
 </body>
 </html>

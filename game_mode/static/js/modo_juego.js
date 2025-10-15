@@ -137,29 +137,11 @@ async function enviarMensajeABackend(mensaje_estructurado){
   }
 }
 
-// function limpiar_respuesta_ia(mensaje_json){
-//   console.log("mensaje_json -<<<<", mensaje_json);
-//   if (!mensaje_json) return {};
-
-//   delete mensaje_json.avanza;
-//   delete mensaje_json.nivel_acabo;
-  
-//   if (mensaje_json.siguiente_pregunta == null){
-//     delete mensaje_json.siguiente_pregunta;
-//   }
-
-//   if (mensaje_json.mensaje_despedida == null){
-//     delete mensaje_json.mensaje_despedida;
-//   }
-
-//   return mensaje_json
-// }
-
 /* Función: Obtiene historial de chats, para que al abrir nivel, salgan los mensajes anteriores */
 async function cargarChatPasado() {
   try{
     //Obtenemos historial de chats de nivel seleccionado, y lo "guardamos" en atributo de response 
-    const response = await fetch("/game_mode/api/cargarChats", {
+    const response = await fetch("/game_mode/api/cargarChats/", {
         method: 'POST',
         headers: {
           'Content-Type':'application/json', //para indicar envio de json
@@ -302,7 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       //Mandamos valor de nivel seleccionado a backend (django)
       //Esa es la url a la que mandaremos la info, la cual esta asociada a la función init
-      fetch("/game_mode/index", {
+      fetch("/game_mode/index/", {
         method: 'POST',
         headers: {
           'Content-Type':'application/json', //para indicar envio de json
