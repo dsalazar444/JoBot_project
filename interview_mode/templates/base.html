@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}JoBot — Asistente de entrevistas{% endblock %}</title>
-    <link rel="shortcut icon" href="{% static 'img/logo_head.png' %}">
+    <link rel="shortcut icon" href="{% static 'img/logo.png' %}">
     
     <!-- Inter -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/base_modo_juego.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -26,7 +26,7 @@
             <div class="container">
                 <!-- Brand -->
                 <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-                    <img src="{% static 'img/logor.png' %}" alt="JoBot" class="logo">
+                    <img src="{% static 'img/logo.png' %}" alt="JoBot" class="logo">
                     <span class="brand-text">JoBot</span>
                 </a>
 
@@ -42,7 +42,7 @@
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                         {% block puntaje %}{% endblock %}
                         <li class="nav-item">
-                            <a class="nav link" href="{% url 'home' %}">Inicio</a>
+                            <a class="nav link" href="#">Inicio</a>
                         </li>
 
                         <li class="nav-item">
@@ -68,6 +68,5 @@
         {% block content %}
         {% endblock %}
     </main>
-    
 </body>
 </html>
