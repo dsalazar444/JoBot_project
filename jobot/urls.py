@@ -27,7 +27,7 @@ urlpatterns = [
     path('reviews/', mainViews.reviews, name='reviews'),
     path('signup/', mainViews.signup_view, name='signup'),
     path('login/', mainViews.login_view, name='login'),
-    path('interview/', include('interview_mode.urls')),
+    #path('interview/', include('interview_mode.urls')),
     #Rutas de app game_mode
     path('game_mode/', include("game_mode.urls")), 
 ]

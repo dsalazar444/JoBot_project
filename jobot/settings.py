@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'game_mode',
-    'interview_mode',
+    #'interview_mode',
     'user',
 ]
 
@@ -127,7 +127,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'jobot' / 'static',
     BASE_DIR / 'main' / 'static',
     BASE_DIR / 'game_mode' / 'static',
-    BASE_DIR / 'interview_mode' / 'static',
+    # BASE_DIR / 'interview_mode' / 'static',
     BASE_DIR / 'data',
 ]
 
