@@ -153,6 +153,8 @@ async function cargarChatPasado() {
   isLoadingChatPast = true;
   lastLoadedLevel = nivelSeleccionado;
 
+  console.log('cargarChatPasado: iniciando fetch para nivel', nivelSeleccionado);
+
   try{
     //Obtenemos historial de chats de nivel seleccionado, y lo "guardamos" en atributo de response 
     const response = await fetch("/game_mode/api/cargarChats/", {
@@ -164,8 +166,11 @@ async function cargarChatPasado() {
         body: JSON.stringify({nivel: nivelSeleccionado}) //Convertivmos objeto JS a Json
       })
 
+    console.log('cargarChatPasado: response status:', response.status);
+    
     //Convertimos HTTP (response) a json
     const data = await response.json();
+    console.log('cargarChatPasado: data completa recibida:', data);
 
     //Para que se rendericen según corresponda ('Robot' o 'Usuario')
     designarDiseñoChatPasado(data);
@@ -194,31 +199,44 @@ su remitente, y con base a esto, los renderiza.
   ]
 */
 function designarDiseñoChatPasado(data){
+  console.log('designarDiseñoChatPasado: entrando con data:', data);
+  
   //Si no se pudo obtener historial, que salga
   if (!data.success){
+    console.log('designarDiseñoChatPasado: data.success es false, saliendo');
     return ;
     };
   
     //Obtenemos lista historial
   historial = data.historial;
+  console.log('designarDiseñoChatPasado: historial array:', historial);
+  console.log('designarDiseñoChatPasado: historial.length:', historial.length);
+  
   historial.forEach((item, idx) => {
+    console.log(`designarDiseñoChatPasado: procesando mensaje ${idx}:`, item);
     
       const remitente = item.remitente;
       const mensaje = item.contenido;
       const esPrimerItem = idx === 0; //Contiene bool
 
+      console.log(`Mensaje ${idx}: remitente=${remitente}, esPrimerItem=${esPrimerItem}, mensaje=`, mensaje);
+
       if (remitente === "robot"){
         if (esPrimerItem){ 
           //Porque primer elemento es de Robot pero no tiene la misma estructura (dict con claves que genera la ia) que 
           // todas las respuestas de la IA
+          console.log(`Renderizando primer mensaje robot como string:`, mensaje);
           renderMensajeRobot(mensaje); //Pasamos un string. No usamos estructurarMensajeConEtiqueta porque mensaje ya es un string
         } else {
           // Convertimos mensaje a json porque funcion estructurarMensajeConEtiqueta espera un json
+          console.log(`Intentando parsear mensaje ${idx} a JSON:`, mensaje);
           const mensaje_json = JSON.parse(mensaje);
+          console.log(`JSON parseado:`, mensaje_json);
           renderMensajeRobot(estructurarMensajeConEtiqueta(mensaje_json)); 
           //estructurarMensajeConEtiqueta retorna un string, que es lo que espera renderizar..
         }
       } else {
+        console.log(`Renderizando mensaje de usuario:`, mensaje);
         renderMensajeUsuario(mensaje);
       }
 
@@ -266,6 +284,8 @@ function estructurarMensajeConEtiqueta(mensaje){
 - Clase 'active' -> Hace que cuando se clickee nivel, este cambie de color y se mantenga hasta que se clickee otro
 */
 document.addEventListener("DOMContentLoaded", function () {
+  console.log('DOMContentLoaded: Iniciando carga de página');
+  
   //Obtenemos elemento html
   const sidebarToggle = document.getElementById('sidebarToggle');
   const sidebar = document.getElementById('sidebar');
@@ -275,13 +295,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 1. Activar automáticamente el primer nivel cuando carga la página
   const primer_nivel = document.querySelector('.nivel-item')
+  console.log('DOMContentLoaded: primer_nivel encontrado:', primer_nivel);
+  
   if (primer_nivel){
     primer_nivel.classList.add('active');
     nivelSeleccionado = primer_nivel.getAttribute('data-nivel');
+    console.log('DOMContentLoaded: nivelSeleccionado establecido a:', nivelSeleccionado);
   }
 
   //No hay necesidad de limpiar main div, porque no hay nada
   // Cargamos los mensajes pasados de ese chat:
+  console.log('DOMContentLoaded: llamando cargarChatPasado()');
   cargarChatPasado();
 
   // 2. Luego escucha los clics en los niveles y actualiza variable

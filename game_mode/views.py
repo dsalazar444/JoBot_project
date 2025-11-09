@@ -460,8 +460,8 @@ def get_pregunta_nivel(nivel_actual, num_pregunta_actual):
 
 #Obtiene registro en Pregunta de una pegrunta especifica de un nivel especifico, y le saca el atributo texto
 def get_pregunta_text(nivel_num, num_pregunta):
-    # buscamos por nivel.numero porque Progreso guarda numero de nivel
-    preg = Pregunta.objects.filter(numero=nivel_num, num_pregunta=num_pregunta).first()
+    #nivel__numero le decimos que coja el objeto Nivel que tiene como FK, y a este le obtenga el atributo numero
+    preg = Pregunta.objects.filter(nivel__numero=nivel_num, num_pregunta=num_pregunta).first()
     return preg.texto if preg else None
 
 #Obtiene o crea (aunque ya tenemos un trigger) registro en Chat asignado a un usuario
