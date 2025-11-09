@@ -14,53 +14,82 @@ genai.configure(api_key=settings.GEMINI_API_KEY)
 # Se crea solo una vez al importar el archivo, y lo podemos usar en todo el codigo.
 MODEL = genai.GenerativeModel('gemini-2.5-flash')
 
-# Funcion que llama a las otras funciones
+#  --------------------- funciones principales ----------------------------------------------
+
+# Funcion que carga los niveles y los pasa a html, no lo hace desde la bd
+"""
+Función: Vista principal del modo juego que renderiza la página con los niveles disponibles
+Parámetros: request -> objeto HttpRequest de Django
+Retorna: HttpResponse -> respuesta renderizada con template modo_juego.html y lista de niveles
+"""
 def init(request):
     niveles_lista = niveles()
+    return render(request, "modo_juego.html", {"niveles": niveles_lista})
+
+"""
+Función: Procesa las solicitudes POST para manejar mensajes del chat en modo juego
+Parámetros: request -> objeto HttpRequest de Django con datos JSON del mensaje
+Retorna: JsonResponse -> respuesta JSON con éxito/error y contenido de la respuesta de IA
+"""
+def procesar_request_bd(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            nivelSeleccionado = data.get('nivel')
-            usuario_obj = request.user
+            respuesta_ia = guardar_mensaje_bd(data)
+            respuesta_ia_json = json.loads(respuesta_ia)
+            # DEBUG: inspeccionar payload y respuesta IA antes de actualizar progreso
+            print("DEBUG procesar_request_bd - data payload:", data)
+            print("DEBUG procesar_request_bd - respuesta_ia_json:", respuesta_ia_json)
 
+            if respuesta_ia_json["avanza"]:
+                nivel_acabo = respuesta_ia_json["nivel_acabo"]
+                usuario_obj = request.user
+                print("DEBUG procesar_request_bd - va a actualizar progreso para usuario (raw):", usuario_obj, "type:", type(usuario_obj))
+                actualizar_progreso(nivel_acabo, usuario_obj) #Actualizamos progreso en bd
+            
+            retorno = JsonResponse({"success": True, "contenido": respuesta_ia_json})
+            # print("JSON string:", json.dumps(retorno, indent=2))
+            return retorno
         except Exception as e:
-                return JsonResponse({"error": str(e)}, status=400)
+            print("error en procesas_request_bd", str(e))
+            return JsonResponse({"success": False, "contenido":str(e)})
 
-    return render(request, "modo_juego.html", {"niveles": niveles_lista})
+     # Si no es POST, retornamos error
+    return JsonResponse({"error": "Método no permitido"}, status=405)
 
-# Funcion para pintar los niveles disponibles de forma practica
-def niveles():
-    # Devuelve una lista de niveles (cada nivel es un dict)
-    niveles = [
-        {"titulo": "Nivel 1"},
-        {"titulo": "Nivel 2"},
-        {"titulo": "Nivel 3"},
-        {"titulo": "Nivel 4"},
-        {"titulo": "Nivel 5"},
-        {"titulo": "Nivel 6"},
-        {"titulo": "Nivel 7"},
-        {"titulo": "Nivel 8"},
-        {"titulo": "Nivel 9"},
-        # ... puede venir de la base de datos
-    ]
-    return niveles
+"""
+Función: Obtiene el historial de mensajes de un nivel específico para mostrar chats anteriores
+Parámetros: request -> objeto HttpRequest de Django con datos JSON del nivel seleccionado
+Retorna: JsonResponse -> respuesta JSON con éxito/error y historial de mensajes del nivel
+"""
+def obtener_chats_pasados_request(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        nivelSeleccionado = data.get("nivel")
+        
+        usuario_obj = request.user #Nos da un objato User
+        mensajes_nivel = get_mensajes_nivel_con_usuario(usuario_obj, nivelSeleccionado)
+        historial = generar_historial(mensajes_nivel)
 
-# def validar_nivel(nivelSeleccionado):
-#     nivelActual = Progreso.objects.filter(usuario=)
+        if (historial): #Si la lista tiene elementos
+            return JsonResponse({
+                "success": True,
+                "historial": historial
+            })
 
+        return JsonResponse({
+            "success": False,
+            "historial": []
+        })
 
-def armar_json_para_bd(mensaje, remitente, nivelSeleccionado, usuario_obj):
-    mensaje_json = {
-    "texto": mensaje,
-    "remitente": remitente,
-    "nivel_sel": nivelSeleccionado,
-    "usuario": usuario_obj,
-    }
-    
-    return mensaje_json
-
-    
-
+#  --------------------- flujo de IA ----------------------------------------------
+"""
+Función: Construye el prompt contextualizado para enviar a la IA con información del usuario y nivel
+Parámetros: usuario_obj -> objeto Usuario del usuario actual
+           nivelSeleccionado -> int del nivel seleccionado por el usuario  
+           respuesta_usuario -> string con la respuesta del usuario a evaluar
+Retorna: tuple -> (bool éxito, string prompt) o (False, None) si hay error de validación
+"""
 def armar_prompt(usuario_obj, nivelSeleccionado, respuesta_usuario):
     
     progreso_usuario_obj = get_progreso_obj(usuario_obj)
@@ -80,7 +109,7 @@ def armar_prompt(usuario_obj, nivelSeleccionado, respuesta_usuario):
     preg_actual = get_pregunta_nivel(nivel_actual, num_pregunta_actual).texto
     print("pregAct", preg_actual)
     chat_obj = get_or_create_chat_for_user(usuario_obj)
-    preg_sig = obtener_sig_pregunta(num_pregunta_actual, nivel_actual)
+    #preg_sig = obtener_sig_pregunta(num_pregunta_actual, nivel_actual)
     #num_preg_siguiente = num_pregunta_actual+1
     #preg_siguiente = Pregunta.object.filter(nivel=nivel_actual,
     #num_pregunta=num_preg_siguiente).texto
@@ -91,7 +120,43 @@ def armar_prompt(usuario_obj, nivelSeleccionado, respuesta_usuario):
     print("prompt final: ", prompt)
     
     return (True, prompt)
- 
+
+"""
+Función: Construye el diccionario de contexto necesario para la IA con información del nivel y usuario
+Parámetros: chat_obj -> objeto Chat del usuario
+           nivel_actual -> int del nivel actual del usuario
+           usuario_obj -> objeto Usuario actual
+           preg_actual -> string con la pregunta actual 
+           respuesta_usuario -> string con la respuesta del usuario
+           num_pregunta_actual -> int número de la pregunta actual
+Retorna: dict -> diccionario con contexto completo para la IA
+"""
+def armar_contexto(chat_obj, nivel_actual, usuario_obj, preg_actual, respuesta_usuario, num_pregunta_actual):
+
+    nivel_actual = str(nivel_actual)
+    print("entre a armar contexto")
+    print("resumen_nivel", chat_obj.resumen[nivel_actual])
+    print("ultimo_mensaje_usuario", obtener_ult_respuesta_usuario(usuario_obj))
+    print("tipo_entrevistador",get_nivel_obj(nivel_actual).tipo_entrevistador)
+    print("pregunta_actual", preg_actual)
+    print("sig_pregunta: ",obtener_sig_pregunta(num_pregunta_actual,nivel_actual))
+    print("respuesta_usuario", respuesta_usuario)
+    contexto = {
+        "resumen_nivel": chat_obj.resumen[nivel_actual],
+        "ultimo_mensaje_usuario": obtener_ult_respuesta_usuario(usuario_obj),
+        "tipo_entrevistador":get_nivel_obj(nivel_actual).tipo_entrevistador,
+        "siguiente_pregunta":obtener_sig_pregunta(num_pregunta_actual,nivel_actual),
+        "pregunta_actual": preg_actual,
+        "respuesta_usuario": respuesta_usuario
+    }
+
+    return contexto
+
+"""
+Función: Genera el prompt completo con instrucciones detalladas para la IA usando el contexto proporcionado
+Parámetros: contexto -> dict con información del nivel, usuario, preguntas y respuestas
+Retorna: string -> prompt formateado con instrucciones completas para la IA
+"""
 def obtener_prompt_con_contexto(contexto):
     prompt = f"""
     Eres un coach de habilidades blandas que interpreta el rol de un entrevistador específico. Siempre debes generar DOS respuestas separadas dentro de un JSON, siguiendo exactamente las reglas que se describen a continuación.
@@ -154,215 +219,36 @@ def obtener_prompt_con_contexto(contexto):
     """ 
     return prompt
 
-def armar_contexto(chat_obj, nivel_actual, usuario_obj, preg_actual, respuesta_usuario, num_pregunta_actual):
+"""
+Función: Obtiene respuesta de la IA generando resumen, armando prompt y consultando API
+Parámetros: usuario_obj -> objeto Usuario del usuario actual
+           nivel -> int del nivel del juego
+           contenido -> string con el contenido/respuesta del usuario
+Retorna: string -> respuesta JSON de la IA o mensaje de error
+"""
+def obtener_respuesta_de_ia(usuario_obj, nivel,contenido):
+    # Generamos resumen usando el objeto usuario (no el request)
+    generar_resumen(usuario_obj, nivel, MODEL)
+    success, prompt = armar_prompt(usuario_obj, nivel, contenido)
 
-    nivel_actual = str(nivel_actual)
-    print("entre a armar contexto")
-    print("resumen_nivel", chat_obj.resumen[nivel_actual])
-    print("ultimo_mensaje_usuario", obtener_ult_respuesta_usuario(usuario_obj))
-    print("tipo_entrevistador",get_nivel_obj(nivel_actual).tipo_entrevistador)
-    print("pregunta_actual", preg_actual)
-    print("sig_pregunta: ",obtener_sig_pregunta(num_pregunta_actual,nivel_actual))
-    print("respuesta_usuario", respuesta_usuario)
-    contexto = {
-        "resumen_nivel": chat_obj.resumen[nivel_actual],
-        "ultimo_mensaje_usuario": obtener_ult_respuesta_usuario(usuario_obj),
-        "tipo_entrevistador":get_nivel_obj(nivel_actual).tipo_entrevistador,
-        "siguiente_pregunta":obtener_sig_pregunta(num_pregunta_actual,nivel_actual),
-        "pregunta_actual": preg_actual,
-        "respuesta_usuario": respuesta_usuario
-    }
+    if not success: 
+        print("No se puedo armar prompt")
+        return "No se puedo armar prompt"
 
-    return contexto
+    success, respuesta = usar_api(prompt, MODEL)
 
-def obtener_sig_pregunta(num_pregunta_actual,nivel_actual):
-    num_pregunta_sig = num_pregunta_actual + 1
+    if not success: 
+        print("No se  pudo obtener respuesta")
+        return "No se pudo obtener respuesta"
+    if success: return respuesta
 
-    #esta en ultima pregunta y ya no hay más
-    if (num_pregunta_sig > 6):
-        num_pregunta_sig = 0 #Para indicar a modelo que ya no hay más
-    
-    if (num_pregunta_sig == 0):
-        pregunta_siguiente="" #Poque ya finalizó
-    else:
-        pregunta_siguiente= get_pregunta_nivel(nivel_actual, num_pregunta_sig).texto
+#  --------------- funciones para procesar y manipular datos --------------------------------
 
-    return pregunta_siguiente
-
-
-def pintar_chat(usuario_id, nivelSeleccionado):
-    pass
-
-
-def obtener_pregunta(request, nivelSeleccionado):
-
-    if not request.user.is_authenticated:
-        return 'Debe iniciar sesión'  # o JsonResponse({'error': 'login required'}, status=401)
-
-    usuario_id = request.user.id #Obtenemos el usuario del request (django lo ofrece) y obtenemos su id
-    progreso_usuario = Progreso.objects.filter(usuario=usuario_id).first()
-    nivel_actual = progreso_usuario.nivel_actual
-    pregunta_actual = progreso_usuario.pregunta_actual
-
-    if ( int(nivelSeleccionado) != nivel_actual):
-        pass
-        #Es porque es menor, porque se implementará codigo para que nivel mayor
-        #a actual, se disabled, entonces:
-        #Llamamos funcion para que imprima contenido de chat
-        return None
-    
-    pregunta_obj = Pregunta.objects.filter(nivel=nivel_actual, num_pregunta=pregunta_actual).first()
-    pregunta = pregunta_obj.texto
-
-    return pregunta
-    
-
-
-def obtener_ult_respuesta_usuario(usuario_obj):
-    #Obtenemos chat del usuario
-    chat = get_or_create_chat_for_user(usuario_obj)
-    mensaje = Mensaje.objects.filter(chat=chat.id, remitente='usuario').order_by('-timestamp').first().contenido
-    print("ultimo mensaje de usuario: ", mensaje)
-    if mensaje:
-       return mensaje
-    else: 
-        return ""
- 
-def obtener_preguntas_faltantes(usuario_obj):
-    #Obtenemos nivel y pregunta actual
-    progreso_usuario = Progreso.objects.filter(usuario=usuario_obj)
-    nivel = progreso_usuario.nivel_actual
-    pregunta = progreso_usuario.pregunta_actual
-    preguntas_restantes = []
-
-    # Obtenemos las preguntas restantes
-    for i in range(pregunta, 7):
-        sig_pregunta = Pregunta.objects.filter(nivel=nivel, num_pregunta=pregunta)
-        preguntas_restantes.extend(sig_pregunta)
-
-    return preguntas_restantes
-
-def generar_resumen(usuario_obj, nivel, modelo):
-    #Obtenemos chat del usuario, o lo creamos si no existe
-    chat_obj = get_or_create_chat_for_user(usuario_obj)
-    #mensajes_nivel = Mensaje.objects.filter(chat=chat_obj, nivel=
-    #nivel).order_by('timestamp') 
-    mensajes_nivel = get_mensajes_nivel(chat_obj, nivel)
-    historial = generar_historial(mensajes_nivel)
-
-    print("El historial essss: ", historial)
-
-    prompt = f"""Quiero que generes un resumen únicamente basado en la conversación proporcionada a continuación. 
-    IMPORTANTE:
-    - No inventes información
-    - No rellenes huecos
-    - No agregues interpretaciones
-    - Si un dato no está explícitamente en el texto, NO lo incluyas
-
-    Tu tarea es:
-    1. Extraer solo lo que realmente se mencionó
-    2. Resumir de forma breve y objetiva
-    3. No añadir conclusiones ni contenido nuevo
-
-    Aquí está la conversación: {historial}
-
-    Genera el resumen ahora, sin agregar nada que no esté en el contenido.
-    """
-
-    success, respuesta = usar_api(prompt, modelo)
-
-
-    if (success):
-        print("resumen: ", respuesta)
-        guardar_resumen(chat_obj, nivel, respuesta)
-        
-    else:
-        #Si success es false, respuesta contiene un error
-        print(respuesta)
-
-def guardar_resumen(chat_obj, nivel, resumen):
-    #Obtenemos el diccionario de resumenes
-    nivel=str(nivel)
-    resumen_dict = chat_obj.resumen
-
-    #Actualizamos valor en clave "nivel" -> actualizamos diccionario general
-    resumen_dict[nivel] = resumen
-
-    #Guardamos en el atributo, el diccionario actualizado
-    chat_obj.resumen = resumen_dict
-    chat_obj.save()
-
-
-def usar_api(prompt, modelo):
-    try:
-        respuesta =  modelo.generate_content(prompt)
-        ai_response = respuesta.text.strip() #Limpia la cadena
-        return (True, ai_response)
-    except Exception as e:
-        return (False, str(e))
-
-
-#Crea lista con los mensajes en orden.
-def generar_historial(mensajes_nivel):
-    historial=[]
-
-    for msg in mensajes_nivel:
-        historial.append({
-            "remitente": msg.remitente,
-            "contenido": msg.contenido,
-            "timestamp": msg.timestamp.isoformat()
-        })
-    
-    return historial
-
-def procesar_request_bd(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            respuesta_ia = guardar_mensaje_bd(data)
-            respuesta_ia_json = json.loads(respuesta_ia)
-            # DEBUG: inspeccionar payload y respuesta IA antes de actualizar progreso
-            print("DEBUG procesar_request_bd - data payload:", data)
-            print("DEBUG procesar_request_bd - respuesta_ia_json:", respuesta_ia_json)
-
-            if respuesta_ia_json["avanza"]:
-                nivel_acabo = respuesta_ia_json["nivel_acabo"]
-                usuario_obj = request.user
-                print("DEBUG procesar_request_bd - va a actualizar progreso para usuario (raw):", usuario_obj, "type:", type(usuario_obj))
-                actualizar_progreso(nivel_acabo, usuario_obj) #Actualizamos progreso en bd
-            
-            retorno = JsonResponse({"success": True, "contenido": respuesta_ia_json})
-            # print("JSON string:", json.dumps(retorno, indent=2))
-            return retorno
-        except Exception as e:
-            print("error en procesas_request_bd", str(e))
-            return JsonResponse({"success": False, "contenido":str(e)})
-
-     # Si no es POST, retornamos error
-    return JsonResponse({"error": "Método no permitido"}, status=405)
-
-
-def actualizar_progreso(nivel_acabo, usuario_obj):
-    # DEBUG: inspección inicial
-    print("DEBUG actualizar_progreso - usuario_obj recibido:", usuario_obj, "type:", type(usuario_obj))
-    progreso_obj = get_progreso_obj(usuario_obj)
-    print("DEBUG actualizar_progreso - progreso_obj obtenido:", progreso_obj)
-    if not progreso_obj:
-        print("DEBUG actualizar_progreso - no se encontró Progreso para usuario:", usuario_obj)
-        return False
-
-    if (nivel_acabo):
-        progreso_obj.nivel_actual += 1 #pasó de nivel
-        #Deshabilitar input section 
-        progreso_obj.pregunta_actual = 1
-    else:
-        progreso_obj.pregunta_actual += 1 #Actualizamos valor de preg_actual a siguiente en bd
-
-    progreso_obj.save()
-    print("DEBUG actualizar_progreso - guardado. nivel_actual:", progreso_obj.nivel_actual, "pregunta_actual:", progreso_obj.pregunta_actual)
-    return True
-
-
+"""
+Función: Guarda mensaje del usuario en BD, obtiene respuesta de IA y guarda respuesta en BD
+Parámetros: data -> dict con datos del mensaje (usuario, texto, remitente, nivel_sel)
+Retorna: string -> respuesta JSON de la IA 
+"""
 def guardar_mensaje_bd(data):
     username = data.get('usuario')  # viene como string, ej: "da@gmail.com"
 
@@ -390,48 +276,185 @@ def guardar_mensaje_bd(data):
 
     return respuesta
 
+"""
+Función: Actualiza el progreso del usuario en BD (nivel y pregunta actual)
+Parámetros: nivel_acabo -> bool indica si se completó el nivel
+           usuario_obj -> objeto Usuario a actualizar
+Retorna: bool -> True si se guardó correctamente, False si hubo error
+"""
+def actualizar_progreso(nivel_acabo, usuario_obj):
+    # DEBUG: inspección inicial
+    print("DEBUG actualizar_progreso - usuario_obj recibido:", usuario_obj, "type:", type(usuario_obj))
+    progreso_obj = get_progreso_obj(usuario_obj)
+    print("DEBUG actualizar_progreso - progreso_obj obtenido:", progreso_obj)
+    if not progreso_obj:
+        print("DEBUG actualizar_progreso - no se encontró Progreso para usuario:", usuario_obj)
+        return False
 
+    if (nivel_acabo):
+        progreso_obj.nivel_actual += 1 #pasó de nivel
+        #Deshabilitar input section 
+        progreso_obj.pregunta_actual = 1
+    else:
+        progreso_obj.pregunta_actual += 1 #Actualizamos valor de preg_actual a siguiente en bd
 
+    progreso_obj.save()
+    print("DEBUG actualizar_progreso - guardado. nivel_actual:", progreso_obj.nivel_actual, "pregunta_actual:", progreso_obj.pregunta_actual)
+    return True
 
+"""
+Función: Genera resumen de la conversación del nivel usando IA y lo guarda en BD
+Parámetros: usuario_obj -> objeto Usuario del cual generar resumen
+           nivel -> int del nivel para generar resumen
+           modelo -> objeto del modelo de IA para generar resumen
+Retorna: None -> guarda directamente en BD o imprime error
+"""
+def generar_resumen(usuario_obj, nivel, modelo):
+    #Obtenemos chat del usuario, o lo creamos si no existe
+    chat_obj = get_or_create_chat_for_user(usuario_obj)
+    #mensajes_nivel = Mensaje.objects.filter(chat=chat_obj, nivel=
+    #nivel).order_by('timestamp') 
+    mensajes_nivel = get_mensajes_nivel(chat_obj, nivel)
+    historial = generar_historial(mensajes_nivel)
 
-def obtener_respuesta_de_ia(usuario_obj, nivel,contenido):
-    # Generamos resumen usando el objeto usuario (no el request)
-    generar_resumen(usuario_obj, nivel, MODEL)
-    success, prompt = armar_prompt(usuario_obj, nivel, contenido)
+    print("El historial essss: ", historial)
 
-    if not success: 
-        print("No se puedo armar prompt")
-        return "No se puedo armar prompt"
+    prompt = f"""Quiero que generes un resumen únicamente basado en la conversación proporcionada a continuación. 
+    IMPORTANTE:
+    - No inventes información
+    - No rellenes huecos
+    - No agregues interpretaciones
+    - Si un dato no está explícitamente en el texto, NO lo incluyas
 
-    success, respuesta = usar_api(prompt, MODEL)
+    Tu tarea es:
+    1. Extraer solo lo que realmente se mencionó
+    2. Resumir de forma breve y objetiva
+    3. No añadir conclusiones ni contenido nuevo
 
-    if not success: 
-        print("No se  pudo obtener respuesta")
-        return "No se pudo obtener respuesta"
-    if success: return respuesta
+    Aquí está la conversación: {historial}
 
+    Genera el resumen ahora, sin agregar nada que no esté en el contenido.
+    """
+    success, respuesta = usar_api(prompt, modelo)
 
-def obtener_chats_pasados_request(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        nivelSeleccionado = data.get("nivel")
+    if (success):
+        print("resumen: ", respuesta)
+        guardar_resumen(chat_obj, nivel, respuesta)
         
-        usuario_obj = request.user #Nos da un objato User
-        mensajes_nivel = get_mensajes_nivel_con_usuario(usuario_obj, nivelSeleccionado)
-        historial = generar_historial(mensajes_nivel)
+    else:
+        #Si success es false, respuesta contiene un error
+        print(respuesta)
 
-        if (historial): #Si la lista tiene elementos
-            return JsonResponse({
-                "success": True,
-                "historial": historial
-            })
+"""
+Función: Guarda el resumen generado en el diccionario de resúmenes del chat en BD
+Parámetros: chat_obj -> objeto Chat donde guardar el resumen
+           nivel -> int del nivel para el cual se generó el resumen
+           resumen -> string con el resumen generado por la IA
+Retorna: None -> guarda directamente en BD
+"""
+def guardar_resumen(chat_obj, nivel, resumen):
+    #Obtenemos el diccionario de resumenes
+    nivel=str(nivel)
+    resumen_dict = chat_obj.resumen
 
-        return JsonResponse({
-            "success": False,
-            "historial": []
+    #Actualizamos valor en clave "nivel" -> actualizamos diccionario general
+    resumen_dict[nivel] = resumen
+
+    #Guardamos en el atributo, el diccionario actualizado
+    chat_obj.resumen = resumen_dict
+    chat_obj.save()
+
+"""
+Función: Crea lista con los mensajes en orden cronológico para enviar a la IA
+Parámetros: mensajes_nivel -> QuerySet con mensajes del nivel ordenados por timestamp
+Retorna: list -> lista de diccionarios con remitente, contenido y timestamp de cada mensaje
+"""
+#Crea lista con los mensajes en orden.
+def generar_historial(mensajes_nivel):
+    historial=[]
+
+    for msg in mensajes_nivel:
+        historial.append({
+            "remitente": msg.remitente,
+            "contenido": msg.contenido,
+            "timestamp": msg.timestamp.isoformat()
         })
+    
+    return historial
 
-# Getters
+#  --------------------- Funciones auxiliares ----------------------------------------------
+"""
+Función: Obtiene el texto de la siguiente pregunta del nivel o string vacío si terminó
+Parámetros: num_pregunta_actual -> int número de la pregunta actual
+           nivel_actual -> int del nivel actual
+Retorna: string -> texto de la siguiente pregunta o string vacío si no hay más preguntas
+"""
+def obtener_sig_pregunta(num_pregunta_actual,nivel_actual):
+    num_pregunta_sig = num_pregunta_actual + 1
+
+    #esta en ultima pregunta y ya no hay más
+    if (num_pregunta_sig > 6):
+        num_pregunta_sig = 0 #Para indicar a modelo que ya no hay más
+    
+    if (num_pregunta_sig == 0):
+        pregunta_siguiente="" #Poque ya finalizó
+    else:
+        pregunta_siguiente= get_pregunta_nivel(nivel_actual, num_pregunta_sig).texto
+
+    return pregunta_siguiente
+
+"""
+Función: Obtiene el último mensaje enviado por el usuario en el chat
+Parámetros: usuario_obj -> objeto Usuario del cual obtener el último mensaje
+Retorna: string -> contenido del último mensaje del usuario o string vacío si no hay mensajes
+"""
+def obtener_ult_respuesta_usuario(usuario_obj):
+    #Obtenemos chat del usuario
+    chat = get_or_create_chat_for_user(usuario_obj)
+    mensaje = Mensaje.objects.filter(chat=chat.id, remitente='usuario').order_by('-timestamp').first().contenido
+    print("ultimo mensaje de usuario: ", mensaje)
+    if mensaje:
+       return mensaje
+    else: 
+        return ""
+
+"""
+Función: Realiza llamada a la API de Gemini para obtener respuesta de la IA
+Parámetros: prompt -> string con el prompt completo para enviar a la IA
+           modelo -> objeto del modelo GenerativeModel de Gemini
+Retorna: tuple -> (bool éxito, string respuesta) o (False, string error)
+"""
+def usar_api(prompt, modelo):
+    try:
+        respuesta =  modelo.generate_content(prompt)
+        ai_response = respuesta.text.strip() #Limpia la cadena
+        return (True, ai_response)
+    except Exception as e:
+        return (False, str(e))
+
+"""
+Función: Genera lista estática de niveles disponibles para mostrar en la interfaz
+Parámetros: None
+Retorna: list -> lista de diccionarios con títulos de los niveles disponibles
+"""
+# Funcion para pintar los niveles disponibles de forma practica
+def niveles():
+    # Devuelve una lista de niveles (cada nivel es un dict)
+    niveles = [
+        {"titulo": "Nivel 1"},
+        {"titulo": "Nivel 2"},
+        {"titulo": "Nivel 3"},
+        {"titulo": "Nivel 4"},
+        {"titulo": "Nivel 5"},
+        {"titulo": "Nivel 6"},
+        {"titulo": "Nivel 7"},
+        {"titulo": "Nivel 8"},
+        {"titulo": "Nivel 9"},
+        # ... puede venir de la base de datos
+    ]
+    return niveles
+
+#  --------------------- getters ----------------------------------------------
  
  #Obtiene registro en Progreso de un usuario especifico
 def get_progreso_obj(usuario_obj):
@@ -445,6 +468,7 @@ def get_mensajes_nivel_con_usuario(usuario_obj, nivel):
     chat_obj = get_or_create_chat_for_user(usuario_obj)
     return Mensaje.objects.filter(chat=chat_obj, nivel= nivel).order_by('timestamp') 
  #Obtiene registro en Nivel de un usuario especifico
+
 def get_nivel_obj(nivel_num):
     return Nivel.objects.get(numero=nivel_num)
 
@@ -456,7 +480,6 @@ def get_user_obj(username):
 # Obtiene registro en Nivel con un nivel y numero de pregunta especifico
 def get_pregunta_nivel(nivel_actual, num_pregunta_actual):
     return Pregunta.objects.filter(nivel=nivel_actual, num_pregunta=num_pregunta_actual).first()
-
 
 #Obtiene registro en Pregunta de una pegrunta especifica de un nivel especifico, y le saca el atributo texto
 def get_pregunta_text(nivel_num, num_pregunta):
@@ -473,11 +496,3 @@ def get_or_create_chat_for_user(usuario_obj):
         chat.resumen = {}
         print("entre a chat none, chat.resumen ahora", chat.resumen)
     return chat
-
-# def get_resumen_nivel(usuario_obj, nivel):
-#     resumenes = Chat.objects.filter(usuario=usuario_obj).first().resumen
-#     try:
-#         return resumenes[nivel]
-#     except Exception as e:
-#         return ""
-
