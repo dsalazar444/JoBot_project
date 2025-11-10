@@ -200,7 +200,7 @@ su remitente, y con base a esto, los renderiza.
 */
 function designarDiseñoChatPasado(data){
   console.log('designarDiseñoChatPasado: entrando con data:', data);
-  
+  const input_chat = document.getElementById('input_chat');
   //Si no se pudo obtener historial, que salga
   if (!data.success){
     console.log('designarDiseñoChatPasado: data.success es false, saliendo');
@@ -233,12 +233,16 @@ function designarDiseñoChatPasado(data){
           const mensaje_json = JSON.parse(mensaje);
           console.log(`JSON parseado:`, mensaje_json);
           
-          const mensaje_json_estilizado = estructurarMensajeConEtiqueta(mensaje_json);
+          const mensaje_dict_estilizado = estructurarMensajeConEtiqueta(mensaje_json); //Es un dictionario, no un JSON
            //Estilizamos cada parte del diccionario como mensaje de robot, mandando el string que contiene cada key a render
-          for (let key in mensaje_json_estilizado) {
-            renderMensajeRobot(mensaje_json_estilizado[key]);
+          for (let key in mensaje_dict_estilizado) {
+            renderMensajeRobot(mensaje_dict_estilizado[key]);
           }
-          //estructurarMensajeConEtiqueta retorna un string, que es lo que espera renderizar..
+
+          //Si el nivel acabó, deshabilitamos input
+          if (mensaje_json.nivel_acabo){
+            input_chat.disabled = true; 
+          }
         }
       } else {
         console.log(`Renderizando mensaje de usuario:`, mensaje);
@@ -273,37 +277,87 @@ function estructurarMensajeConEtiqueta(mensaje){
 
 }
 
+/* Función: Obtenemos de backend, niveles definidos en bd, y nivel actual del user loggeado
+Retorna -> lista con esos elementos
+
+*/
+async function obtenerNivelActual() {
+  try {
+    const response = await fetch("/game_mode/api/obtenerNivelAct/");
+    const data = await response.json(); //Es un json
+    const nivel_act = data.nivel_act;
+
+    return nivel_act;
+  } catch (error) {
+    console.error("Error:", error);
+    return None; 
+  }     
+  
+}
+
+/* Función: Bloqueamos/desbloqueamos input dependiendo de si es su nivel actual o no.
+
+  Parametros: niveles_info -> lista con elemento niveles (los definidos en la
+                              bd) y con nivel actual
+              input_chat -> div donde se pone input en interfaz
+*/
+function bloquearInputNiveles(nivel_act, input_chat){
+
+  if (nivel_act){
+    console.log("Nivel actual:", nivel_act);
+    console.log("Nivel seleccionado:", nivelSeleccionado);
+
+    if(parseInt(nivelSeleccionado) === parseInt(nivel_act)){
+      console.log("Desbloqueando input - nivel actual");
+      input_chat.disabled = false;
+    } else {
+      console.log("Bloqueando input - no es nivel actual");
+      input_chat.disabled = true;
+    }
+  } else {
+    console.log("Error: nivel_act no definidos");
+    input_chat.disabled = true; // Por seguridad, bloquear por defecto
+  }
+}
+
 
 //Funciones que se ejecutan siempre que se recargue página
 /*Notas:
 - Clase 'active' -> Hace que cuando se clickee nivel, este cambie de color y se mantenga hasta que se clickee otro
 */
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   console.log('DOMContentLoaded: Iniciando carga de página');
   
-  //Obtenemos elemento html
-  const sidebarToggle = document.getElementById('sidebarToggle');
-  const sidebar = document.getElementById('sidebar');
-  const body = document.getElementById('body');
-  const input_chat = document.getElementById('input_chat');
-  const main = document.getElementById('chat-container')
-  //Boton de microfono
-  const micBtn = document.getElementById('mic-btn')
-    /*Objeto de motor de reconocimiento de voz del navegador*/
-  const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = 'es-ES'; 
-  recognition.interimResults = false; // solo devolver resultados finales (no parciales)
-  recognition.maxAlternatives = 1;  // solo la mejor interpretación de lo que escuchó
+  try {
+    const nivel_actual = await obtenerNivelActual(); //Obtenemos niveles disponibles, y nivel actual
+    console.log('Nivel actual recibida:', nivel_actual);
+    
+    //Obtenemos elemento html
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const body = document.getElementById('body');
+    const input_chat = document.getElementById('input_chat');
+    const main = document.getElementById('chat-container')
+    //Boton de microfono
+    const micBtn = document.getElementById('mic-btn')
+      /*Objeto de motor de reconocimiento de voz del navegador*/
+    const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'es-ES'; 
+    recognition.interimResults = false; // solo devolver resultados finales (no parciales)
+    recognition.maxAlternatives = 1;  // solo la mejor interpretación de lo que escuchó
+    
+    // 1. Activar automáticamente el primer nivel cuando carga la página
+    const primer_nivel = document.querySelector('.nivel-item')
+    console.log('DOMContentLoaded: primer_nivel encontrado:', primer_nivel);
+    
+    if (primer_nivel){
+      primer_nivel.classList.add('active');
+      nivelSeleccionado = primer_nivel.getAttribute('data-nivel');
 
-  // 1. Activar automáticamente el primer nivel cuando carga la página
-  const primer_nivel = document.querySelector('.nivel-item')
-  console.log('DOMContentLoaded: primer_nivel encontrado:', primer_nivel);
-  
-  if (primer_nivel){
-    primer_nivel.classList.add('active');
-    nivelSeleccionado = primer_nivel.getAttribute('data-nivel');
-    console.log('DOMContentLoaded: nivelSeleccionado establecido a:', nivelSeleccionado);
-  }
+      //Bloqueamos/desbloqueamos input dependiendo de si es su nivel actual o no.
+      bloquearInputNiveles(nivel_actual, input_chat);
+      console.log('DOMContentLoaded: nivelSeleccionado establecido a:', nivelSeleccionado);
+    }
 
   //No hay necesidad de limpiar main div, porque no hay nada
   // Cargamos los mensajes pasados de ese chat:
@@ -325,6 +379,9 @@ document.addEventListener("DOMContentLoaded", function () {
       main.innerHTML = "";
       //Cargamos chats de nivel seleccionado, haciendo que cuando cambie de nivel, actualice el historial
       cargarChatPasado();
+
+      //Bloqueamos/desbloqueamos input dependiendo de si es su nivel actual o no.
+      bloquearInputNiveles(nivel_actual, input_chat);
 
       //Mandamos valor de nivel seleccionado a backend (django)
       //Esa es la url a la que mandaremos la info, la cual esta asociada a la función init
@@ -389,6 +446,10 @@ document.addEventListener("DOMContentLoaded", function () {
       await procesarMensaje(input_chat.value);
     }
   })
+  
+  } catch (error) {
+    console.error("Error inicializando la página:", error);
+  }
 });
 
 // Función común que maneja el envío de cualquier mensaje

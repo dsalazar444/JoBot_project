@@ -23,7 +23,7 @@ Parámetros: request -> objeto HttpRequest de Django
 Retorna: HttpResponse -> respuesta renderizada con template modo_juego.html y lista de niveles
 """
 def init(request):
-    niveles_lista = niveles()
+    niveles_lista = get_niveles()
     return render(request, "modo_juego.html", {"niveles": niveles_lista})
 
 """
@@ -432,28 +432,6 @@ def usar_api(prompt, modelo):
     except Exception as e:
         return (False, str(e))
 
-"""
-Función: Genera lista estática de niveles disponibles para mostrar en la interfaz
-Parámetros: None
-Retorna: list -> lista de diccionarios con títulos de los niveles disponibles
-"""
-# Funcion para pintar los niveles disponibles de forma practica
-def niveles():
-    # Devuelve una lista de niveles (cada nivel es un dict)
-    niveles = [
-        {"titulo": "Nivel 1"},
-        {"titulo": "Nivel 2"},
-        {"titulo": "Nivel 3"},
-        {"titulo": "Nivel 4"},
-        {"titulo": "Nivel 5"},
-        {"titulo": "Nivel 6"},
-        {"titulo": "Nivel 7"},
-        {"titulo": "Nivel 8"},
-        {"titulo": "Nivel 9"},
-        # ... puede venir de la base de datos
-    ]
-    return niveles
-
 #  --------------------- getters ----------------------------------------------
  
  #Obtiene registro en Progreso de un usuario especifico
@@ -496,3 +474,23 @@ def get_or_create_chat_for_user(usuario_obj):
         chat.resumen = {}
         print("entre a chat none, chat.resumen ahora", chat.resumen)
     return chat
+
+#Obtiene niveles guardados en bd
+# Retorna lista de numeros de los niveles, ordenandolos asc
+def get_niveles():
+    niveles = list(Nivel.objects.values_list('numero', flat=True).order_by('numero'))
+    return niveles
+
+def get_nivel_actual(request):
+    if request.method == 'GET': 
+        usuario_obj = request.user #Nos da un objeto User
+        progreso_obj = get_progreso_obj(usuario_obj)
+        print('nivel_act', progreso_obj.nivel_actual)
+        
+        return JsonResponse({
+            'success': True,
+            'nivel_act': progreso_obj.nivel_actual, 
+        })
+    
+    # Si no es GET, retornar error
+    return JsonResponse({"error": "Método no permitido"}, status=405)
