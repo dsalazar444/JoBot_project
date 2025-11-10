@@ -232,7 +232,12 @@ function designarDiseñoChatPasado(data){
           console.log(`Intentando parsear mensaje ${idx} a JSON:`, mensaje);
           const mensaje_json = JSON.parse(mensaje);
           console.log(`JSON parseado:`, mensaje_json);
-          renderMensajeRobot(estructurarMensajeConEtiqueta(mensaje_json)); 
+          
+          const mensaje_json_estilizado = estructurarMensajeConEtiqueta(mensaje_json);
+           //Estilizamos cada parte del diccionario como mensaje de robot, mandando el string que contiene cada key a render
+          for (let key in mensaje_json_estilizado) {
+            renderMensajeRobot(mensaje_json_estilizado[key]);
+          }
           //estructurarMensajeConEtiqueta retorna un string, que es lo que espera renderizar..
         }
       } else {
@@ -251,27 +256,17 @@ function designarDiseñoChatPasado(data){
 */
 function estructurarMensajeConEtiqueta(mensaje){
 
-  let mensaje_listo;
+  const mensaje_listo= {
+      comentario_entrevistador: `**💬 Comentario del entrevistador:** ${mensaje.respuesta_entrevistador}`,
+      retroalimentacion: `**🤖 Retroalimentación de JoBot:** ${mensaje.feedback_instructor}`,
+      calificación: `**✅ Calificación obtenida:** ${mensaje.puntaje}.`,
+    };
   //Si hay mensaje de despedida, no se muestra siguiente pregunta sino el mensaje de despedida.
   if (mensaje.mensaje_despedida){
-    mensaje_listo = `**💬 Comentario del entrevistador:** ${mensaje.respuesta_entrevistador}
-
-  **🤖 Retroalimentación de JoBot:** ${mensaje.feedback_instructor}
-
-  **✅ Calificación obtenida:** ${mensaje.puntaje}.
-
-  🤝 ${mensaje.mensaje_despedida}.
-    `
+    mensaje_listo.despedida = `🤝 ${mensaje.mensaje_despedida}.`
   } else {
     //Si no hay mensaje de despedida,  es porque hay siguiente pregunta y no mensaje de despedida.
-  mensaje_listo = `**💬 Comentario del entrevistador:** ${mensaje.respuesta_entrevistador}
-
-  **🤖 Retroalimentación de JoBot:** ${mensaje.feedback_instructor}
-
-  **✅ Calificación obtenida:** ${mensaje.puntaje}
-
-  **👉 Próxima pregunta:** ${mensaje.siguiente_pregunta}
-    `
+  mensaje_listo.prox_pregunta = `**👉 Próxima pregunta:** ${mensaje.siguiente_pregunta}`
   } 
 
   return mensaje_listo
@@ -411,8 +406,13 @@ async function procesarMensaje(mensaje) {
     // Enviamos mensaje a backend; la función retorna el contenido de la IA (o null si hubo error)
     const respuesta_ia = await enviarMensajeABackend(mensaje_json);
     if (respuesta_ia) {
-      // respuesta_ia es un objeto JSON uniforme que estructurarMensajeConEtiqueta convierte a string
-      renderMensajeRobot(estructurarMensajeConEtiqueta(respuesta_ia));
+      // respuesta_ia es un objeto JSON uniforme que estructurarMensajeConEtiqueta convierte a diccionario con cada respuesta (entrevistador, puntaje, etc.)
+      const respuesta_dividida = estructurarMensajeConEtiqueta(respuesta_ia);
+
+      //Estilizamos cada parte del diccionario como mensaje de robot, mandando el string que contiene cada key a render
+      for (let key in respuesta_dividida) {
+        renderMensajeRobot(respuesta_dividida[key]);
+      }
     } else {
       renderMensajeRobot('Lo siento, hubo un error al procesar tu mensaje.');
     }
