@@ -331,6 +331,15 @@ body.sidebar-collapsed .main {
     color: #303030;
 }
 
+.mensaje.robot i {
+    animation: parpadeo 1s infinite;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
 #btn-pista {
     background-color: #AFD1ED;
     border-color: #AFD1ED ;

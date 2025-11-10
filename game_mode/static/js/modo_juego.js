@@ -50,7 +50,7 @@ function renderMensajeUsuario(mensaje) {
 /* Función:  Estiliza y asigna contenedor para mensaje de Robot, dentro del main
   Parametros: mensaje -> string
 */
-function renderMensajeRobot(mensaje) {
+function renderMensajeRobot(mensaje, es_temp = false) {
   const chat_container = document.getElementById("chat-container");
 
   //Creamos elemento html div para el mensaje
@@ -58,14 +58,39 @@ function renderMensajeRobot(mensaje) {
   mensaje_div.classList.add("mensaje", "robot", "w-75", "px-3","py-1","mb-3", "rounded","align-self-start");  // Para aplicar estilos
   mensaje_div.setAttribute("data-remitente", "robot");
 
-  //Aplicamos negrilla
-  mensaje_div = aplicarNegrillas(mensaje, mensaje_div) //Si es primer mensaje, no hay problema porque no tendrá ****, entonces retornará el mensaje normal
+  if(es_temp){
+    //Añadimos icono de escribiendo
+    mensaje_div = agregarIcono(mensaje_div);
+  }else{
+    //Aplicamos negrilla
+    mensaje_div = aplicarNegrillas(mensaje, mensaje_div); //Si es primer mensaje, no hay problema porque no tendrá ****, entonces retornará el mensaje normal
+  }
+ 
   
   // Agregar div de mensaje al contenedor principal
   chat_container.appendChild(mensaje_div);
 
   // Hacer scroll automático hacia abajo en el contenedor principal 
   chat_container.scrollTop = chat_container.scrollHeight;
+
+  // Solo retornar el elemento si es temporal (para poder eliminarlo después) DE
+  // RESTO NO SE RETORNA NADA
+  if(es_temp){
+    return mensaje_div;
+  }
+}
+
+/* Función: Genera div que contiene un icono de escribiendo
+  Parametros: mensaje_div -> elemento HTML (es el div del mensaje)
+  Retorna: mensaje_div -> elemento HTML (div) con elemento 'i' que es icono de escribiendo
+*/
+function agregarIcono(mensaje_div){
+  const icon = document.createElement("i");
+  icon.classList.add("bi", "bi-chat-dots", "fs-4");
+  mensaje_div.appendChild(icon);
+  mensaje_div.classList.replace("w-75","w-auto");
+
+  return mensaje_div;
 }
 
 /* Función: Obtiene patrones ** ** (indicadores de negrilla), y se la aplica usando etiquetas html
@@ -92,6 +117,7 @@ function aplicarNegrillas(mensaje, mensaje_div){
 
   return mensaje_div
 }
+
 
 /* Función: A partir de un string y un contenedor, genera un json con las claves {texto, remitente, mensaje_json}, el cual 
 servirá para pasar input recien enviado del usuario, al backend y que el modelo genere una respuesta
@@ -463,9 +489,14 @@ async function procesarMensaje(mensaje) {
   const mensaje_json = renderMensajeUsuario(mensaje); // Mostrar en UI
   input_chat.value = ""; // Limpiar input
 
+  //Mostramos icono temporal de escribiendo
+  const temp_div = renderMensajeRobot("", true);
   try {
     // Enviamos mensaje a backend; la función retorna el contenido de la IA (o null si hubo error)
     const respuesta_ia = await enviarMensajeABackend(mensaje_json);
+
+    //Eliminamos div con icono de esperando
+    temp_div.remove();
     if (respuesta_ia) {
       // respuesta_ia es un objeto JSON uniforme que estructurarMensajeConEtiqueta convierte a diccionario con cada respuesta (entrevistador, puntaje, etc.)
       const respuesta_dividida = estructurarMensajeConEtiqueta(respuesta_ia);
