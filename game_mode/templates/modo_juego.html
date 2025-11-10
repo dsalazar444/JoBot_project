@@ -48,7 +48,35 @@
             {% endfor %}
         </div>
         <div class="boton div-hidden">
-            <button type="button" class="btn btn-info btn-lg w-100">Multijugador</button>
+            <button type="button" class="btn btn-info btn-lg w-100" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Multijugador</button>
+        </div>
+
+        <div class="offcanvas offcanvasm offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+            <div class="offcanvas-header offcanvas-headerm d-flex justify-content-center align-items-center">
+                <div class="d-flex w-auto header-canvas px-5 py-1 rounded-3">
+                    <h5 class="offcanvas-title offcanvas-titlem fw-semibold" id="offcanvasExampleLabel">Multijugador 1x1</h5>
+                </div> 
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column justify-content-start align-items-center py-3 gap-2">
+                
+               <div class="form-check">
+                    <input class="form-check-input" type="radio" name="radioDefault" id="amigo">
+                    <label class="form-check-label ps-3" for="radioDefault1">
+                        Juega contra un amigo
+                    </label>
+                    <input type="text" class="form-control mb-3 mt-3 username-input" placeholder="Usuario contrincante">
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="radioDefault" id="ia" checked>
+                    <label class="form-check-label ps-3" for="radioDefault2">
+                        Juega contra la IA
+                    </label>
+                
+                    <button id="empezar-btn" type="button" class="btn btn-empezar d-block">Empezar</button>
+                </div>
+
+            </div>
         </div>
     </section>
     <section class="racha">
@@ -65,6 +93,7 @@
     </section>
 </aside>
 <article class="main">
+    
     <div class="mensajes d-flex flex-column" id="chat-container"></div>
     <div class="mb-3 input-groupm d-flex gap-2">
         <button id="btn-pista" class="btn btn-outline-secondary" type="button">Pista</button>

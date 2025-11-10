@@ -363,9 +363,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     const sidebar = document.getElementById('sidebar');
     const body = document.getElementById('body');
     const input_chat = document.getElementById('input_chat');
-    const main = document.getElementById('chat-container')
+    const empezar_btn = document.getElementById('empezar-btn');
+    const main = document.getElementById('chat-container');
     //Boton de microfono
-    const micBtn = document.getElementById('mic-btn')
+    const micBtn = document.getElementById('mic-btn');
       /*Objeto de motor de reconocimiento de voz del navegador*/
     const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'es-ES'; 
@@ -476,6 +477,34 @@ document.addEventListener("DOMContentLoaded", async function () {
   } catch (error) {
     console.error("Error inicializando la página:", error);
   }
+
+  /*Boton de multijugador */
+  empezar_btn.addEventListener('click', function() {
+    //Obtenemos todos los radios
+    const radios = document.getElementsByName('radioDefault');
+    let radio_seleccionado = null;
+
+    //Buscamos cuál ha sido seleccionado
+    for (const radio of radios){
+      if(radio.checked){
+        radio_seleccionado = radio.value;
+        break;
+      }
+    }
+
+    switch(radio_seleccionado){
+      case 'amigo':
+        window.location.href = '';
+        break;
+      case 'ia':
+        window.location.href = '';
+        break;
+      default:
+        alert('Por favor selecciona una opción');
+    }
+
+  })
+
 });
 
 // Función común que maneja el envío de cualquier mensaje

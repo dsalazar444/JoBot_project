@@ -9,12 +9,14 @@
     --btn-hover-bg: #D3D3D3;
     --sidebar-w: 25vw;
     --btn-bg-1-hover: #a8dbe4;
+    --bckg-text: #C9E8D8;
     --background-item-nivel: #F2F2F2;
     --background-item-nivel-hov: #BAEAD5;
     --background-calend: #C5E7ED;
     --navbar-h: 76px;
     --sidebar-collapsed-w: 5vw;
     --input-h: 60px;
+
 
 }
 
@@ -340,6 +342,43 @@ body.sidebar-collapsed .main {
   50% { opacity: 1; }
 }
 
+.offcanvasm {
+    left: 50% !important; 
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    min-width: 35vw;
+    max-width: 90vw;        /* para pantallas pequeñas */
+    max-height: 50vh;       /* evita que se salga del viewport */
+    overflow-y: auto;       /* para contenido que pueda exceder altura */
+    border-radius: 12px;
+    background-color: rgb(247,242,250);
+}
+
+
+.offcanvas-headerm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.offcanvas-titlem {
+    width: 100%;
+    text-align: center;
+}
+
+.username-input,.username-input:focus {
+    background-color: var(--bckg-text);
+}
+
+.btn-empezar {
+    background-color: var(--btn-bg-1);
+    margin-top: 5vh;
+    padding: 0.5rem 4rem;
+}
+
+.btn-empezar:focus, .btn-empezar:hover {
+    background-color: var(--btn-bg-1-hover);
+}
+
 #btn-pista {
     background-color: #AFD1ED;
     border-color: #AFD1ED ;
@@ -350,6 +389,10 @@ body.sidebar-collapsed .main {
     border-color: #AFBDED;
 }
 
+.offcanvas-headerm .header-canvas {
+    background-color: var(--background-calend);
+    padding-right: 5vw;
+}
 
 /* ---------------------------- Mensajes ------------------------- */
 
@@ -364,126 +407,3 @@ body.sidebar-collapsed .main {
 .mensaje.robot {
     background-color: #ECE6F0;
 }
-/*Idea: que en celular, si o si el sidebar este colapsado, usar js para que
-obtenga viewport, si es 576... que se agrege clase, y resto se maneja acá, en media*/
-/* ----------------- Responsive ---------------------- */
-/* @media (max-width: 576px) {
-  .izq {
-    width: 100%;
-    min-width: auto;
-    max-width: 100%;
-  }
-
-  .overflow-autom {
-    max-height: 40vh;
-  }
-} 
-
-Additional mobile overrides for collapsed sidebar and puntaje
-     Appended separately so we don't replace the existing @media above 
-@media (max-width: 576px) {
-    /* Force the sidebar to behave like .collapsed on small screens 
-    #sidebar.collapsed,
-    #sidebar {
-        width: 56px !important;
-        min-width: 56px !important;
-        padding: 0.25rem 0.125rem !important;
-        left: 0;
-        top: 48px; /* adjust if you have a header 
-        bottom: 0;
-        overflow: hidden;
-    }
-
-    /* Keep sidebar content hidden but keep icons visible and large enough for touch 
-    #sidebar.collapsed .sidebar-text,
-    #sidebar.collapsed .div-hidden,
-    #sidebar.collapsed .btn-hidden,
-    #sidebar.collapsed .hr-hidden,
-    #sidebar .sidebar-text,
-    #sidebar .div-hidden,
-    #sidebar .btn-hidden,
-    #sidebar .hr-hidden {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
-
-    /* Nivel items: center icons and increase tap area 
-    #sidebar.collapsed .nivel-item,
-    #sidebar .nivel-item {
-        justify-content: center;
-        padding: 0.5rem 0;
-    }
-
-    /* Make icons easier to tap 
-    #sidebar.collapsed .nivel-item i,
-    #sidebar.collapsed .bi,
-    #sidebar .nivel-item i,
-    #sidebar .bi {
-        font-size: 1.3rem;
-        display: block;
-        margin: 0 auto;
-        line-height: 1;
-    }
-
-    /* Ensure main content sits to the right of the compact sidebar on small screens 
-    /* Apply both when body has class and globally on small screens so layout is never cramped 
-    body.sidebar-collapsed .main,
-    body.sidebar-collapsed .mensajes,
-    body.sidebar-collapsed .input-groupm,
-    .main,
-    .mensajes,
-    .input-groupm {
-        left: 56px !important;
-        margin-left: 56px !important;
-        width: calc(100vw - 56px) !important;
-    }
-
-    /* Show puntaje in a small fixed badge top-right on mobile 
-    #puntaje {
-        display: block !important;
-        position: fixed !important;
-        right: 0.6rem !important;
-        top: 8px !important;
-        background: rgba(255,255,255,0.95) !important;
-        padding: 0.25rem 0.6rem !important;
-        border-radius: 8px !important;
-        box-shadow: 0 1px 6px rgba(0,0,0,0.08) !important;
-        z-index: 1060 !important;
-        font-size: 0.85rem !important;
-    }
-
-    #puntaje p {
-        margin: 0 !important;
-        padding: 0 !important;
-        background: transparent !important;
-        color: var(--text-2) !important;
-    }
-
-    /* Compact input area at bottom with appropriate left offset 
-    .input-groupm {
-        left: 56px !important;
-        right: 0.5rem !important;
-        padding: 0.25rem !important;
-    }
-
-    .input-groupm .form-controlm,
-    .input-groupm .btn {
-        height: 42px !important;
-        font-size: 0.95rem !important;
-    }
-
-    /* Slightly reduce calendar scale to fit mobile 
-    #calendario .datepicker {
-        transform: scale(0.75) !important;
-        transform-origin: left top !important;
-    }
-
-    /* Messages area: use remaining vertical space 
-    .mensajes {
-        max-height: calc(100vh - 140px) !important;
-        padding: 0.5rem !important;
-    }
-}*/
