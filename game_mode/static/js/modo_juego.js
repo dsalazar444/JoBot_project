@@ -292,6 +292,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const body = document.getElementById('body');
   const input_chat = document.getElementById('input_chat');
   const main = document.getElementById('chat-container')
+  //Boton de microfono
+  const micBtn = document.getElementById('mic-btn')
+    /*Objeto de motor de reconocimiento de voz del navegador*/
+  const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'es-ES'; 
+  recognition.interimResults = false; // solo devolver resultados finales (no parciales)
+  recognition.maxAlternatives = 1;  // solo la mejor interpretación de lo que escuchó
 
   // 1. Activar automáticamente el primer nivel cuando carga la página
   const primer_nivel = document.querySelector('.nivel-item')
@@ -346,33 +353,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
   });
 
+  //Cuando el boton sea clickeado
+  micBtn.onclick = () => {
+    recognition.start(); //Empieza a escuchar
+
+    input_chat.disabled = true; //Deshabilitamos el input mientras escucha
+
+    micBtn.classList.replace("bi-mic", "bi-mic-fill");
+
+  }
+
+  //Se ejecuta cuando el navegador termina de escuchar
+  recognition.onresult = async (event) => {
+    console.log("procesaré el audio");
+    const voice_text = event.results[0][0].transcript;
+
+    console.log(voice_text);
+    // Llamamos a la misma función que el Enter
+    await procesarMensaje(voice_text);
+  }
+
+  //Cuando termina de escuchar
+  recognition.onend = () => {
+    input_chat.disabled = false; //Habilitamos input
+    micBtn.classList.replace("bi-mic-fill", "bi-mic");
+  }
+
+  //Si hay un error
+  recognition.onerror = () => {
+    input_chat.disabled = false;  // asegurarse de habilitarlo si hay error
+    micBtn.classList.replace("bi-stop-fill", "bi-mic");
+  };
+
   //Hace que cuando, en imnput-sectionm, cuando se presione Enter, obtengamos el valor en este contenedor
   input_chat.addEventListener("keydown", async (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); //Previene que el enter haga algo propio del navegador (enviar formulario, \n, etc)
-      const mensaje = input_chat.value.trim();
-  
-      if (!mensaje) return; //si la cadena está vacia
-      
-      //Mensaje enviado del usuario, lo mostramos en la interfaz, y esta funcion nos retorna el mensaje dentro de un json, 
-      // que será mandado al backend para que modelo responda
-      const mensaje_json = renderMensajeUsuario(mensaje); 
+      // const mensaje = input_chat.value.trim();
 
-      //Limpiamos barra de input
-      input_chat.value="";
-
-      // Enviamos mensaje a backend; la función retorna el contenido de la IA (o null si hubo error)
-      const respuesta_ia = await enviarMensajeABackend(mensaje_json);
-
-      if (respuesta_ia) {
-        // respuesta_ia es un objeto JSON uniforme que estructurarMensajeConEtiqueta convierte a string
-        renderMensajeRobot(estructurarMensajeConEtiqueta(respuesta_ia));
-      } else {
-        renderMensajeRobot('Lo siento, hubo un error al procesar tu mensaje.');
-      }
+      await procesarMensaje(input_chat.value);
     }
   })
 });
+
+// Función común que maneja el envío de cualquier mensaje
+async function procesarMensaje(mensaje) {
+  //.trim() quita espacios en blanco al inicio y al final del texto
+  if (!mensaje.trim()) return; // Evita enviar vacío
+
+   console.log("el mensaje/transcripcion no está vacio");
+  //Mensaje enviado del usuario, lo mostramos en la interfaz, y esta funcion nos retorna el mensaje dentro de un json, 
+  // que será mandado al backend para que modelo responda
+  const mensaje_json = renderMensajeUsuario(mensaje); // Mostrar en UI
+  input_chat.value = ""; // Limpiar input
+
+  try {
+    // Enviamos mensaje a backend; la función retorna el contenido de la IA (o null si hubo error)
+    const respuesta_ia = await enviarMensajeABackend(mensaje_json);
+    if (respuesta_ia) {
+      // respuesta_ia es un objeto JSON uniforme que estructurarMensajeConEtiqueta convierte a string
+      renderMensajeRobot(estructurarMensajeConEtiqueta(respuesta_ia));
+    } else {
+      renderMensajeRobot('Lo siento, hubo un error al procesar tu mensaje.');
+    }
+  } catch (err) {
+    console.error(err);
+    renderMensajeRobot('Lo siento, hubo un error al procesar tu mensaje.');
+  }
+}
 
 // -------------- Calendario ------------
 $(document).ready(function() {

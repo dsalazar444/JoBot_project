@@ -320,10 +320,11 @@ body.sidebar-collapsed .main {
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.5rem;
+    cursor: pointer; /*Lo hace clickeable*/
 }
 
 .input-icon input {
-    padding-right: 2vw;
+    padding-right: 3.5vw; /*Para que el texto no se pegue al icono*/
 }
 
 .input-groupm > * {
