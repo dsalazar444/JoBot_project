@@ -3,9 +3,32 @@ import json
 from django.http import JsonResponse
 from utils.ai import MODEL, usar_api
 
+success = None
+respuesta = None
 # Create your views here.
 def init(request):
-    #success, respuesta = generar_preguntas()
+    global success, respuesta
+    #generar_preguntas() -> Para no consumir recursos
+    success = True
+    respuesta = {
+"preguntas": [
+"1. Cuéntame sobre una ocasión en la que tuviste que comunicar una idea compleja a alguien con poca experiencia en el tema. ¿Cómo te aseguraste de que te entendiera?",
+"2. Describe una situación en la que tuviste que trabajar con un compañero difícil. ¿Qué hiciste para mantener una buena colaboración?",
+"3. Háblame de una ocasión en la que tuviste que adaptarte rápidamente a un cambio inesperado en el trabajo o en un proyecto. ¿Cómo lo manejaste?",
+"4. Cuéntame sobre un conflicto en equipo que hayas tenido que resolver. ¿Qué pasos seguiste y cuál fue el resultado?",
+"5. Menciona un ejemplo en el que hayas tenido que tomar una decisión bajo presión. ¿Cómo te aseguraste de que fuera la mejor posible?",
+"6. Describe una situación en la que tuviste que liderar a un grupo hacia un objetivo difícil. ¿Cómo motivaste a los demás y qué aprendiste de la experiencia?"
+],
+"respuestas": [
+"Durante una práctica universitaria, debía explicar un modelo estadístico a compañeros de otras carreras. Dividí la explicación en pasos sencillos y usé ejemplos cotidianos para relacionar cada concepto. Pedí retroalimentación constante para confirmar comprensión y ajusté mi lenguaje según sus dudas. Finalmente, todos lograron aplicar el modelo correctamente, lo cual confirmó la efectividad de mi comunicación.",
+"En un proyecto académico, un compañero no cumplía plazos y generaba tensión en el grupo. En lugar de confrontarlo, lo abordé en privado para entender su situación y descubrí que tenía dificultades personales. Reasigné tareas según sus fortalezas y establecimos recordatorios compartidos. Logramos terminar el proyecto a tiempo y el ambiente del equipo mejoró notablemente.",
+"En mi pasantía, el cliente cambió los requerimientos del sistema a mitad del desarrollo. Analicé rápidamente qué módulos debían modificarse y propuse un cronograma ajustado. Organicé una reunión para reasignar tareas y mantener la moral del equipo. Gracias a esa reacción, entregamos el producto dentro del nuevo plazo y con buena retroalimentación del cliente.",
+"En un trabajo grupal, dos integrantes tenían desacuerdos constantes sobre la metodología. Organicé una reunión neutral donde cada uno expuso su punto de vista sin interrupciones. Luego buscamos una solución intermedia que aprovechara las fortalezas de ambos enfoques. El resultado fue un trabajo más sólido y una mejor relación entre los miembros.",
+"En un hackathon, el servidor falló minutos antes de la presentación final. Mantuve la calma, prioricé las tareas críticas y coordiné al equipo para usar una copia local del proyecto. Mientras uno corregía errores, otro ajustaba la demo. Conseguimos presentar a tiempo y obtuvimos una mención especial por resiliencia y trabajo bajo presión.",
+"En un proyecto de investigación, fui líder de un equipo multidisciplinario. Al notar que algunos se desmotivaban por la carga de trabajo, organicé reuniones breves de seguimiento, celebré los avances y ajusté metas para mantener el equilibrio. La comunicación abierta y la empatía ayudaron a que todos se sintieran valorados, logrando un resultado sobresaliente y una experiencia de liderazgo muy enriquecedora."
+]
+}
+
     return render(request, "multijugador.html")
 
 """Función que genera las 6 preguntas que aparecerán en la partida, esto
@@ -64,4 +87,16 @@ def generar_preguntas():
     success, respuesta = usar_api(prompt, MODEL)
     print("succes: ",success)
     print("respuest: ", respuesta)
-    return success, respuesta
+    # return success, respuesta
+
+#Breakpoint para obtener preguntas desde JS
+def enviar_preguntas(request):
+    if request.method == 'GET':
+        return JsonResponse({
+            'success': success,
+            'respuesta': respuesta, 
+        })
+    
+    # Si no es GET, retornar error
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+    
