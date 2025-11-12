@@ -29,5 +29,7 @@ urlpatterns = [
     path('login/', mainViews.login_view, name='login'),
     #path('interview/', include('interview_mode.urls')),
     #Rutas de app game_mode
-    path('game_mode/', include("game_mode.urls")), 
+    path('game_mode/', include("game_mode.urls")),
+    #Rutas de app multiplayer 
+    path('multiplayer/', include("multiplayer.urls")),
 ]

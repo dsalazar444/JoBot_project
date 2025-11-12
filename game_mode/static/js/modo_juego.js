@@ -363,7 +363,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const sidebar = document.getElementById('sidebar');
     const body = document.getElementById('body');
     const input_chat = document.getElementById('input_chat');
-    const empezar_btn = document.getElementById('empezar-btn');
+    const empezar_btn = document.getElementById('btn-irmultij');
     const main = document.getElementById('chat-container');
     //Boton de microfono
     const micBtn = document.getElementById('mic-btn');
@@ -386,125 +386,112 @@ document.addEventListener("DOMContentLoaded", async function () {
       console.log('DOMContentLoaded: nivelSeleccionado establecido a:', nivelSeleccionado);
     }
 
-  //No hay necesidad de limpiar main div, porque no hay nada
-  // Cargamos los mensajes pasados de ese chat:
-  console.log('DOMContentLoaded: llamando cargarChatPasado()');
-  cargarChatPasado();
+    //No hay necesidad de limpiar main div, porque no hay nada
+    // Cargamos los mensajes pasados de ese chat:
+    console.log('DOMContentLoaded: llamando cargarChatPasado()');
+    cargarChatPasado();
 
-  // 2. Luego escucha los clics en los niveles y actualiza variable
-  document.querySelectorAll('.nivel-item').forEach(item => {
-    item.addEventListener('click', function() {
-      document.querySelectorAll('.nivel-item').forEach(el => {
-        el.classList.remove('active');
+    // 2. Luego escucha los clics en los niveles y actualiza variable
+    document.querySelectorAll('.nivel-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.nivel-item').forEach(el => {
+          el.classList.remove('active');
+        });
+        this.classList.add('active');
+
+        //Obtenemos el número del nivel
+        nivelSeleccionado = this.getAttribute('data-nivel');
+        
+        //Limpiamos elementos html en div
+        main.innerHTML = "";
+        //Cargamos chats de nivel seleccionado, haciendo que cuando cambie de nivel, actualice el historial
+        cargarChatPasado();
+
+        //Bloqueamos/desbloqueamos input dependiendo de si es su nivel actual o no.
+        bloquearInputNiveles(nivel_actual, input_chat);
+
+        //Mandamos valor de nivel seleccionado a backend (django)
+        //Esa es la url a la que mandaremos la info, la cual esta asociada a la función init
+        fetch("/game_mode/index/", {
+          method: 'POST',
+          headers: {
+            'Content-Type':'application/json', //para indicar envio de json
+            'X-CSRFToken' : getCookie('csrftoken') //necesaria para peticiones POST/PUT/DELETE desde JavaScript hacia el backend Django, proque si no este la boquea
+          }, 
+          //Convierte un valor de JavaScript en una cadena JSON
+          body: JSON.stringify({nivel: nivelSeleccionado}) 
+        })
       });
-      this.classList.add('active');
-
-      //Obtenemos el número del nivel
-      nivelSeleccionado = this.getAttribute('data-nivel');
-      
-      //Limpiamos elementos html en div
-      main.innerHTML = "";
-      //Cargamos chats de nivel seleccionado, haciendo que cuando cambie de nivel, actualice el historial
-      cargarChatPasado();
-
-      //Bloqueamos/desbloqueamos input dependiendo de si es su nivel actual o no.
-      bloquearInputNiveles(nivel_actual, input_chat);
-
-      //Mandamos valor de nivel seleccionado a backend (django)
-      //Esa es la url a la que mandaremos la info, la cual esta asociada a la función init
-      fetch("/game_mode/index/", {
-        method: 'POST',
-        headers: {
-          'Content-Type':'application/json', //para indicar envio de json
-          'X-CSRFToken' : getCookie('csrftoken') //necesaria para peticiones POST/PUT/DELETE desde JavaScript hacia el backend Django, proque si no este la boquea
-        }, 
-        //Convierte un valor de JavaScript en una cadena JSON
-        body: JSON.stringify({nivel: nivelSeleccionado}) 
-      })
     });
-  });
 
-  //Hace que cuando se clickee boton de colapsar barra lateral, esta lo haga.
-  sidebarToggle.addEventListener('click', function () {
-    // Al elemento con id sidebar, a su lista de clases, añade y quita la clase 'collapsed', si ya está, la quita, y viceversa
-    sidebar.classList.toggle('collapsed');
-    body.classList.toggle('sidebar-collapsed'); //Necesario porque sidebar y navbar no son hermanas, y necesitamos que cuando el sidebar colapse, los elementos sidebar.collapsed nav {} cambiarles el tamaño, pero con esa regla lo que decimos es que se aplique a elementos nav hijos de sidebar, y esto no pasa, pero nav es hijo de heder-body, entonces necesitamos que este tenga el atributo collapsed
+    //Hace que cuando se clickee boton de colapsar barra lateral, esta lo haga.
+    sidebarToggle.addEventListener('click', function () {
+      // Al elemento con id sidebar, a su lista de clases, añade y quita la clase 'collapsed', si ya está, la quita, y viceversa
+      sidebar.classList.toggle('collapsed');
+      body.classList.toggle('sidebar-collapsed'); //Necesario porque sidebar y navbar no son hermanas, y necesitamos que cuando el sidebar colapse, los elementos sidebar.collapsed nav {} cambiarles el tamaño, pero con esa regla lo que decimos es que se aplique a elementos nav hijos de sidebar, y esto no pasa, pero nav es hijo de heder-body, entonces necesitamos que este tenga el atributo collapsed
 
-  });
+    });
 
-  //Cuando el boton sea clickeado
-  micBtn.onclick = () => {
-    recognition.start(); //Empieza a escuchar
+    //Cuando el boton sea clickeado
+    micBtn.onclick = () => {
+      recognition.start(); //Empieza a escuchar
 
-    input_chat.disabled = true; //Deshabilitamos el input mientras escucha
+      input_chat.disabled = true; //Deshabilitamos el input mientras escucha
 
-    micBtn.classList.replace("bi-mic", "bi-mic-fill");
+      micBtn.classList.replace("bi-mic", "bi-mic-fill");
 
-  }
-
-  //Se ejecuta cuando el navegador termina de escuchar
-  recognition.onresult = async (event) => {
-    console.log("procesaré el audio");
-    const voice_text = event.results[0][0].transcript;
-
-    console.log(voice_text);
-    // Llamamos a la misma función que el Enter
-    await procesarMensaje(voice_text);
-  }
-
-  //Cuando termina de escuchar
-  recognition.onend = () => {
-    input_chat.disabled = false; //Habilitamos input
-    micBtn.classList.replace("bi-mic-fill", "bi-mic");
-  }
-
-  //Si hay un error
-  recognition.onerror = () => {
-    input_chat.disabled = false;  // asegurarse de habilitarlo si hay error
-    micBtn.classList.replace("bi-stop-fill", "bi-mic");
-  };
-
-  //Hace que cuando, en imnput-sectionm, cuando se presione Enter, obtengamos el valor en este contenedor
-  input_chat.addEventListener("keydown", async (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); //Previene que el enter haga algo propio del navegador (enviar formulario, \n, etc)
-      // const mensaje = input_chat.value.trim();
-
-      await procesarMensaje(input_chat.value);
     }
-  })
-  
+
+    //Se ejecuta cuando el navegador termina de escuchar
+    recognition.onresult = async (event) => {
+      console.log("procesaré el audio");
+      const voice_text = event.results[0][0].transcript;
+
+      console.log(voice_text);
+      // Llamamos a la misma función que el Enter
+      await procesarMensaje(voice_text);
+    }
+
+    //Cuando termina de escuchar
+    recognition.onend = () => {
+      input_chat.disabled = false; //Habilitamos input
+      micBtn.classList.replace("bi-mic-fill", "bi-mic");
+    }
+
+    //Si hay un error
+    recognition.onerror = () => {
+      input_chat.disabled = false;  // asegurarse de habilitarlo si hay error
+      micBtn.classList.replace("bi-stop-fill", "bi-mic");
+    };
+
+    //Hace que cuando, en imnput-sectionm, cuando se presione Enter, obtengamos el valor en este contenedor
+    input_chat.addEventListener("keydown", async (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); //Previene que el enter haga algo propio del navegador (enviar formulario, \n, etc)
+        // const mensaje = input_chat.value.trim();
+
+        await procesarMensaje(input_chat.value);
+      }
+    })
+    
+    /*Boton de multijugador */
+    empezar_btn.addEventListener('click', function() {
+      console.log("escuché ");
+      //Obtenemos el input del radioButton seleccionado
+      //querySelector obtiene un unico OBJETO (no su valor) que tenga name radioDefault Y este
+      //checked (por eso siempre solo obtendrá uno), y obtiene su input.
+      const radio_seleccionado = document.querySelector('input[name="radioDefault"]:checked');
+      
+      //Obtenemos valor del objeto
+      const modo = radio_seleccionado.value
+      console.log("modo: ", modo);
+      //Redirigimos y pasamos valor seleccionado en query string
+      window.location.href = "/multiplayer/" + "?modo=" + encodeURIComponent(modo);
+
+    })
   } catch (error) {
     console.error("Error inicializando la página:", error);
   }
-
-  /*Boton de multijugador */
-  empezar_btn.addEventListener('click', function() {
-    //Obtenemos todos los radios
-    const radios = document.getElementsByName('radioDefault');
-    let radio_seleccionado = null;
-
-    //Buscamos cuál ha sido seleccionado
-    for (const radio of radios){
-      if(radio.checked){
-        radio_seleccionado = radio.value;
-        break;
-      }
-    }
-
-    switch(radio_seleccionado){
-      case 'amigo':
-        window.location.href = '';
-        break;
-      case 'ia':
-        window.location.href = '';
-        break;
-      default:
-        alert('Por favor selecciona una opción');
-    }
-
-  })
-
 });
 
 // Función común que maneja el envío de cualquier mensaje

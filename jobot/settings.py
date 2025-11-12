@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'game_mode',
+    'multiplayer',
     #'interview_mode',
     'user',
 ]

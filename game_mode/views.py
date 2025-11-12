@@ -2,17 +2,15 @@ from django.shortcuts import render
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import google.generativeai as genai
 from .models import Progreso, Nivel, Pregunta, Chat, Mensaje
 from user.models import Usuario
-from django.conf import settings
-
+from utils.ai import MODEL, usar_api
 
 NUM_PREGUNTAS_POR_NIVEL = 6
-# Configurar Gemini
-genai.configure(api_key=settings.GEMINI_API_KEY)
-# Se crea solo una vez al importar el archivo, y lo podemos usar en todo el codigo.
-MODEL = genai.GenerativeModel('gemini-2.5-flash')
+# # Configurar Gemini
+# genai.configure(api_key=settings.GEMINI_API_KEY)
+# # Se crea solo una vez al importar el archivo, y lo podemos usar en todo el codigo.
+# MODEL = genai.GenerativeModel('gemini-2.5-flash')
 
 #  --------------------- funciones principales ----------------------------------------------
 
@@ -103,17 +101,10 @@ def armar_prompt(usuario_obj, nivelSeleccionado, respuesta_usuario):
         print("entré a !=, nivel actual: ",nivel_actual, " != nivelSeleccionado: ",nivelSeleccionado)
         return (False, None)
     
-    # if (num_pregunta_actual+1) > num_preguntas_por_nivel: #es porque ya respondió la ultima pregunta (la 6ta) y se acaba el nivel
-    #     preg_siguiente=""
     print("no entré al !=")
     preg_actual = get_pregunta_nivel(nivel_actual, num_pregunta_actual).texto
     print("pregAct", preg_actual)
     chat_obj = get_or_create_chat_for_user(usuario_obj)
-    #preg_sig = obtener_sig_pregunta(num_pregunta_actual, nivel_actual)
-    #num_preg_siguiente = num_pregunta_actual+1
-    #preg_siguiente = Pregunta.object.filter(nivel=nivel_actual,
-    #num_pregunta=num_preg_siguiente).texto
-    
     contexto = armar_contexto(chat_obj, nivel_actual, usuario_obj, preg_actual, respuesta_usuario, num_pregunta_actual)
     print("contexto: ",contexto)
     prompt = obtener_prompt_con_contexto(contexto) 
@@ -417,20 +408,6 @@ def obtener_ult_respuesta_usuario(usuario_obj):
        return mensaje
     else: 
         return ""
-
-"""
-Función: Realiza llamada a la API de Gemini para obtener respuesta de la IA
-Parámetros: prompt -> string con el prompt completo para enviar a la IA
-           modelo -> objeto del modelo GenerativeModel de Gemini
-Retorna: tuple -> (bool éxito, string respuesta) o (False, string error)
-"""
-def usar_api(prompt, modelo):
-    try:
-        respuesta =  modelo.generate_content(prompt)
-        ai_response = respuesta.text.strip() #Limpia la cadena
-        return (True, ai_response)
-    except Exception as e:
-        return (False, str(e))
 
 #  --------------------- getters ----------------------------------------------
  

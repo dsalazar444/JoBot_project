@@ -1,0 +1,59 @@
+{% extends 'base_multijugador.html'%}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/multijugador.css' %}">
+{% endblock %}
+
+{% block content %}
+<article id="pregunta">
+    <div class="d-flex gap-3">
+        <div class="w-auto  px-3 py-2 rounded-3 preg-multijugador">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        <div id="div-contador-alto" class="d-flex align-items-center me-5">
+            <div id="div-contador" class="p-2 rounded-3 d-flex gap-2">
+                <i id="i-contador"class="bi bi-alarm fs-3"></i>
+                <p id="contador" class="mb-0"> 60 </p>
+            </div>
+        </div>
+    </div>
+   <audio id="sonido-ring" src="{% static 'audio/ring.mp3' %}" preload="auto"></audio>
+</article>
+
+<article id="mensajes" class="w-100">
+    <div class="d-flex justify-content-between nombres mb-3">
+        <div class="w-auto px-5 py-1 nombre rounded">
+            <p class="mb-0">IA</p>
+        </div>
+        <div class="w-auto px-5 py-1 nombre rounded">
+            <p class="mb-0">Jugador</p>
+        </div>
+    </div>
+    <div class="d-flex gap-3">
+        <div id="jugador-start" class="rounded">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        <div class="vr vrm"></div> 
+
+        <div id="jugador-end" class="rounded">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+    </div>
+
+    <div id="puntaje-multij" class="d-flex justify-content-end mt-2 me-2">
+        <p class="puntaje-estilo px-3 py-1">Puntaje: .../...</p>
+    </div>
+
+</article>
+<article id="input-section" class="w-100">
+    <div class="w-100 input_multij p-2">
+        <input type="text" class="form-control form-controlm" id="input_chat_multij" placeholder="Escribe tu respuesta aquí..." aria-label="Example text with two button addons">
+    </div>
+</article>
+{% endblock %}
+
+
+{% block js_calls %}
+    <script src="{% static 'js/multijugador.js' %}"></script>
+{% endblock %}

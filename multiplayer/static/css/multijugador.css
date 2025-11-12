@@ -1,0 +1,115 @@
+:root{
+    --navbar-h: 76px;
+    --preg-h: 125px;
+    --preg-margin: 4rem; /*2rem arriba y 2 abajo*/
+    --mensajes-htotal: calc(var(--navbar-h) + var(--preg-h) + var(--preg-margin));
+    --bckg-preg: #ECE6F0;
+    --bckg-jug-start: #C8EFE9;
+    --bckg-jug-end: #DAE0F5;
+    --bckg-nombre: #F2F2F2;
+    --text-puntaje: #767676;
+    --input-box-margin: 1rem;
+    --input-box-h:38px;
+    --input-box-htotal: calc(var(--input-box-h) + var(--input-box-margin));
+}
+
+.preg-multijugador {
+    background-color: var(--bckg-preg);
+    margin: 2rem 2rem 2rem 8rem;
+    height: var(--preg-h); /* Altura fija constante */
+    overflow-y: auto;
+}
+
+#pregunta {
+    position: fixed;
+    top: var(--navbar-h);
+    height: var(--preg-h);
+}
+
+#div-contador-alto {
+    /* background-color: aqua; */
+}
+
+#div-contador {
+    background-color: var(--bckg-nombre);
+}
+
+#mensajes {
+    position: fixed;
+    top: var(--mensajes-htotal);
+    bottom: var(--input-box-htotal);
+    padding: 0 4rem;
+    overflow-y: auto;
+}
+
+#jugador-start {
+    background-color: var(--bckg-jug-start);
+    padding: 2vh 1vw;
+}
+
+#jugador-end {
+    background-color: var(--bckg-jug-end);
+    padding: 2vh 1vw;
+}
+
+#mensajes .nombres {
+    padding-left: 2rem;
+    padding-right: 24rem;
+}
+
+.nombres .nombre {
+    background-color: var(--bckg-nombre);
+}
+
+#input-section {
+    position: fixed;
+    bottom: 0;
+    /* bottom: 0.3rem;
+    left: 0.5rem;
+    right: 0.5rem; */
+}
+
+.input_multij .form-controlm {
+    background-color: var(--bckg-jug-end);
+}
+
+/* .vrm {
+  height: auto;        /* quitar el límite del 1em 
+  align-self: stretch;  hace que crezca igual que los otros hijos del flex 
+} */
+
+.puntaje-estilo {
+    background-color: var(--bckg-nombre);
+    color: var(--text-puntaje);
+}
+
+/* #div-contador {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: var(--bckg-nombre);
+    border-radius: 0.375rem;
+} */
+
+/* #div-contador .bi {
+    font-size: 1.5rem;
+    color: var(--text-puntaje);
+}
+
+#contador {
+    font-weight: 600;
+    color: var(--text-puntaje);
+} */
+
+@media (max-width: 1200px) {
+  #mensajes .nombres {
+    padding-right: 10rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #mensajes .nombres {
+    padding-right: 4rem;
+  }
+}
