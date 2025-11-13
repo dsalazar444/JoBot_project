@@ -119,3 +119,37 @@ document.addEventListener('DOMContentLoaded', () => {
   // initial render
   renderCalendar();
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const endButton = document.getElementById('end-session-button');
+    const summaryBox = document.getElementById('session-summary');
+    const avgTimeSpan = document.getElementById('avg-time');
+    const recommendationP = document.getElementById('recommendation-text');
+
+    // URL del resumen (usa el name de la ruta que pusimos en urls.py)
+    const sessionSummaryUrl = "{% url 'session_summary' session.id %}";
+
+    if (endButton) {
+        endButton.addEventListener('click', async function () {
+            try {
+                const response = await fetch(sessionSummaryUrl, {
+                    method: 'GET'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    avgTimeSpan.textContent = data.average_formatted;
+                    recommendationP.textContent = data.recommendation;
+                    summaryBox.classList.remove('d-none');
+                    summaryBox.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert(data.error || 'No se pudo calcular el promedio de la sesión.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error obteniendo el resumen de la sesión.');
+            }
+        });
+    }
+});

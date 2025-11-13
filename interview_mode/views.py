@@ -7,9 +7,13 @@ import json
 import google.generativeai as genai
 from .models import InterviewSession, Message
 from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Q
 
 # Configure Gemini API
 genai.configure(api_key=settings.GEMINI_API_KEY)
+
 
 def get_gemini_response(messages_history, interview_type):
     """Generate response using Google Gemini"""
@@ -137,6 +141,7 @@ Genera una respuesta natural y profesional que ayude al candidato a desarrollar 
     except Exception as e:
         return f"Lo siento, tuve un problema técnico. ¿Podrías repetir tu respuesta anterior? Error: {str(e)}"
 
+
 @login_required
 def interview(request, session_id=None):
     """Main interview view"""
@@ -172,11 +177,13 @@ def interview(request, session_id=None):
 
     return render(request, 'interview.html', context)
 
+
 @csrf_exempt
 @require_POST
 @login_required
 def send_message(request, session_id):
-    """AJAX endpoint to send message and get AI response"""
+    """Vista que recibe el mensaje del usuario vía AJAX y devuelve la respuesta de la IA,
+    calculando además el tiempo que el usuario tardó en responder a la última pregunta del bot."""
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()
@@ -184,30 +191,42 @@ def send_message(request, session_id):
         if not user_message:
             return JsonResponse({'error': 'Mensaje vacío'}, status=400)
 
-        # Get or create session
+        # Obtener la sesión
         session = get_object_or_404(InterviewSession, id=session_id, user=request.user)
 
-        # Save user message
-        Message.objects.create(
+        # 1) Guardar mensaje del usuario
+        user_msg = Message.objects.create(
             session=session,
             sender='user',
             content=user_message
         )
 
-        # Get conversation history
+        # 2) Buscar la última pregunta del bot ANTERIOR a este mensaje
+        last_bot_msg = session.messages.filter(
+            sender='bot',
+            timestamp__lt=user_msg.timestamp
+        ).order_by('-timestamp').first()
+
+        # 3) Si existe, calcular tiempo de respuesta en segundos
+        if last_bot_msg:
+            delta = user_msg.timestamp - last_bot_msg.timestamp
+            user_msg.response_time_seconds = delta.total_seconds()
+            user_msg.save(update_fields=['response_time_seconds'])
+
+        # 4) Obtener historial de conversación (ya incluye el mensaje del usuario)
         messages_history = list(session.messages.all())
 
-        # Generate AI response
+        # 5) Generar respuesta de la IA
         ai_response = get_gemini_response(messages_history, session.interview_type)
 
-        # Save AI response
+        # 6) Guardar respuesta del bot
         Message.objects.create(
             session=session,
             sender='bot',
             content=ai_response
         )
 
-        # Update session timestamp
+        # Actualizar timestamp de la sesión
         session.save()
 
         return JsonResponse({
@@ -217,6 +236,7 @@ def send_message(request, session_id):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
 
 @login_required
 def create_session(request):
@@ -246,3 +266,57 @@ def create_session(request):
         })
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+@login_required
+def session_summary(request, session_id):
+    """
+    Devuelve el tiempo promedio de respuesta del usuario en la sesión
+    y una recomendación para ajustar la extensión de sus respuestas.
+    """
+    session = get_object_or_404(InterviewSession, id=session_id, user=request.user)
+
+    # Usamos el helper definido en el modelo InterviewSession
+    avg_seconds = session.get_average_response_time()
+
+    if avg_seconds is None:
+        return JsonResponse({
+            'success': False,
+            'error': 'Todavía no hay suficientes respuestas para calcular un promedio.'
+        })
+
+    # Formato mm:ss
+    minutes = int(avg_seconds // 60)
+    seconds = int(avg_seconds % 60)
+    formatted = f"{minutes:02d}:{seconds:02d}"
+
+    # Recomendaciones según el promedio (No estoy seguro como implementar)
+    """
+    if avg_seconds < 40:
+        recommendation = (
+            "Tus respuestas son muy cortas. En una entrevista real, intenta desarrollar más tus ideas, "
+            "usando por ejemplo el esquema STAR (Situación, Tarea, Acción, Resultado) y agregando ejemplos concretos."
+        )
+    elif avg_seconds <= 120:
+        recommendation = (
+            "Estás en un rango muy bueno (entre 40 y 120 segundos por respuesta). "
+            "Mantén respuestas claras, estructuradas y con ejemplos, sin extenderte demasiado."
+        )
+    elif avg_seconds <= 240:
+        recommendation = (
+            "Tus respuestas tienden a ser largas. Intenta ir más al punto: resume el contexto en una frase, "
+            "enfócate en qué hiciste y qué resultados obtuviste, evitando detalles secundarios."
+        )
+    else:
+        recommendation = (
+            "Tus respuestas son demasiado extensas. En entrevistas reales, es raro que una respuesta de más de 4 minutos "
+            "sea bien recibida. Recorta detalles y céntrate en el problema, tu acción y el resultado principal."
+        )
+
+    """
+    return JsonResponse({
+        'success': True,
+        'average_seconds': avg_seconds,
+        'average_formatted': formatted,
+        #'recommendation': recommendation,
+    })

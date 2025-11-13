@@ -88,7 +88,24 @@
             <button class="btn btn-primary" id="send-button" type="button">Enviar</button>
         </div>
     </div>
+
+    <!-- Botón para finalizar sesión y ver promedio -->
+    <div class="d-flex justify-content-end align-items-center mt-2">
+        <button id="end-session-button" class="btn btn-outline-danger btn-sm">
+            Finalizar sesión y ver promedio
+        </button>
+    </div>
+
+    <!-- Resumen de tiempo promedio y recomendación -->
+    <div id="session-summary" class="alert alert-info mt-3 d-none">
+        <p class="mb-1">
+            <strong>Tiempo promedio de tus respuestas:</strong>
+            <span id="avg-time"></span>
+        </p>
+        <p id="recommendation-text" class="mb-0"></p>
+    </div>
 </article>
+
 
 <!-- Modal para nueva entrevista -->
 <div class="modal fade" id="newInterviewModal" tabindex="-1">
