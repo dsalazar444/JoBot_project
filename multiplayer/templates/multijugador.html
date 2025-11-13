@@ -9,7 +9,7 @@
 <article id="pregunta">
     <div class="d-flex gap-3">
         <div class="w-auto  px-3 py-2 rounded-3 preg-multijugador d-flex align-items-center ">
-            <p id="preg-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p id="preg-text"></p>
         </div>
         <div id="div-contador-alto" class="d-flex align-items-center me-5">
             <div id="div-contador" class="p-2 rounded-3 d-flex gap-2">
@@ -30,19 +30,19 @@
             <p class="mb-0">Jugador</p>
         </div>
     </div>
-    <div class="d-flex gap-3">
-        <div id="jugador-start" class="rounded">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <div id="mensajes-container" class="d-flex gap-3 w-100">
+        <div id="jugador-start" class="rounded d-flex">
+            <p id="text-ia"></p>
         </div>
         <div class="vr vrm"></div> 
 
-        <div id="jugador-end" class="rounded">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <div id="jugador-end" class="rounded d-flex">
+            <p id="text-jugador"></p>
         </div>
     </div>
 
     <div id="puntaje-multij" class="d-flex justify-content-end mt-2 me-2">
-        <p class="puntaje-estilo px-3 py-1">Puntaje: .../...</p>
+        <p class="puntaje-estilo px-3 py-1">Puntaje: <span id="puntuacion">..</span>/10</p>
     </div>
 
 </article>
@@ -51,6 +51,57 @@
         <input type="text" class="form-control form-controlm" id="input_chat_multij" placeholder="Escribe tu respuesta aquí..." aria-label="Example text with two button addons">
     </div>
 </article>
+
+<!-- Toast container siguiente pregunta -->
+ <div class="toast-container position-fixed top-0 end-0 p-3">
+     <div id="push-up" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+       <div class="toast-header">
+         <img src="{% static 'img/logo_head.png' %}" class="rounded me-2" alt="..." width="20" height="20">
+         <strong class="me-auto">JoBot</strong>
+         <!-- <small>11 mins ago</small> -->
+         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+       </div>
+       <div class="toast-body">
+         <p id="mensaje_toast"  class="mb-2"><span class="fw-bold">Aciertos: </span><span id="aciertos"></span><br><br>
+            <span class="fw-bold">A mejorar: </span><span id="a_mejorar"></span></p>
+         <div class="mt-2 pt-2 border-top">
+           <button id="sig-btn" type="button" class="btn btn-primary btn-siguiente btn-sm">Siguiente pregunta</button>
+         </div>
+       </div>
+     </div>
+ </div>
+
+ <!-- Toast container alerta tiempo finalizado-->
+<div class="toast-container position-fixed top-0 start-50 p-3">
+     <div id="push-up-time" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+       <div class="toast-header">
+         <img src="{% static 'img/logo_head.png' %}" class="rounded me-2" alt="..." width="20" height="20">
+         <strong class="me-auto">JoBot</strong>
+         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+       </div>
+       <div class="toast-body">
+         <p>Intentalo de nuevo, ¡tu puedes!</p>
+       </div>
+     </div>
+ </div>
+
+  <!-- Toast container Partida finalizada-->
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+     <div id="push-up-finish" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+       <div class="toast-header">
+         <img src="{% static 'img/logo_head.png' %}" class="rounded me-2" alt="..." width="20" height="20">
+         <strong class="me-auto">JoBot</strong>
+         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+       </div>
+       <div class="toast-body">
+         <p>¡Juego completado! No hay más preguntas.</p>
+         <div class="mt-2 pt-2 border-top">
+           <!-- <button type="button" class="btn btn-primary btn-siguiente btn-sm" href="{% url 'home' %}>Volver a inicio</button> -->
+            <a class="btn btn-primary btn-siguiente btn-sm" href="{% url 'home' %}">Volver a inicio</a>
+         </div>
+       </div>
+     </div>
+ </div>
 {% endblock %}
 
 

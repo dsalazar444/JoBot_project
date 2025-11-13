@@ -8,7 +8,8 @@ respuesta = None
 # Create your views here.
 def init(request):
     global success, respuesta
-    #generar_preguntas() -> Para no consumir recursos
+    generar_preguntas()
+    """
     success = True
     respuesta = {
 "preguntas": [
@@ -28,7 +29,7 @@ def init(request):
 "En un proyecto de investigación, fui líder de un equipo multidisciplinario. Al notar que algunos se desmotivaban por la carga de trabajo, organicé reuniones breves de seguimiento, celebré los avances y ajusté metas para mantener el equilibrio. La comunicación abierta y la empatía ayudaron a que todos se sintieran valorados, logrando un resultado sobresaliente y una experiencia de liderazgo muy enriquecedora."
 ]
 }
-
+"""
     return render(request, "multijugador.html")
 
 """Función que genera las 6 preguntas que aparecerán en la partida, esto
@@ -91,7 +92,7 @@ def generar_preguntas():
 
 #Breakpoint para obtener preguntas desde JS
 def enviar_preguntas(request):
-    if request.method == 'GET':
+    if request.method == 'GET':      
         return JsonResponse({
             'success': success,
             'respuesta': respuesta, 
@@ -100,3 +101,81 @@ def enviar_preguntas(request):
     # Si no es GET, retornar error
     return JsonResponse({"error": "Método no permitido"}, status=405)
     
+#Breakpoint para enviar respuesta a modelo, y devolver lo que este nos retorne
+def procesar_respuesta(request):
+    
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        pregunta = data.get("pregunta")
+        respuesta_ia = data.get("respuesa_perf")
+        respuesta_user = data.get("mensaje")
+
+        prompt = armar_prompt_evaluacion(pregunta, respuesta_ia, respuesta_user)
+        success_evaluacion, respuesta_evaluacion = usar_api(prompt, MODEL)
+
+        print("success evaluacion", success_evaluacion)
+        print("respuesta evaluacion", respuesta_evaluacion)
+
+        return JsonResponse({
+            'success': success_evaluacion,
+            'respuesta': respuesta_evaluacion, 
+        })
+    # Si no es GET, retornar error
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+    
+def armar_prompt_evaluacion(pregunta, respuesta_perf, respuesta_user):
+    contexto = {
+        'pregunta': pregunta,
+        'respuesta_perfecta': respuesta_perf,
+        'respuesta_user': respuesta_user,
+    }
+    prompt = f"""
+    Objetivo:
+    Evaluar una respuesta dada por el usuario comparándola con una respuesta perfecta, ambas proporcionadas dentro de un diccionario llamado contexto.
+
+    Estructura del diccionario de entrada llamado 'contexto' (que yo te proporcionaré):
+    {{
+    "pregunta": "...",
+    "respuesta_perfecta": "...",
+    "respuesta_user": "..."
+    }}
+
+    Instrucciones detalladas:
+
+    1. Analiza la pregunta, la respuesta perfecta y la respuesta del usuario contenidas en el diccionario contexto.
+
+    2. Evalúa la calidad de la respuesta del usuario comparándola con la respuesta perfecta.
+
+    3. Retorna un JSON con las siguientes claves obligatorias:
+
+    {{
+    "puntuacion": 0,
+    "a_mejorar": ["aspecto 1...", "aspecto 2..."],
+    "aciertos": ["aspecto 1...", "aspecto 2..."]
+    }}
+
+    - La clave "puntuacion" debe ser un número entero del 1 al 10 que refleje qué tan completa, coherente y sólida es la respuesta del usuario respecto a la respuesta perfecta.
+
+    - La lista "a_mejorar" debe incluir puntos específicos, concretos y accionables sobre lo que le faltó al usuario para alcanzar la respuesta perfecta.
+
+    - La lista "aciertos" debe destacar las partes bien logradas, fortalezas o aspectos positivos de la respuesta del usuario.
+
+    - No incluyas ni repitas el contenido original de las respuestas en el resultado; solo genera la evaluación según el análisis.
+
+    Prohibiciones estrictas:
+
+    - No agregues explicaciones, texto fuera del JSON, ni comentarios.
+
+    - No uses bloques de código, delimitadores ni etiquetas como json, ni ningún formato adicional.
+
+    - No inventes términos, fuentes o datos no verificables.
+
+    - No alteres la estructura del JSON ni agregues claves distintas a "puntuacion", "a_mejorar" y "aciertos".
+
+    - Responde SIEMPRE en JSON plano, cumpliendo exactamente la estructura solicitada, SIN usar ```json ni ``` ni ningún delimitador de bloque. No agregues comentarios ni texto externo.
+
+    Este es el json CONTEXTO {contexto}
+    """
+
+    return prompt
