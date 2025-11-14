@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xz!$xn2p!k+%!dna4f1ht#gm2#2ll_yjp4bysr@^^t#fkae_p$'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-xz!$xn2p!k+%!dna4f1ht#gm2#2ll_yjp4bysr@^^t#fkae_p$')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -139,3 +139,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Google Gemini API Configuration
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+if not GEMINI_API_KEY:
+    print("WARNING: GEMINI_API_KEY no está configurada. El modo interview no funcionará correctamente.")
+    print("Por favor, configura tu API key en el archivo .env")
+    print("Obtén tu API key en: https://makersuite.google.com/app/apikey")
+
+# Login/Logout URLs
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
