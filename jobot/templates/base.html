@@ -1,4 +1,5 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
@@ -38,29 +39,19 @@
 
                 <!-- Links -->
                 <div class="collapse navbar-collapse" id="Nav">
-                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-                        {% if user.is_authenticated %}
-                            <li class="nav-item">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">{% if user.is_authenticated %}{% block puntaje %}{% endblock %}<li class="nav-item">
                                 <a class="nav link" href="{% url 'home' %}">Inicio</a>
-                            </li>
-                            <li class="nav-item">
+                            </li><li class="nav-item">
                                 <a class="btn cta ms-lg-2" href="{% url 'logout' %}">Cerrar sesión</a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item">
+                            </li>{% else %}<li class="nav-item">
                                 <a class="nav link" href="{% url 'about' %}">Sobre nosotros</a>
-                            </li>
-                            <li class="nav-item">
+                            </li><li class="nav-item">
                                 <a class="nav link" href="{% url 'reviews' %}">Opiniones</a>
-                            </li>
-                            <li class="nav-item">
+                            </li><li class="nav-item">
                                 <a class="nav link" href="{% url 'login' %}">Iniciar sesión</a>
-                            </li>
-                            <li class="nav-item">
+                            </li><li class="nav-item">
                                 <a class="btn cta ms-lg-2" href="{% url 'signup' %}">Crear cuenta</a>
-                            </li>
-                        {% endif %}
-                    </ul>
+                            </li>{% endif %}</ul>
                 </div>
             </div>
         </nav>
