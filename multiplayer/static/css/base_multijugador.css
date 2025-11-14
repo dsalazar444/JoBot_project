@@ -9,6 +9,8 @@
   --sidebar-w: 25vw;
 }
 
+html, body { height: 100%;}
+
 /* ===== Reset básico ===== */
 body {
   background: var(--background);
@@ -20,11 +22,10 @@ body {
 .header {
    position: fixed;
     top: 0;
-    left: var(--sidebar-w);
-    z-index: 1050;
     background: var(--background);
     border-bottom: 1px solid rgba(0,0,0,0.06);
-    width: calc(100vw - var(--sidebar-w));
+    width: 100%;
+    z-index: 1000;
 }
 
 /* ===== Navbar ===== */
@@ -55,29 +56,6 @@ body {
   color: var(--text);
 }
 
-/* Links del nav: aspecto unificado */
-.navbar .link {
-  --radius: 10px;
-  display: inline-block;
-  padding: 2vh 3vw;
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--text);
-  text-decoration: none;
-  background: var(--background);
-  border-radius: var(--radius);
-  transition: background-color .18s ease, color .18s ease, transform .02s ease;
-  text-align: center;
-  min-width: 160px;
-}
-.navbar .link:hover {
-  background: var(--background);
-  color: var(--text-2);
-}
-.navbar .link:active {
-  transform: translateY(1px);
-}
-.navbar .link:focus-visible,
 .navbar-brand:focus-visible,
 .cta:focus-visible {
   outline: 2px solid var(--text);
@@ -122,7 +100,6 @@ body {
 /* ===== Responsivo ===== */
 /* En móvil, que los items ocupen ancho completo y tengan separación vertical */
 @media (max-width: 991.98px) { /* breakpoint de navbar-expand-lg */
-  .navbar .link,
   .cta.btn {
     min-width: 100%;
     width: 100%;
