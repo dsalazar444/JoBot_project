@@ -1,2 +1,4 @@
-django
+django>=4.2.0
 pillow
+google-generativeai
+python-dotenv
