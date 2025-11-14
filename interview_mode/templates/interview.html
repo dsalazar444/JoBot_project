@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<<<<<<< HEAD
 {% block body_class %}interview-mode{% endblock %}
 
+=======
+>>>>>>> origin/main
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="{% static 'css/interview.css' %}">
 {% endblock %}
 
+<<<<<<< HEAD
 {% block puntaje %}
 <li class="nav-item">
     <span class="points-badge" id="header-points">
@@ -28,6 +32,20 @@
         </div>
 
         <div class="overflow-auto lista-entrevistas mt-3">
+=======
+{% block content %}
+<aside id="sidebar" class="izq">
+    <section class="nivel">
+        <div class="titulo d-flex justify-content-end">
+            <i class="bi bi-chat-dots p-2"></i>
+        </div>
+        <div class="titulo d-flex justify-content-start gap-1">
+            <h5 class="sidebar-text">Entrevistas</h5>
+        </div>
+        <hr class="hr-titulo">
+
+        <div class="overflow-auto lista-entrevistas">
+>>>>>>> origin/main
             <ul class="list-group mb-4">
                 {% for user_session in user_sessions %}
                 <li class="list-group-item interview-session {% if user_session.id == session.id %}active{% endif %}"
@@ -53,28 +71,49 @@
 
     <section class="racha">
         <div class="titulo d-flex justify-content-start gap-1">
+<<<<<<< HEAD
             <i class="bi bi-award"></i>
+=======
+            <i class="bi bi-award p-2"></i>
+>>>>>>> origin/main
             <h5 class="sidebar-text">Racha</h5>
         </div>
         <hr class="hr-titulo">
 
         <div class="racha-dias d-flex gap-1 text-center">
             <i class="bi bi-fire"></i>
+<<<<<<< HEAD
             <p class="mb-0 fw-semibold" id="streak-count">{{ current_streak }} DÍA{% if current_streak != 1 %}S{% endif %}</p>
+=======
+            <p class="mb-0 fw-semibold" id="streak-count">0 DÍAS</p>
+>>>>>>> origin/main
         </div>
 
         <div id="streak-calendar" class="streak-calendar"></div>
     </section>
 </aside>
 
+<<<<<<< HEAD
 <article class="main-content">
+=======
+<article class="main">
+    <div class="chat-header mb-3">
+        <h5 class="mb-0">{{ session.title }} - {{ session.get_interview_type_display }}</h5>
+        <small class="text-muted">Sesión activa</small>
+    </div>
+
+>>>>>>> origin/main
     <div class="mensajes d-flex flex-column" id="chat-messages">
         {% for message in messages %}
         <div class="message {{ message.sender }}">
             <p class="fw-semibold mb-1">
                 {% if message.sender == 'bot' %}JoBot{% else %}Tú{% endif %}
             </p>
+<<<<<<< HEAD
             <div class="message-content">{{ message.content|safe|linebreaks }}</div>
+=======
+            <p>{{ message.content }}</p>
+>>>>>>> origin/main
             <small class="text-muted">{{ message.timestamp|date:"H:i" }}</small>
         </div>
         {% endfor %}
@@ -89,6 +128,7 @@
 
     <div class="chat-input">
         <div class="input-group">
+<<<<<<< HEAD
             <button class="btn btn-voice" id="voice-button" type="button" title="Grabar voz">
                 <i class="bi bi-mic-fill"></i>
             </button>
@@ -182,11 +222,63 @@
                                 </select>
                             </div>
                         </div>
+=======
+            <input type="text" id="message-input" class="form-control" placeholder="Escribe tu respuesta..." maxlength="1000">
+            <button class="btn btn-primary" id="send-button" type="button">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Botón para finalizar sesión y ver promedio -->
+    <div class="d-flex justify-content-end align-items-center mt-2">
+        <button id="end-session-button" class="btn btn-outline-danger btn-sm">
+            Finalizar sesión y ver promedio
+        </button>
+    </div>
+
+    <!-- Resumen de tiempo promedio y recomendación -->
+    <div id="session-summary" class="alert alert-info mt-3 d-none">
+        <p class="mb-1">
+            <strong>Tiempo promedio de tus respuestas:</strong>
+            <span id="avg-time"></span>
+        </p>
+        <p id="recommendation-text" class="mb-0"></p>
+    </div>
+</article>
+
+
+<!-- Modal para nueva entrevista -->
+<div class="modal fade" id="newInterviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva Entrevista</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="new-interview-form">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="interview-title" class="form-label">Título de la Entrevista</label>
+                        <input type="text" class="form-control" id="interview-title"
+                               placeholder="Ej: Entrevista Frontend Developer" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="interview-type" class="form-label">Tipo de Entrevista</label>
+                        <select class="form-select" id="interview-type" required>
+                            <option value="technical">Técnica</option>
+                            <option value="behavioral">Conductual</option>
+                            <option value="general">General</option>
+                            <option value="custom">Personalizada</option>
+                        </select>
+>>>>>>> origin/main
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+<<<<<<< HEAD
                     <button type="submit" class="btn btn-primary">Iniciar Entrenamiento</button>
+=======
+                    <button type="submit" class="btn btn-primary">Crear Entrevista</button>
+>>>>>>> origin/main
                 </div>
             </form>
         </div>
@@ -200,9 +292,12 @@
     const csrfToken = '{{ csrf_token }}';
     const sendMessageUrl = '/interview/api/send-message/' + currentSessionId + '/';
     const createSessionUrl = '{% url "create_session" %}';
+<<<<<<< HEAD
     
     // Fechas de práctica para el calendario
     window.practiceDates = {{ practice_dates|safe }};
+=======
+>>>>>>> origin/main
 
     // Función para escapar HTML
     function escapeHtml(text) {
@@ -244,6 +339,7 @@
                 // Ocultar typing y agregar respuesta de IA
                 hideTypingIndicator();
                 addMessage('bot', data.ai_response);
+<<<<<<< HEAD
                 
                 // Mostrar puntos ganados si hay
                 if (data.points_awarded > 0) {
@@ -255,6 +351,8 @@
                 if (data.streak_updated) {
                     updateStreak(data.current_streak, data.practice_dates);
                 }
+=======
+>>>>>>> origin/main
 
                 // Limpiar input
                 input.value = '';
@@ -284,6 +382,7 @@
             hour: '2-digit',
             minute: '2-digit'
         });
+<<<<<<< HEAD
         
         // Format content with line breaks
         let formattedContent = content;
@@ -297,6 +396,12 @@
         messageDiv.innerHTML = `
             <p class="fw-semibold mb-1">${sender === 'bot' ? 'JoBot' : 'Tú'}</p>
             <div class="message-content">${formattedContent}</div>
+=======
+
+        messageDiv.innerHTML = `
+            <p class="fw-semibold mb-1">${sender === 'bot' ? 'JoBot' : 'Tú'}</p>
+            <p>${escapeHtml(content)}</p>
+>>>>>>> origin/main
             <small class="text-muted">${timeString}</small>
         `;
 
@@ -317,6 +422,7 @@
         const messagesContainer = document.getElementById('chat-messages');
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+<<<<<<< HEAD
     
     function showPointsNotification(points) {
         const notification = document.createElement('div');
@@ -459,11 +565,14 @@
             document.getElementById('header-next-points').textContent = nextPoints;
         }
     }
+=======
+>>>>>>> origin/main
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', function() {
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
+<<<<<<< HEAD
         const charCount = document.getElementById('char-count');
         const voiceButton = document.getElementById('voice-button');
         
@@ -489,6 +598,10 @@
         });
 
         // Enviar con Enter (sin Shift)
+=======
+
+        // Enviar con Enter
+>>>>>>> origin/main
         messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -498,6 +611,7 @@
 
         // Enviar con botón
         sendButton.addEventListener('click', sendMessage);
+<<<<<<< HEAD
         
         // Botón de voz
         if (voiceButton && recognition) {
@@ -513,6 +627,8 @@
             voiceButton.title = 'Reconocimiento de voz no disponible en este navegador';
             voiceButton.style.opacity = '0.5';
         }
+=======
+>>>>>>> origin/main
 
         // Cambiar entre sesiones
         document.querySelectorAll('.interview-session').forEach(item => {
@@ -528,10 +644,13 @@
 
             const title = document.getElementById('interview-title').value;
             const type = document.getElementById('interview-type').value;
+<<<<<<< HEAD
             const duration = document.getElementById('duration').value;
             const difficulty = document.getElementById('difficulty').value;
             const focusArea = document.getElementById('focus-area').value;
             const positionLevel = document.getElementById('position-level').value;
+=======
+>>>>>>> origin/main
 
             try {
                 const response = await fetch(createSessionUrl, {
@@ -542,11 +661,15 @@
                     },
                     body: new URLSearchParams({
                         title: title,
+<<<<<<< HEAD
                         interview_type: type,
                         duration: duration,
                         difficulty: difficulty,
                         focus_area: focusArea,
                         position_level: positionLevel
+=======
+                        interview_type: type
+>>>>>>> origin/main
                     })
                 });
 
@@ -568,6 +691,10 @@
     });
 </script>
 
+<<<<<<< HEAD
 <script src="{% static 'js/interview.js' %}"></script>
+=======
+<script src="{% static 'js/interview.js' %}" defer></script>
+>>>>>>> origin/main
 {{ block.super }}
 {% endblock %}

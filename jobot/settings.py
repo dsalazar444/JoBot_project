@@ -9,12 +9,13 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
-from pathlib import Path
 import os
 from dotenv import load_dotenv
 
 # Cargar las variables del archivo .env
+from pathlib import Path
+from dotenv import load_dotenv
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -44,7 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'game_mode',
-    'interview_mode',
+    'multiplayer',
+    #'interview_mode',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -128,7 +131,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'jobot' / 'static',
     BASE_DIR / 'main' / 'static',
     BASE_DIR / 'game_mode' / 'static',
-    BASE_DIR / 'interview_mode' / 'static',
+    # BASE_DIR / 'interview_mode' / 'static',
     BASE_DIR / 'data',
 ]
 
@@ -148,3 +151,12 @@ if not GEMINI_API_KEY:
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+# Es como una "var" para acceder al modelo
+AUTH_USER_MODEL = 'user.Usuario'
+
+# Configuración de Gemini
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+# Para que django redirija automaticamente acá al usuario si este intenta
+# acceder a una pagina que requiere login y el user no está logeado.
+LOGIN_URL = '/login/'
