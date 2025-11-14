@@ -49,13 +49,15 @@ async function obtener_preguntas() {
         if(data.success){
             const respuesta_preg = data.respuesta; //Contiene preguntas y respuestas
             console.log("preguntas-respuestas: ", respuesta_preg);
-            return data.respuesta;
+            console.log("tipo : ", respuesta_preg);
+            return JSON.parse(respuesta_preg);
         }
         console.log("success: ", data.success);
         return null;
 
     } catch (error) {
         console.error("Error:", error);
+        return null;
     }
 }
 //texto_pregunta -> es el p donde va la pregunta.
@@ -239,6 +241,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     try{
 
         const preguntas_json = await obtener_preguntas();
+        console.log("pregunta en main", preguntas_json);
+        console.log("tipo : ", preguntas_json);
         iniciar_contador(contador, icono_contador, sonido, input_btn, toast_element_time);
         let pregunta = mostrar_pregunta(texto_pregunta, preguntas_json);
         let respuesta_ia = obtener_respuesta_ia(preguntas_json);

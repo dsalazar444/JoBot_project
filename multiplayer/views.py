@@ -37,6 +37,7 @@ llamando al modelo para que las genere
 Retorna: tupla con -> success: Booleano que indica si el contacto con el modelo fue posible
                       respuesta: json con estructura especifica, que contiene respuesta de ia"""
 def generar_preguntas():
+    global success, respuesta #Actualizamos variables globales
     prompt = """Objetivo:
     Generar exactamente 6 preguntas sobre habilidades blandas comúnmente evaluadas en entrevistas laborales.
 
@@ -83,7 +84,10 @@ def generar_preguntas():
 
     - No alteres la estructura del JSON ni agregues claves distintas a "preguntas" y "respuestas".
 
-    - Responde SIEMPRE en JSON plano, cumpliendo exactamente la estructura solicitada, SIN usar ```json ni ``` ni ningún delimitador de bloque. No agregues comentarios ni texto externo."""
+    - Responde SIEMPRE en JSON plano, cumpliendo exactamente la estructura solicitada, SIN usar ```json ni ``` ni ningún delimitador de bloque. No agregues comentarios ni texto externo.
+    
+    - Recuerda SIEMPRE cerrar las listas con ], y el json con }.
+    """
     
     success, respuesta = usar_api(prompt, MODEL)
     print("succes: ",success)
