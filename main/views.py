@@ -14,56 +14,59 @@ def about(request):
 
 def login_view(request):
     if request.method == 'POST':
-        email = (request.POST.get('email') or '').strip().lower()
-        password = request.POST.get('password') or ''
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        messages.error(request, 'Credenciales inválidas.')
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        
+        if email and password:
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                login(request, user)
+                next_url = request.GET.get('next', '/')
+                return redirect(next_url)
+            else:
+                messages.error(request, 'Email o contraseña incorrectos.')
+        else:
+            messages.error(request, 'Por favor completa todos los campos.')
+    
     return render(request, 'auth/login.html')
 
 def signup_view(request):
     if request.method == 'POST':
-        email = (request.POST.get('email') or '').strip().lower()
-        name = (request.POST.get('username') or '').strip()  # tu "Nombre" visible
-        password = request.POST.get('password') or ''
-
+        email = request.POST.get('email', '').strip()
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+        
         # Validaciones básicas
-        if not email or not password:
-            messages.error(request, 'Email y contraseña son obligatorios.')
-            return render(request, 'auth/signup.html', status=400)
-
-        try:
-            validate_email(email)
-        except ValidationError:
-            messages.error(request, 'Ingresa un email válido.')
-            return render(request, 'auth/signup.html', status=400)
-
-        if len(password) < 8:
-            messages.error(request, 'La contraseña debe tener al menos 8 caracteres.')
-            return render(request, 'auth/signup.html', status=400)
-
-        # Chequear duplicado por username (usaremos el email como username)
-        if User.objects.filter(username=email).exists():
+        if not email or not username or not password:
+            messages.error(request, 'Todos los campos son obligatorios.')
+            return render(request, 'auth/signup.html')
+        
+        if len(password) < 6:
+            messages.error(request, 'La contraseña debe tener al menos 6 caracteres.')
+            return render(request, 'auth/signup.html')
+        
+        # Verificar si el email ya existe
+        if User.objects.filter(email=email).exists():
             messages.error(request, 'Ya existe una cuenta con ese email.')
-            return render(request, 'auth/signup.html', status=400)
-
-        # Crear usuario -> username = email
-        user = User.objects.create_user(
-            username=email,
-            email=email,
-            password=password
-        )
-        # Guardar el "Nombre" visible en first_name (o puedes usar perfiles más tarde)
-        user.first_name = name
-        user.save()
-
-        # Autologin
-        auth.login(request, user)
-        return redirect('home')
-
-    # GET
+            return render(request, 'auth/signup.html')
+        
+        try:
+            # Crear usuario usando email como username
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                password=password,
+                first_name=username
+            )
+            
+            # Login automático
+            login(request, user)
+            messages.success(request, 'Cuenta creada exitosamente.')
+            return redirect('home')
+            
+        except Exception as e:
+            messages.error(request, 'Error al crear la cuenta. Intenta de nuevo.')
+    
     return render(request, 'auth/signup.html')
 
 def reviews(request):

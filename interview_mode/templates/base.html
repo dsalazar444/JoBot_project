@@ -1,11 +1,11 @@
 {% load static %}
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}JoBot — Asistente de entrevistas{% endblock %}</title>
-    <link rel="shortcut icon" href="{% static 'img/logo_head.png' %}">
+    <link rel="shortcut icon" href="{% static 'img/logo.png' %}">
+    
     <!-- Inter -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,15 +19,15 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body id="body" class="{% block body_class %}{% endblock %}">
     <!--  Header -->
     <header class="header">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <!-- Brand -->
-                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
-                    <img src="{% static 'images/logo.png' %}" alt="JoBot" class="logo">
-                    <span class="brand-text">Jobot</span>
+                <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                    <img src="{% static 'img/logo.png' %}" alt="JoBot" class="logo">
+                    <span class="brand-text">JoBot</span>
                 </a>
 
                 <!-- Toggler -->
@@ -39,19 +39,16 @@
 
                 <!-- Links -->
                 <div class="collapse navbar-collapse" id="Nav">
-                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">{% if user.is_authenticated %}{% block puntaje %}{% endblock %}<li class="nav-item">
-                                <a class="nav link" href="{% url 'home' %}">Inicio</a>
-                            </li><li class="nav-item">
-                                <a class="btn cta ms-lg-2" href="{% url 'logout' %}">Cerrar sesión</a>
-                            </li>{% else %}<li class="nav-item">
-                                <a class="nav link" href="{% url 'about' %}">Sobre nosotros</a>
-                            </li><li class="nav-item">
-                                <a class="nav link" href="{% url 'reviews' %}">Opiniones</a>
-                            </li><li class="nav-item">
-                                <a class="nav link" href="{% url 'login' %}">Iniciar sesión</a>
-                            </li><li class="nav-item">
-                                <a class="btn cta ms-lg-2" href="{% url 'signup' %}">Crear cuenta</a>
-                            </li>{% endif %}</ul>
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                        {% block puntaje %}{% endblock %}
+                        <li class="nav-item">
+                            <a class="nav link" href="#">Inicio</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="btn cta ms-lg-2" href="#">Cerrar sesión</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -66,10 +63,10 @@
         {% endfor %}
     </div>
     {% endif %}
-    {% block content %}
-    {% endblock %}
 
-    <!-- JS  -->
-    <script src="{% static 'js/base.js' %}"></script>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 </body>
 </html>

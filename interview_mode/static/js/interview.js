@@ -8,7 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentYear = today.getFullYear();
 
   // set de fechas marcadas (YYYY-MM-DD)
+<<<<<<< HEAD
+  console.log('Practice dates from window:', window.practiceDates);
+  const streakSet = new Set(Array.isArray(window.practiceDates) ? window.practiceDates : []);
+  console.log('Streak set initialized:', Array.from(streakSet));
+=======
   const streakSet = new Set(Array.isArray(window.initialStreak) ? window.initialStreak : []);
+>>>>>>> origin/main
 
   const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   const weekNames = ["S","M","T","W","T","F","S"];
@@ -67,7 +73,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isToday) cell.classList.add('sc-today');
 
       // if present in streakSet, add class
+<<<<<<< HEAD
+      if (streakSet.has(dateStr)) {
+        console.log('Marking date as streak:', dateStr);
+        cell.classList.add('sc-streak');
+      }
+=======
       if (streakSet.has(dateStr)) cell.classList.add('sc-streak');
+>>>>>>> origin/main
 
       grid.appendChild(cell);
     }
@@ -90,6 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCalendar();
   }
 
+<<<<<<< HEAD
+  // Los días de práctica son de solo lectura, no se pueden modificar manualmente
+=======
   // delegation: clicks on day toggles streak
   container.addEventListener('click', (e) => {
     const dayEl = e.target.closest('.sc-day[data-date]');
@@ -106,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.dispatchEvent(new CustomEvent('streakChanged', { detail: Array.from(streakSet) }));
     // Optional: call saveStreakToServer(Array.from(streakSet));
   });
+>>>>>>> origin/main
 
   // expose helper to set streak days from outside
   window.setStreakDates = (arr) => {
@@ -119,6 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // initial render
   renderCalendar();
 });
+<<<<<<< HEAD
+=======
 
 document.addEventListener('DOMContentLoaded', function () {
     const endButton = document.getElementById('end-session-button');
@@ -153,3 +172,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+>>>>>>> origin/main

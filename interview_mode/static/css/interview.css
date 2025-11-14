@@ -1,0 +1,864 @@
+/* ====== Ajustes para entrevista sin alterar header original ====== */
+
+/* Quita el scroll global del documento */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+/* Oculta los mensajes globales (alert-info) solo en el modo entrevista */
+body .alert-info {
+  display: none !important;
+}
+
+/* Sidebar ajustado para empezar debajo del header */
+.izq {
+  position: fixed;
+  top: 123px; /* deja espacio exacto para el header */
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background: #FAFAFA;
+  border-right: 1px solid #EADFF8;
+  padding: 14px 14px 90px;
+  overflow-y: auto; /* scroll dentro */
+  overflow-x: hidden;
+  z-index: 1;
+ }
+
+/* Contenedor principal del chat */
+.main {
+  margin-left: 260px; /* espacio del sidebar */
+  height: calc(100vh - 135px); /* ocupa el alto restante debajo del header */
+  padding: 14px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* evita scroll general */
+  background-color: #fff;
+}
+
+/* Títulos del sidebar */
+.izq .titulo h5 {
+  font-weight: 600;
+  color: #5f5c63;
+  margin: 0;
+  font-size: 15px;
+}
+
+/* Línea divisora */
+.hr-titulo {
+  border: none;
+  border-top: 1px solid #d3d3d3;
+  margin: 10px 0 14px;
+}
+
+/* Lista de entrevistas */
+.lista-entrevistas,
+.overflow-auto {
+  max-height: 36vh;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+/* Ítems */
+.list-group-item.interview-session {
+  border: 1px solid #d7e6e9;
+  border-radius: 10px;
+  background: #FFF;
+  margin-bottom: 8px;
+  transition: background .15s ease, box-shadow .15s ease;
+}
+.list-group-item.interview-session:hover {
+  background: #F8F4FF;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.list-group-item.interview-session.active {
+  background: #EAD6FF;
+  border-color: #EAD6FF;
+}
+
+/* Botón “Nueva Entrevista” */
+.boton {
+  position: sticky;
+  bottom: 12px;
+  background: inherit;
+  padding-top: 6px;
+}
+.boton .btn,
+.btn.btn-info {
+  background: #b6eaf3 !important;
+  border-color: #b6eaf3 !important;
+  color: #222 !important;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 10px 8px;
+  font-size: 0.9rem;
+}
+.boton .btn:hover {
+  background: #b7e4ec !important;
+}
+
+/* Racha */
+.racha {
+  margin-top: 22px;
+}
+
+/* Calendario */
+#streak-calendar {
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* Encabezado del chat */
+.chat-header h5 {
+  font-weight: 600;
+  color: #2E2A47;
+  margin-bottom: 4px;
+}
+.chat-header small {
+  color: #8A86A7;
+}
+
+/* Mensajes */
+.mensajes {
+  flex: 1;
+  overflow-y: auto; /* solo este se mueve */
+  padding-right: 6px;
+  margin-bottom: 10px;
+}
+.message {
+  max-width: 75ch;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 8px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+.message.bot {
+  background: #F2E9FF;
+}
+.message.user {
+  background: #D6EEF2;
+  margin-left: auto;
+}
+
+/* Input */
+.chat-input .input-group {
+  position: sticky;
+  bottom: 0;
+  gap: 8px;
+  background: #fff;
+  padding-top: 8px;
+
+}
+.chat-input .form-control {
+  height: 42px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+.chat-input .btn.btn-primary,
+#send-button.btn.btn-primary {
+  background: #D9B6FF;
+  border-color: #D9B6FF;
+  color: #222;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 16px;
+}
+.chat-input .btn.btn-primary:hover,
+#send-button.btn.btn-primary:hover {
+  background: #CC9EFF;
+  border-color: #CC9EFF;
+}
+
+/* Iconos */
+.bi-chat-dots, .bi-award, .bi-fire {
+  color: #5f5c63;
+}
+
+/* Scrollbars */
+.izq::-webkit-scrollbar,
+.mensajes::-webkit-scrollbar {
+  width: 6px;
+}
+.izq::-webkit-scrollbar-thumb,
+.mensajes::-webkit-scrollbar-thumb {
+  background: #D8C9F0;
+  border-radius: 10px;
+}
+
+/* ====== Ajuste visual del chat ====== */
+
+/* Burbujas más estrechas y ordenadas */
+.message {
+  max-width: 65ch;        /* antes 75ch → más compacto horizontalmente */
+  font-size: 0.9rem;       /* reduce el tamaño del texto dentro */
+  line-height: 1.4;        /* mejora legibilidad sin ocupar tanto */
+  padding: 8px 12px;       /* menos relleno */
+  margin: 6px 0;
+  border-radius: 10px;
+}
+
+/* Texto de autor ("JoBot", "Tú") más discreto */
+.message .fw-semibold {
+  font-size: 0.85rem;
+}
+
+/* Hora más pequeña */
+.message small {
+  font-size: 0.75rem;
+  color: #9a96b0;
+}
+
+/* Ajuste de fuente general del chat */
+.mensajes {
+  font-size: 0.9rem;       /* texto general más pequeño */
+}
+
+/* Input más fino */
+.chat-input .form-control {
+  font-size: 0.9rem;       /* más compacto */
+  height: 38px;            /* baja la altura */
+}
+
+/* Botón Enviar más pequeño y proporcionado */
+#send-button.btn.btn-primary {
+  font-size: 0.85rem;
+  padding: 8px 14px;       /* menos ancho y alto */
+  border-radius: 8px;
+}
+
+/* ==== Ajuste visual del encabezado del chat ==== */
+.chat-header h5 {
+  font-size: 1rem;        /* antes 1.25rem aprox */
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: #2E2A47;
+}
+
+.chat-header small {
+  font-size: 0.85rem;
+  color: #8A86A7;
+}
+
+/* ====== Estilo del calendario de racha ====== */
+
+#streak-calendar {
+  margin-top: 10px;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+}
+
+.sc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.sc-month {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #5f556b;
+}
+
+.sc-nav {
+  background: none;
+  border: none;
+  color: #5f556b;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.sc-nav:hover {
+  color: #5f556b;
+}
+
+/* Semana (SMTWTFS) */
+.sc-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: #9B94C2;
+  margin-bottom: 4px;
+}
+
+/* Días */
+.sc-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.sc-day {
+  border: none;
+  background: #FDFBFF;
+  border-radius: 6px;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  font-size: 0.8rem;
+  color: #4E4766;
+}
+.sc-day:hover {
+  background: #EAD6FF;
+}
+
+.sc-today {
+  border: 1.5px solid #B48BFF;
+  font-weight: 600;
+}
+
+.sc-streak {
+  background: #D9B6FF !important;
+  color: white;
+  font-weight: 600;
+}
+
+.sc-day--empty {
+  visibility: hidden;
+}
+
+/* ====== Estilo del modal "Nueva Entrevista" ====== */
+
+/* Fondo semitransparente del overlay */
+.modal-backdrop.show {
+  opacity: 0.35;
+  background-color: #EDE8F5;
+}
+
+/* Animación de aparición */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Contenedor del modal */
+.modal-content {
+  border-radius: 18px;
+  border: 1px solid #E2D9F5;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background-color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  animation: modalFadeIn 0.25s ease-out;
+  transform-origin: center center;
+}
+
+/* Header */
+.modal-header {
+  border-bottom: 1px solid #EDE8F5;
+  padding: 16px 24px;
+}
+.modal-title {
+  font-weight: 600;
+  color: #5f556b;
+  font-size: 1.05rem;
+}
+.btn-close {
+  filter: brightness(0.4);
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+.btn-close:hover {
+  opacity: 1;
+}
+
+/* Cuerpo */
+.modal-body {
+  padding: 18px 24px;
+}
+.modal-body label {
+  font-weight: 500;
+  color: #59565c;
+  margin-bottom: 6px;
+}
+.modal-body input,
+.modal-body select {
+  border-radius: 10px;
+  border: 1px solid #E0D5F4;
+  font-size: 0.95rem;
+  padding: 10px 12px;
+  background-color: #FCFAFF;
+  transition: all 0.2s ease;
+}
+.modal-body input:focus,
+.modal-body select:focus {
+  border-color: #C8A7FF;
+  box-shadow: 0 0 0 3px rgba(200, 167, 255, 0.25);
+  outline: none;
+}
+
+/* Footer */
+.modal-footer {
+  border-top: 1px solid #EDE8F5;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Botones */
+.modal-footer .btn {
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 8px 18px;
+  transition: all 0.2s ease;
+}
+.modal-footer .btn-secondary {
+  background: #E8E8E8;
+  border-color: #E8E8E8;
+  color: #333;
+}
+.modal-footer .btn-secondary:hover {
+  background: #D6D6D6;
+}
+
+.modal-footer .btn-primary {
+  background: #d6b2ff;
+  border-color: #d6b2ff;
+  color: #434057;
+  box-shadow: 0 0 0 0 rgba(217, 182, 255, 0);
+}
+.modal-footer .btn-primary:hover {
+  background: #C8A0FF;
+  border-color: #C8A0FF;
+  box-shadow: 0 0 8px rgba(217, 182, 255, 0.6);
+}
+
+
+/* ====== Sistema de Puntos y Niveles ====== */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #EDE8F5;
+}
+
+.points-display {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.level-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(255, 165, 0, 0.3);
+}
+
+.level-badge i {
+  font-size: 1.2rem;
+}
+
+.points-info {
+  text-align: right;
+}
+
+.points-value {
+  font-size: 1.1rem;
+  color: #2E2A47;
+  margin-bottom: 4px;
+}
+
+.points-value strong {
+  color: #28a745;
+  font-size: 1.3rem;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.points-notification {
+  animation: slideIn 0.3s ease-out;
+}
+
+
+/* ====== Caja de Evaluación ====== */
+.evaluation-box {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0ea5e9;
+  padding: 12px 16px;
+  margin-top: 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.evaluation-box strong {
+  color: #0369a1;
+  font-size: 0.9rem;
+}
+
+.message-content {
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+
+/* ====== Cabecera del Chat Mejorada ====== */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 2px solid #EDE8F5;
+  margin-bottom: 16px;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.session-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2E2A47;
+  margin: 0 0 6px 0;
+}
+
+.session-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge.bg-purple {
+  background: linear-gradient(135deg, #D9B6FF, #B48BFF);
+  color: #2E2A47;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.session-status {
+  color: #28a745;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.level-card {
+    background: linear-gradient(135deg, #afe4ed, #def9fd);
+    border: 1px solid #afe4ed;
+    border-radius: 12px;
+    padding: 10px 16px;
+    min-width: 220px;
+}
+
+.level-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.level-header i {
+  color: #FFA500;
+  font-size: 1.1rem;
+}
+
+.level-number {
+  font-weight: 700;
+  color: #2E2A47;
+  font-size: 0.95rem;
+}
+
+.level-name {
+  color: #5f556b;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-left: 4px;
+}
+
+.points-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.points-label {
+  font-size: 0.8rem;
+  color: #5f556b;
+}
+
+.points-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #28a745;
+}
+
+.next-level {
+  font-size: 0.85rem;
+  color: #8A86A7;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 6px;
+  background: #E8E8E8;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.max-level {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+
+/* ====== Contador de Caracteres ====== */
+.chat-input {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 8px;
+  margin: 0 20px;
+}
+
+.chat-input textarea {
+  resize: none;
+  min-height: 50px;
+  max-height: 120px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 10px 12px;
+}
+
+.char-counter {
+  text-align: right;
+  padding: 4px 8px 0 0;
+}
+
+.char-counter small {
+  font-size: 0.75rem;
+}
+
+#char-count {
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+
+/* ====== Animación de Racha ====== */
+#streak-count {
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.streak-notification {
+  animation: slideIn 0.3s ease-out;
+}
+
+
+/* ====== Botón de Voz ====== */
+.btn-voice {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  color: #5f5c63;
+  padding: 10px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-voice:hover {
+  background: #e0e0e0;
+  color: #2E2A47;
+}
+
+.btn-voice.recording {
+  background: #dc3545;
+  color: white;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.btn-voice i {
+  font-size: 1.1rem;
+}
+
+#voice-status {
+  font-weight: 600;
+}
+
+
+/* ====== NUEVO LAYOUT - Sidebar de todo el alto ====== */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.sidebar-interview {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 280px;
+  background: #FAFAFA;
+  border-right: 1px solid #EADFF8;
+  padding: 20px 14px;
+  overflow-y: auto;
+  z-index: 1000;
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-interview.collapsed {
+  width: 60px;
+}
+
+.sidebar-interview.collapsed .sidebar-text,
+.sidebar-interview.collapsed .list-group,
+.sidebar-interview.collapsed .boton .btn,
+.sidebar-interview.collapsed .racha-dias p,
+.sidebar-interview.collapsed #streak-calendar {
+  display: none;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.sidebar-toggle:hover {
+  background: #CC9EFF;
+}
+
+.main-content {
+  margin-left: 280px;
+  height: 100vh;
+  padding-top: 80px;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-interview.collapsed ~ .main-content {
+  margin-left: 60px;
+}
+
+/* ====== Header con puntos dinámicos ====== */
+.points-badge {
+  background: linear-gradient(135deg, #afe4ed, #def9fd);
+  border: 1px solid #afe4ed;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #2E2A47;
+}
+
+#header-level {
+  color: #FFA500;
+  font-weight: 700;
+}
+
+#header-total-points {
+  color: #28a745;
+  font-weight: 700;
+}
+
+
+/* ====== Header ajustado para sidebar ====== */
+.header {
+  position: fixed;
+  top: 0;
+  left: 280px;
+  right: 0;
+  z-index: 999;
+  transition: left 0.3s ease;
+  background: white;
+}
+
+body.sidebar-collapsed .header {
+  left: 60px;
+}
+
+
+/* ====== Ajuste de mensajes sin header del chat ====== */
+.mensajes {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+
+/* ====== Ocultar elementos cuando sidebar está colapsado ====== */
+.sidebar-interview.collapsed .titulo h5,
+.sidebar-interview.collapsed .racha {
+  display: none;
+}
+
+/* ====== Corregir zoom del chat ====== */
+.main-content {
+  zoom: 1;
+  transform: scale(1);
+}
+
+.mensajes {
+  zoom: 1;
+}

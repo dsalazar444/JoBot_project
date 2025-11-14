@@ -1,11 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<<<<<<< HEAD
+{% block body_class %}interview-mode{% endblock %}
+
+=======
+>>>>>>> origin/main
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="{% static 'css/interview.css' %}">
 {% endblock %}
 
+<<<<<<< HEAD
+{% block puntaje %}
+<li class="nav-item">
+    <span class="points-badge" id="header-points">
+        Nivel <span id="header-level">{{ current_level }}</span>: <span id="header-total-points">{{ total_points }}</span>/<span id="header-next-points">{{ next_level_points|default:"MAX" }}</span>
+    </span>
+</li>
+{% endblock %}
+
+{% block content %}
+<aside id="sidebar" class="sidebar-interview">
+    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Alternar barra lateral">
+        <i class="bi bi-layout-sidebar"></i>
+    </button>
+    
+    <section class="nivel">
+        <div class="titulo d-flex justify-content-start gap-1">
+            <h5 class="sidebar-text">Entrevistas</h5>
+        </div>
+
+        <div class="overflow-auto lista-entrevistas mt-3">
+=======
 {% block content %}
 <aside id="sidebar" class="izq">
     <section class="nivel">
@@ -18,6 +45,7 @@
         <hr class="hr-titulo">
 
         <div class="overflow-auto lista-entrevistas">
+>>>>>>> origin/main
             <ul class="list-group mb-4">
                 {% for user_session in user_sessions %}
                 <li class="list-group-item interview-session {% if user_session.id == session.id %}active{% endif %}"
@@ -43,33 +71,49 @@
 
     <section class="racha">
         <div class="titulo d-flex justify-content-start gap-1">
+<<<<<<< HEAD
+            <i class="bi bi-award"></i>
+=======
             <i class="bi bi-award p-2"></i>
+>>>>>>> origin/main
             <h5 class="sidebar-text">Racha</h5>
         </div>
         <hr class="hr-titulo">
 
         <div class="racha-dias d-flex gap-1 text-center">
             <i class="bi bi-fire"></i>
+<<<<<<< HEAD
+            <p class="mb-0 fw-semibold" id="streak-count">{{ current_streak }} DÍA{% if current_streak != 1 %}S{% endif %}</p>
+=======
             <p class="mb-0 fw-semibold" id="streak-count">0 DÍAS</p>
+>>>>>>> origin/main
         </div>
 
         <div id="streak-calendar" class="streak-calendar"></div>
     </section>
 </aside>
 
+<<<<<<< HEAD
+<article class="main-content">
+=======
 <article class="main">
     <div class="chat-header mb-3">
         <h5 class="mb-0">{{ session.title }} - {{ session.get_interview_type_display }}</h5>
         <small class="text-muted">Sesión activa</small>
     </div>
 
+>>>>>>> origin/main
     <div class="mensajes d-flex flex-column" id="chat-messages">
         {% for message in messages %}
         <div class="message {{ message.sender }}">
             <p class="fw-semibold mb-1">
                 {% if message.sender == 'bot' %}JoBot{% else %}Tú{% endif %}
             </p>
+<<<<<<< HEAD
+            <div class="message-content">{{ message.content|safe|linebreaks }}</div>
+=======
             <p>{{ message.content }}</p>
+>>>>>>> origin/main
             <small class="text-muted">{{ message.timestamp|date:"H:i" }}</small>
         </div>
         {% endfor %}
@@ -84,6 +128,101 @@
 
     <div class="chat-input">
         <div class="input-group">
+<<<<<<< HEAD
+            <button class="btn btn-voice" id="voice-button" type="button" title="Grabar voz">
+                <i class="bi bi-mic-fill"></i>
+            </button>
+            <textarea id="message-input" class="form-control" placeholder="Escribe o graba tu respuesta..." maxlength="1000" rows="2"></textarea>
+            <button class="btn btn-primary" id="send-button" type="button">Enviar</button>
+        </div>
+        <div class="char-counter">
+            <small class="text-muted">
+                <span id="char-count">0</span> / 1000 caracteres
+                <span id="voice-status" class="ms-2"></span>
+            </small>
+        </div>
+    </div>
+</article>
+
+<!-- Modal para nueva entrevista -->
+<div class="modal fade" id="newInterviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva Sesión de Entrenamiento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="new-interview-form">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="interview-title" class="form-label">Título de la Sesión</label>
+                                <input type="text" class="form-control" id="interview-title"
+                                       placeholder="Ej: Entrevista Frontend Developer" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="position-level" class="form-label">Nivel del Puesto</label>
+                                <input type="text" class="form-control" id="position-level"
+                                       placeholder="Ej: Junior Developer, Senior Manager">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="interview-type" class="form-label">Tipo de Entrevista</label>
+                                <select class="form-select" id="interview-type" required>
+                                    <option value="behavioral">Conductual</option>
+                                    <option value="technical">Técnica</option>
+                                    <option value="leadership">Liderazgo</option>
+                                    <option value="sales">Ventas</option>
+                                    <option value="customer_service">Atención al Cliente</option>
+                                    <option value="general">General</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="duration" class="form-label">Duración</label>
+                                <select class="form-select" id="duration" required>
+                                    <option value="quick">Rápida (10 min)</option>
+                                    <option value="standard" selected>Estándar (20 min)</option>
+                                    <option value="extended">Extendida (30 min)</option>
+                                    <option value="unlimited">Sin límite</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="difficulty" class="form-label">Nivel de Dificultad</label>
+                                <select class="form-select" id="difficulty" required>
+                                    <option value="beginner">Principiante</option>
+                                    <option value="intermediate" selected>Intermedio</option>
+                                    <option value="advanced">Avanzado</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="focus-area" class="form-label">Área de Enfoque</label>
+                                <select class="form-select" id="focus-area" required>
+                                    <option value="communication" selected>Comunicación</option>
+                                    <option value="problem_solving">Resolución de Problemas</option>
+                                    <option value="teamwork">Trabajo en Equipo</option>
+                                    <option value="adaptability">Adaptabilidad</option>
+                                    <option value="time_management">Gestión del Tiempo</option>
+                                    <option value="conflict_resolution">Resolución de Conflictos</option>
+                                </select>
+                            </div>
+                        </div>
+=======
             <input type="text" id="message-input" class="form-control" placeholder="Escribe tu respuesta..." maxlength="1000">
             <button class="btn btn-primary" id="send-button" type="button">Enviar</button>
         </div>
@@ -130,11 +269,16 @@
                             <option value="general">General</option>
                             <option value="custom">Personalizada</option>
                         </select>
+>>>>>>> origin/main
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+<<<<<<< HEAD
+                    <button type="submit" class="btn btn-primary">Iniciar Entrenamiento</button>
+=======
                     <button type="submit" class="btn btn-primary">Crear Entrevista</button>
+>>>>>>> origin/main
                 </div>
             </form>
         </div>
@@ -148,6 +292,12 @@
     const csrfToken = '{{ csrf_token }}';
     const sendMessageUrl = '/interview/api/send-message/' + currentSessionId + '/';
     const createSessionUrl = '{% url "create_session" %}';
+<<<<<<< HEAD
+    
+    // Fechas de práctica para el calendario
+    window.practiceDates = {{ practice_dates|safe }};
+=======
+>>>>>>> origin/main
 
     // Función para escapar HTML
     function escapeHtml(text) {
@@ -189,6 +339,20 @@
                 // Ocultar typing y agregar respuesta de IA
                 hideTypingIndicator();
                 addMessage('bot', data.ai_response);
+<<<<<<< HEAD
+                
+                // Mostrar puntos ganados si hay
+                if (data.points_awarded > 0) {
+                    showPointsNotification(data.points_awarded);
+                    updateHeaderPoints(data.current_level, data.total_points, data.next_level_points);
+                }
+                
+                // Actualizar racha si cambió
+                if (data.streak_updated) {
+                    updateStreak(data.current_streak, data.practice_dates);
+                }
+=======
+>>>>>>> origin/main
 
                 // Limpiar input
                 input.value = '';
@@ -218,10 +382,26 @@
             hour: '2-digit',
             minute: '2-digit'
         });
+<<<<<<< HEAD
+        
+        // Format content with line breaks
+        let formattedContent = content;
+        if (sender === 'bot') {
+            // Allow HTML for bot messages (for evaluation box)
+            formattedContent = content.replace(/\n/g, '<br>');
+        } else {
+            formattedContent = escapeHtml(content).replace(/\n/g, '<br>');
+        }
+
+        messageDiv.innerHTML = `
+            <p class="fw-semibold mb-1">${sender === 'bot' ? 'JoBot' : 'Tú'}</p>
+            <div class="message-content">${formattedContent}</div>
+=======
 
         messageDiv.innerHTML = `
             <p class="fw-semibold mb-1">${sender === 'bot' ? 'JoBot' : 'Tú'}</p>
             <p>${escapeHtml(content)}</p>
+>>>>>>> origin/main
             <small class="text-muted">${timeString}</small>
         `;
 
@@ -242,13 +422,186 @@
         const messagesContainer = document.getElementById('chat-messages');
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+<<<<<<< HEAD
+    
+    function showPointsNotification(points) {
+        const notification = document.createElement('div');
+        notification.className = 'points-notification';
+        notification.innerHTML = `+${points} puntos`;
+        notification.style.cssText = 'position: fixed; top: 100px; right: 20px; background: #28a745; color: white; padding: 15px 25px; border-radius: 8px; font-weight: bold; z-index: 1000; animation: slideIn 0.3s ease-out;';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }, 2000);
+    }
+    
+    function updatePointsDisplay(totalPoints, currentLevel, levelName, nextLevelPoints, progress) {
+        document.getElementById('total-points').textContent = totalPoints;
+        document.getElementById('level-display').textContent = 'Nivel ' + currentLevel;
+        document.getElementById('level-name').textContent = levelName;
+        
+        if (nextLevelPoints) {
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('next-level-text').textContent = '/ ' + nextLevelPoints;
+        }
+    }
+    
+    function updateStreak(streakCount, practiceDates) {
+        const streakElement = document.getElementById('streak-count');
+        const oldCount = parseInt(streakElement.textContent);
+        
+        // Actualizar contador con animación
+        streakElement.style.transform = 'scale(1.3)';
+        streakElement.style.color = '#ff6b35';
+        
+        setTimeout(() => {
+            streakElement.textContent = streakCount + ' DÍA' + (streakCount !== 1 ? 'S' : '');
+            
+            setTimeout(() => {
+                streakElement.style.transform = 'scale(1)';
+                streakElement.style.color = '';
+            }, 200);
+        }, 100);
+        
+        // Actualizar calendario
+        if (typeof window.setStreakDates === 'function') {
+            window.practiceDates = practiceDates;
+            window.setStreakDates(practiceDates);
+        }
+        
+        // Mostrar notificación de racha
+        if (streakCount > oldCount) {
+            showStreakNotification(streakCount);
+        }
+    }
+    
+    function showStreakNotification(days) {
+        const notification = document.createElement('div');
+        notification.className = 'streak-notification';
+        notification.innerHTML = `🔥 ¡${days} día${days !== 1 ? 's' : ''} de racha!`;
+        notification.style.cssText = 'position: fixed; top: 160px; right: 20px; background: linear-gradient(135deg, #ff6b35, #f7931e); color: white; padding: 15px 25px; border-radius: 8px; font-weight: bold; z-index: 1000; animation: slideIn 0.3s ease-out; box-shadow: 0 4px 12px rgba(255,107,53,0.4);';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }, 2500);
+    }
+
+    // Speech Recognition
+    let recognition = null;
+    let isRecording = false;
+    
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = 'es-ES';
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        
+        recognition.onstart = function() {
+            isRecording = true;
+            document.getElementById('voice-button').classList.add('recording');
+            document.getElementById('voice-status').innerHTML = '<span style="color: #dc3545;">● Grabando...</span>';
+        };
+        
+        recognition.onresult = function(event) {
+            let interimTranscript = '';
+            let finalTranscript = '';
+            
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript + ' ';
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+            
+            const messageInput = document.getElementById('message-input');
+            if (finalTranscript) {
+                messageInput.value += finalTranscript;
+                document.getElementById('char-count').textContent = messageInput.value.length;
+            }
+        };
+        
+        recognition.onerror = function(event) {
+            console.error('Error de reconocimiento de voz:', event.error);
+            isRecording = false;
+            document.getElementById('voice-button').classList.remove('recording');
+            document.getElementById('voice-status').innerHTML = '<span style="color: #dc3545;">Error: ' + event.error + '</span>';
+            setTimeout(() => {
+                document.getElementById('voice-status').innerHTML = '';
+            }, 3000);
+        };
+        
+        recognition.onend = function() {
+            isRecording = false;
+            document.getElementById('voice-button').classList.remove('recording');
+            document.getElementById('voice-status').innerHTML = '';
+        };
+    }
+
+    // Sidebar toggle
+    function initSidebarToggle() {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                document.body.classList.toggle('sidebar-collapsed');
+            });
+        }
+    }
+    
+    // Actualizar puntos en header
+    function updateHeaderPoints(level, totalPoints, nextPoints) {
+        document.getElementById('header-level').textContent = level;
+        document.getElementById('header-total-points').textContent = totalPoints;
+        if (nextPoints) {
+            document.getElementById('header-next-points').textContent = nextPoints;
+        }
+    }
+=======
+>>>>>>> origin/main
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', function() {
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
+<<<<<<< HEAD
+        const charCount = document.getElementById('char-count');
+        const voiceButton = document.getElementById('voice-button');
+        
+        // Inicializar sidebar toggle
+        initSidebarToggle();
+        
+        // Inicializar puntos en header
+        updateHeaderPoints({{ current_level }}, {{ total_points }}, {% if next_level_points %}{{ next_level_points }}{% else %}null{% endif %});
+
+        // Actualizar contador de caracteres
+        messageInput.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+            
+            // Cambiar color si se acerca al límite
+            if (count > 900) {
+                charCount.style.color = '#dc3545';
+            } else if (count > 700) {
+                charCount.style.color = '#ffc107';
+            } else {
+                charCount.style.color = '';
+            }
+        });
+
+        // Enviar con Enter (sin Shift)
+=======
 
         // Enviar con Enter
+>>>>>>> origin/main
         messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -258,6 +611,24 @@
 
         // Enviar con botón
         sendButton.addEventListener('click', sendMessage);
+<<<<<<< HEAD
+        
+        // Botón de voz
+        if (voiceButton && recognition) {
+            voiceButton.addEventListener('click', function() {
+                if (isRecording) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            });
+        } else if (voiceButton && !recognition) {
+            voiceButton.disabled = true;
+            voiceButton.title = 'Reconocimiento de voz no disponible en este navegador';
+            voiceButton.style.opacity = '0.5';
+        }
+=======
+>>>>>>> origin/main
 
         // Cambiar entre sesiones
         document.querySelectorAll('.interview-session').forEach(item => {
@@ -273,6 +644,13 @@
 
             const title = document.getElementById('interview-title').value;
             const type = document.getElementById('interview-type').value;
+<<<<<<< HEAD
+            const duration = document.getElementById('duration').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const focusArea = document.getElementById('focus-area').value;
+            const positionLevel = document.getElementById('position-level').value;
+=======
+>>>>>>> origin/main
 
             try {
                 const response = await fetch(createSessionUrl, {
@@ -283,7 +661,15 @@
                     },
                     body: new URLSearchParams({
                         title: title,
+<<<<<<< HEAD
+                        interview_type: type,
+                        duration: duration,
+                        difficulty: difficulty,
+                        focus_area: focusArea,
+                        position_level: positionLevel
+=======
                         interview_type: type
+>>>>>>> origin/main
                     })
                 });
 
@@ -305,6 +691,10 @@
     });
 </script>
 
+<<<<<<< HEAD
+<script src="{% static 'js/interview.js' %}"></script>
+=======
 <script src="{% static 'js/interview.js' %}" defer></script>
+>>>>>>> origin/main
 {{ block.super }}
 {% endblock %}
