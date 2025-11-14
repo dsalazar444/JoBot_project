@@ -1,0 +1,123 @@
+:root{
+    --navbar-h: 76px;
+    --preg-h: 125px;
+    --preg-margin: 4rem; /*2rem arriba y 2 abajo*/
+    --mensajes-htotal: calc(var(--navbar-h) + var(--preg-h) + var(--preg-margin));
+    --bckg-preg: #ECE6F0;
+    --bckg-jug-start: #C8EFE9;
+    --bckg-jug-end: #DAE0F5;
+    --bckg-jug-end-hover: #AAAEBE;
+    --bckg-nombre: #F2F2F2;
+    --text-puntaje: #767676;
+    --input-box-margin: 1rem;
+    --input-box-h:38px;
+    --input-box-htotal: calc(var(--input-box-h) + var(--input-box-margin));
+}
+
+.preg-multijugador {
+    background-color: var(--bckg-preg);
+    margin: 2rem 2rem 2rem 8rem;
+    height: var(--preg-h); /* Altura fija constante */
+    overflow-y: auto;
+}
+
+#pregunta {
+    position: fixed;
+    top: var(--navbar-h);
+    height: var(--preg-h);
+}
+
+#div-contador-alto {
+    /* background-color: aqua; */
+}
+
+#div-contador {
+    background-color: var(--bckg-nombre);
+}
+
+#mensajes {
+    position: fixed;
+    top: var(--mensajes-htotal);
+    bottom: var(--input-box-htotal);
+    padding: 0 4rem;
+    overflow-y: auto;
+}
+#jugador-start, #jugador-end {
+    padding: 2vh 1vw;
+    flex: 1; /*Para que ocupen todo el ancho disponible*/
+    align-items: center;
+    justify-content: center;
+    /* text-align: center; */
+}
+
+#jugador-start {
+    background-color: var(--bckg-jug-start);
+}
+
+#jugador-end {
+    background-color: var(--bckg-jug-end);
+}
+
+#jugador-start i, #jugador-end i.escribiendo {
+    animation: parpadeo 1s infinite;
+}
+
+#mensajes .nombres {
+    padding-left: 2rem;
+    padding-right: 24rem;
+}
+
+.nombres .nombre {
+    background-color: var(--bckg-nombre);
+}
+
+#input-section {
+    position: fixed;
+    bottom: 0;
+    /* bottom: 0.3rem;
+    left: 0.5rem;
+    right: 0.5rem; */
+}
+
+.input_multij .form-controlm {
+    background-color: var(--bckg-jug-end);
+}
+
+/* .vrm {
+  height: auto;        /* quitar el límite del 1em 
+  align-self: stretch;  hace que crezca igual que los otros hijos del flex 
+} */
+
+.puntaje-estilo {
+    background-color: var(--bckg-nombre);
+    color: var(--text-puntaje);
+}
+
+.btn-siguiente{
+    background-color: var(--bckg-jug-end);
+    border-color: var(--bckg-jug-end);
+    color: black;
+}
+
+.btn-siguiente:hover, .btn-siguiente:focus, .btn-siguiente:active{
+    background-color: var(--bckg-jug-end-hover) !important;
+    border-color: var(--bckg-jug-end-hover) !important;
+    color: black;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 1200px) {
+  #mensajes .nombres {
+    padding-right: 10rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #mensajes .nombres {
+    padding-right: 4rem;
+  }
+}

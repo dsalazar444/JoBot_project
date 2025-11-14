@@ -7,4 +7,5 @@ urlpatterns = [
     path('index/', login_required(views.init), name='init_game_mode'),
     path('api/mensajes/', login_required(views.procesar_request_bd), name='mensajes'),
     path('api/cargarChats/', login_required(views.obtener_chats_pasados_request), name='cargar_chats'),
+    path('api/obtenerNivelAct/', login_required(views.get_nivel_actual), name='get_nivel_act'),
 ]

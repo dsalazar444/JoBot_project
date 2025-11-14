@@ -21,7 +21,8 @@ body {
    position: fixed;
     top: 0;
     left: var(--sidebar-w);
-    z-index: 1050;
+    /* z-index: 1050; */
+    z-index: 1000; 
     background: var(--background);
     border-bottom: 1px solid rgba(0,0,0,0.06);
     width: calc(100vw - var(--sidebar-w));
