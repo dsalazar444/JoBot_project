@@ -5,16 +5,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
 import google.generativeai as genai
-<<<<<<< HEAD
 from .models import InterviewSession, Message, UserStreak
-from django.conf import settings
-=======
-from .models import InterviewSession, Message
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
->>>>>>> origin/main
+
 
 # Configure Gemini API
 genai.configure(api_key=settings.GEMINI_API_KEY)
