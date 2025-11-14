@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages, auth
-from django.contrib.auth.models import User
+from user.models import Usuario
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -46,13 +46,13 @@ def signup_view(request):
             return render(request, 'auth/signup.html')
         
         # Verificar si el email ya existe
-        if User.objects.filter(email=email).exists():
+        if Usuario.objects.filter(email=email).exists():
             messages.error(request, 'Ya existe una cuenta con ese email.')
             return render(request, 'auth/signup.html')
         
         try:
             # Crear usuario usando email como username
-            user = User.objects.create_user(
+            user = Usuario.objects.create_user(
                 username=email,
                 email=email,
                 password=password,

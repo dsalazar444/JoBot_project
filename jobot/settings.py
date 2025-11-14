@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'main',
     'game_mode',
     'multiplayer',
-    #'interview_mode',
+    'interview_mode',
     'user',
 ]
 
