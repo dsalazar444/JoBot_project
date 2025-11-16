@@ -129,3 +129,18 @@ body {
     padding-bottom: .5rem;
   }
 }
+
+
+/* ===== Ajuste header para interview mode ===== */
+body.interview-mode .header {
+  position: fixed;
+  top: 0;
+  left: 280px;
+  right: 0;
+  z-index: 999;
+  transition: left 0.3s ease;
+}
+
+body.interview-mode.sidebar-collapsed .header {
+  left: 60px;
+}

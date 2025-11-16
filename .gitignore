@@ -1,26 +1,29 @@
-.venv/
-.idea/
-__pycache__/
-*.pyc
-db.sqlite3
-.env
-staticfiles/
-*.env
+# OS
+.DS_Store
+Thumbs.db
 
-# Python / Django
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
 *.egg-info/
+
+# Entornos
 .venv/
 venv/
 env/
-.env
-.env.*
 
 # Django
 db.sqlite3
-/media/
 staticfiles/
+media/
 
-# VSCode
+# Config/Logs
+.env
+.env.*
+*.ini
+*.log
+
+# IDE
 .vscode/
+.idea/

@@ -9,9 +9,14 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
-from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Cargar las variables del archivo .env
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xz!$xn2p!k+%!dna4f1ht#gm2#2ll_yjp4bysr@^^t#fkae_p$'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-xz!$xn2p!k+%!dna4f1ht#gm2#2ll_yjp4bysr@^^t#fkae_p$')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -40,7 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'game_mode',
+    'multiplayer',
     'interview_mode',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +131,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'jobot' / 'static',
     BASE_DIR / 'main' / 'static',
     BASE_DIR / 'game_mode' / 'static',
-    BASE_DIR / 'interview_mode' / 'static',
+    # BASE_DIR / 'interview_mode' / 'static',
     BASE_DIR / 'data',
 ]
 
@@ -133,9 +140,23 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- Auth / Login ---
-LOGIN_URL = 'login'           # si visitas una vista protegida sin login, te manda a /login/
-LOGIN_REDIRECT_URL = '/'      # después de iniciar sesión, te envía al home
-LOGOUT_REDIRECT_URL = '/login/'  # al cerrar sesión, regresa al login
-LOGIN_REDIRECT_URL = 'home'     # a dónde enviar tras iniciar sesión
-LOGOUT_REDIRECT_URL = 'home'    # a dónde enviar tras cerrar sesión
+# Google Gemini API Configuration
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+if not GEMINI_API_KEY:
+    print("WARNING: GEMINI_API_KEY no está configurada. El modo interview no funcionará correctamente.")
+    print("Por favor, configura tu API key en el archivo .env")
+    print("Obtén tu API key en: https://makersuite.google.com/app/apikey")
+
+# Login/Logout URLs
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+# Es como una "var" para acceder al modelo
+AUTH_USER_MODEL = 'user.Usuario'
+
+# Configuración de Gemini
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+# Para que django redirija automaticamente acá al usuario si este intenta
+# acceder a una pagina que requiere login y el user no está logeado.
+LOGIN_URL = '/login/'

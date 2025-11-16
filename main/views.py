@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages, auth
-from django.contrib.auth.models import User
+from user.models import Usuario
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -47,43 +47,41 @@ def login_view(request):
 # ---------- SIGNUP ----------
 def signup_view(request):
     if request.method == 'POST':
-        email = (request.POST.get('email') or '').strip().lower()
-        name = (request.POST.get('username') or '').strip()  # “Nombre” visible
-        password = request.POST.get('password') or ''
-
+        email = request.POST.get('email', '').strip()
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+        
         # Validaciones básicas
-        if not email or not password:
-            messages.error(request, 'Email y contraseña son obligatorios.')
-            return render(request, 'auth/signup.html', status=400)
-
-        try:
-            validate_email(email)
-        except ValidationError:
-            messages.error(request, 'Ingresa un email válido.')
-            return render(request, 'auth/signup.html', status=400)
-
-        if len(password) < 8:
-            messages.error(request, 'La contraseña debe tener al menos 8 caracteres.')
-            return render(request, 'auth/signup.html', status=400)
-
-        # Usamos el email como username
-        if User.objects.filter(username=email).exists():
+        if not email or not username or not password:
+            messages.error(request, 'Todos los campos son obligatorios.')
+            return render(request, 'auth/signup.html')
+        
+        if len(password) < 6:
+            messages.error(request, 'La contraseña debe tener al menos 6 caracteres.')
+            return render(request, 'auth/signup.html')
+        
+        # Verificar si el email ya existe
+        if Usuario.objects.filter(email=email).exists():
             messages.error(request, 'Ya existe una cuenta con ese email.')
-            return render(request, 'auth/signup.html', status=400)
-
-        user = User.objects.create_user(
-            username=email,
-            email=email,
-            password=password
-        )
-        user.first_name = name
-        user.save()
-
-        auth.login(request, user)
-        messages.success(request, 'Cuenta creada con éxito.')
-        return redirect('home')
-
-    # GET
+            return render(request, 'auth/signup.html')
+        
+        try:
+            # Crear usuario usando email como username
+            user = Usuario.objects.create_user(
+                username=email,
+                email=email,
+                password=password,
+                first_name=username
+            )
+            
+            # Login automático
+            login(request, user)
+            messages.success(request, 'Cuenta creada exitosamente.')
+            return redirect('home')
+            
+        except Exception as e:
+            messages.error(request, 'Error al crear la cuenta. Intenta de nuevo.')
+    
     return render(request, 'auth/signup.html')
 
 # ---------- LOGOUT ----------

@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from main import views as mainViews
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 
 
@@ -31,4 +32,10 @@ urlpatterns = [
     path('forgot/', mainViews.forgot_view, name='forgot'),
     path('interview/', include('interview_mode.urls')),
     path('game/', include('game_mode.urls')),
+    path('interview/', include("interview_mode.urls")),
+    #Rutas de app game_mode
+    path('game_mode/', include("game_mode.urls")),
+    #Rutas de app multiplayer 
+    path('multiplayer/', include("multiplayer.urls")),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
 ]

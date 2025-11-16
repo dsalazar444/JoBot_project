@@ -1,0 +1,409 @@
+/* Vars globales */
+:root { 
+    --background_sb: #FAFAFA;
+    --text_sb: #49454F; 
+    --btn-bg-1: #AFE4ED;
+    --btn-bg-2: #AFEDE3;
+    --text-2: #828282;
+    --text-1: black;
+    --btn-hover-bg: #D3D3D3;
+    --sidebar-w: 25vw;
+    --btn-bg-1-hover: #a8dbe4;
+    --bckg-text: #C9E8D8;
+    --background-item-nivel: #F2F2F2;
+    --background-item-nivel-hov: #BAEAD5;
+    --background-calend: #C5E7ED;
+    --navbar-h: 76px;
+    --sidebar-collapsed-w: 5vw;
+    --input-h: 60px;
+
+
+}
+
+/* Para que el html/body ocupen el 100% o 100vh o dvh <- mejor */
+html, body { height: 100%;}
+
+/* -------------------------- Base -------------------------------------- */
+.izq {
+    position: fixed; /*Fijamos elemento en pantalla, para que no se mueva incluso con scroll*/
+    /*top: var(--header-h); /*Lo posicionamos justo debajo del header fijo*/
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width:var(--sidebar-w);
+    min-width: 250px; /* asegura que nunca sea demasiado angosto */
+    max-width: 400px; /* evita que crezca demasiado */
+    overflow-y: auto; /* Si el contenido es más alto que el panel, aparece scroll en y */
+    overflow-x: hidden;
+
+    background-color: var(--background_sb);
+    box-sizing: border-box;
+    padding: 13px;
+    z-index: 1000;
+    transition: width 0.3s ease;
+}
+
+#sidebar.collapsed {
+    width: var(--sidebar-collapsed-w);
+    flex-direction: column;
+    align-items:start;
+    justify-content: center;
+    gap: 0.5rem;
+    /* padding-bottom: 0.75em;  */
+}
+
+/* allow the sidebar to shrink below the previous min-width when collapsed */
+#sidebar.collapsed {
+    min-width: 0 !important;
+    overflow: hidden;
+}
+
+/* Accedemos a navbar definida en header, hijo de body cuando este tenga como clase sidebar-collapsed  */
+/*Para reubicar main section*/
+/* Cuando el body tiene la clase sidebar-collapsed, reajusta el header (posición/anchura) */
+body.sidebar-collapsed .header,
+body.sidebar-collapsed .mensajes {
+    left: var(--sidebar-collapsed-w); /*Para que se reubique en la izquierda*/
+    width: calc(100vw - var(--sidebar-collapsed-w));
+}
+
+body.sidebar-collapsed .input-groupm,
+body.sidebar-collapsed .mensajes {
+    /* justify-content: center; */
+    right: 0.5vw;
+    left: calc(var(--sidebar-collapsed-w) + 0.5vw);
+}
+
+
+/* move the main content over when the sidebar is collapsed */
+body.sidebar-collapsed .main {
+    margin-left: var(--sidebar-collapsed-w);
+    width: calc(100vw - var(--sidebar-collapsed-w));
+}
+
+/*Para colapsar lo que no necesitamos */
+#sidebar.collapsed .sidebar-text,
+#sidebar.collapsed #calendario {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    transition: opacity 0.2s ease, visibility 0s 0.2s, width 0s 0.2s;
+}
+
+#sidebar.collapsed .icon-hidden {
+    display: inline-block; /* Necesario para width en <i*/
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    transition: opacity 0.2s ease, visibility 0s 0.2s, width 0s 0.2s;
+}
+
+#sidebar.collapsed .btn-hidden {
+    display: inline-block; /* Necesario para width en <i*/
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    padding: 0;
+    min-width: 0;
+    border: none;
+    transition: opacity 0.2s ease, visibility 0s 0.2s, width 0s 0.2s, padding 0.2s ease;
+}
+
+#sidebar.collapsed .hr-hidden {
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  margin: 0;              /* Para evitar que deje espacio vertical */
+  padding: 0;
+  border: none;           /* para que no se vea nada */
+  transition: opacity 0.2s ease, visibility 0s 0.2s, width 0.2s ease;
+}
+
+#sidebar.collapsed .div-hidden {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, visibility 0s 0.2s;
+}
+
+
+/*-----*/
+/* 
+.main {
+    height: max-content;
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+} */
+
+.mensajes {
+    position: fixed;                  /* lo mantiene siempre visible */
+    top: var(--navbar-h);             /* empieza justo debajo del navbar */
+    left: var(--sidebar-w);           /* deja espacio para el sidebar */
+    bottom: var(--input-h);            /*termina en la seccion de inputs*/
+    width: calc(100vw - var(--sidebar-w)); /* ancho total menos el sidebar */
+    overflow-y: auto;                  /* permite scroll si hay muchos mensajes */
+    padding: 2vh 7vw ; 
+    box-sizing: border-box;
+    /* background-color: #8370B4; */
+}
+/* ---------------------------- Panel lateral (izq) ------------------------- */
+ /* ---- Sección de titulo ---- */
+.titulo {
+    /* Lo convertimos en un contenedor en línea */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.izq h5 {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--text_sb);
+    font-weight: 500;
+    margin-left: 0.8vw;
+}
+
+.titulo i {
+    font-size: 1.5rem;
+}
+
+.titulo i:hover {
+    background-color: lightgray;
+    border-radius: 30%;
+}
+
+.hr-titulo {
+    color: #959595;
+    margin: 0px 0px 2vh 0px;
+}
+
+/* ---- Sección de niveles ---- */
+.nivel .overflow-autom {
+    max-height: 26vh;
+    overflow-y: auto;
+    scrollbar-width: none; /*Oculta scroll bar en Firefox*/
+}
+
+
+/* Oculta scroll en Webkit (Chrome, Edge, Safari) */
+.nivel .overflow-autom::-webkit-scrollbar {
+    display: none;
+}
+
+.nivel-item {
+    display: flex; /*Para que salga en una sola linea*/
+    align-items: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--text_sb);
+    font-weight: 500;
+    gap: 0.5vw;
+    border-radius: 35px;
+}
+
+.nivel-item:hover {
+    background-color: var(--background-item-nivel);
+}
+
+.nivel-item.active {
+    background-color: var(--background-item-nivel-hov);
+}
+
+.nivel-item i {
+    font-size: 1.5rem;
+}
+
+.boton {
+    padding: 2vh 1.5vw;
+}
+
+.boton button {
+    background-color: var(--btn-bg-1);
+    border-color: var(--btn-bg-1);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--text_sb);
+    font-weight: 500;
+    font-size: medium;
+}
+
+.boton button:hover, button:active {
+    background-color: var(--btn-bg-1-hover) !important;
+    border-color: var(--btn-bg-1-hover) !important;
+    color: var(--text_sb) !important;
+}
+
+/* ---- Sección de calendario ---- */
+#calendario {
+    display: flex;
+    align-items: center; /* Centra en eje y a los hijos dentro de este contenedor.*/
+    justify-content: center; /* Centra en eje x */
+}
+
+#calendario .datepicker {
+    transform: scale(0.8);
+}
+
+.datepicker table tr td.day {
+  padding: 0.2rem; 
+}
+
+
+.datepicker table tr td.active.day,
+.datepicker table tr td.today.active.day {
+  background: var(--background-calend) !important;
+  border: 2px solid var(--background-calend) !important;
+  color: var(--text-1) !important;
+}
+
+/* Día actual sin seleccionar */
+.datepicker table tr td.today.day {
+  background: var(--background_sb) !important;
+  border: 2px solid #8370B4 !important;
+  color: #8370B4 !important;
+}
+
+.racha-dias {
+    display: flex;
+    align-items: flex-end; 
+    justify-content: center;
+    font-size: medium;
+}
+
+
+.racha-dias .bi {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+/*corregir*/
+#puntaje {
+    display: flex;
+    align-items: center;    /* Centra verticalmente el enlace dentro del li */
+    justify-content: center; 
+    /* position: fixed;
+    top: var(--header-h);
+    right: 0px; */
+}
+
+#puntaje p {
+    margin-right: 2vw;
+    margin-top: 2vh;
+    background-color: var(--background-item-nivel);
+    color: var(--text-2);
+    padding: 1vh 1.5vw;
+    border-radius: 10px;
+}
+
+/* ---------------------------- Main ------------------------- */
+/* ------------------------ barra de input ------------------------*/
+.input-groupm {
+    position: fixed;
+    bottom: 0px;
+    right: 0.5vw;
+    left: calc(var(--sidebar-w) + 0.5vw);
+}
+
+.input-groupm .form-controlm {
+    /* margin-right: 2vw; */
+    background-color: #C6CFF2;
+}
+
+.input-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.input-icon i {
+    position: absolute;
+    right: 1vw;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    cursor: pointer; /*Lo hace clickeable*/
+}
+
+.input-icon input {
+    padding-right: 3.5vw; /*Para que el texto no se pegue al icono*/
+}
+
+.input-groupm > * {
+    color: #303030;
+}
+
+.mensaje.robot i {
+    animation: parpadeo 1s infinite;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.offcanvasm {
+    left: 50% !important; 
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    min-width: 35vw;
+    max-width: 90vw;        /* para pantallas pequeñas */
+    max-height: 50vh;       /* evita que se salga del viewport */
+    overflow-y: auto;       /* para contenido que pueda exceder altura */
+    border-radius: 12px;
+    background-color: rgb(247,242,250);
+}
+
+
+.offcanvas-headerm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.offcanvas-titlem {
+    width: 100%;
+    text-align: center;
+}
+
+.username-input,.username-input:focus {
+    background-color: var(--bckg-text);
+}
+
+.btn-empezar {
+    background-color: var(--btn-bg-1);
+    margin-top: 5vh;
+    padding: 0.5rem 4rem;
+}
+
+.btn-empezar:focus, .btn-empezar:hover {
+    background-color: var(--btn-bg-1-hover);
+}
+
+#btn-pista {
+    background-color: #AFD1ED;
+    border-color: #AFD1ED ;
+}
+
+#btn-refor {
+    background-color: #AFBDED;
+    border-color: #AFBDED;
+}
+
+.offcanvas-headerm .header-canvas {
+    background-color: var(--background-calend);
+    padding-right: 5vw;
+}
+
+/* ---------------------------- Mensajes ------------------------- */
+
+.mensaje {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.mensaje.usuario {
+    background-color: var(--background-calend);
+}
+
+.mensaje.robot {
+    background-color: #ECE6F0;
+}
