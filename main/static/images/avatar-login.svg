@@ -1,0 +1,9 @@
+<!-- main/static/images/avatar-login.svg -->
+<svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- fondo suave del círculo -->
+  <circle cx="28" cy="28" r="27" fill="#EEF2FF"/>
+  <!-- cara -->
+  <circle cx="28" cy="23" r="7" stroke="#0F172A" stroke-width="3"/>
+  <!-- hombros -->
+  <path d="M14 42c4-7 10-10 14-10s10 3 14 10" stroke="#0F172A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

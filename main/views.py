@@ -5,31 +5,46 @@ from user.models import Usuario
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
-# Create your views here.
 def home(request):
     return render(request, 'home.html')
 
 def about(request):
     return render(request, 'about.html')
 
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email', '').strip()
-        password = request.POST.get('password', '')
-        
-        if email and password:
-            user = authenticate(request, username=email, password=password)
-            if user is not None:
-                login(request, user)
-                next_url = request.GET.get('next', '/')
-                return redirect(next_url)
-            else:
-                messages.error(request, 'Email o contraseña incorrectos.')
-        else:
-            messages.error(request, 'Por favor completa todos los campos.')
-    
-    return render(request, 'auth/login.html')
+def reviews(request):
+    return render(request, 'reviews.html')
 
+# ---------- LOGIN ----------
+def login_view(request):
+    """
+    Login por email (usado como username).
+    Soporta ?next=/ruta/ para redirigir después de loguear.
+    """
+    next_url = request.GET.get('next') or request.POST.get('next')
+
+    if request.method == 'POST':
+        email = (request.POST.get('email') or '').strip().lower()
+        password = request.POST.get('password') or ''
+
+        if not email or not password:
+            messages.error(request, 'Email y contraseña son obligatorios.')
+            return render(request, 'auth/login.html', {'next': next_url}, status=400)
+
+        # Usamos el email guardado en username
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, '¡Bienvenido de nuevo!')
+            return redirect(next_url or 'home')
+
+        messages.error(request, 'Usuario o contraseña incorrectos.')
+        return render(request, 'auth/login.html', {'next': next_url}, status=401)
+
+    # GET
+    return render(request, 'auth/login.html', {'next': next_url})
+
+# ---------- SIGNUP ----------
 def signup_view(request):
     if request.method == 'POST':
         email = request.POST.get('email', '').strip()
@@ -69,9 +84,13 @@ def signup_view(request):
     
     return render(request, 'auth/signup.html')
 
-def reviews(request):
-    return render(request, 'reviews.html')
-
+# ---------- LOGOUT ----------
 def logout_view(request):
     logout(request)
-    return redirect("home")
+    messages.info(request, 'Sesión cerrada.')
+    return redirect('home')
+
+# ---------- OLVIDÓ CONTRASEÑA (placeholder) ----------
+def forgot_view(request):
+    # Página simple con “Habilitado próximamente”
+    return render(request, 'auth/soon.html', {'title': 'Habilitado próximamente'})

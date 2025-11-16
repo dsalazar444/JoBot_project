@@ -1,0 +1,136 @@
+:root{
+  --bg:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --mint:#cdeee6;      /* botón */
+  --mint-h:#b2e2d7;
+  --blue-soft:#dbeaf7;   /* input Usuario */
+  --purple-soft:#dcccf3; /* input Contraseña */
+  --border:#e5e7eb;
+}
+
+/* Reset */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color:var(--text);
+
+  /* Para centrar el contenido verticalmente bajo el header */
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg);
+}
+
+/* Header + logo más grande */
+.header{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  padding:26px 32px;       /* un poco más de aire */
+}
+.brand-img{
+  height:60px;            /* ← AJUSTA aquí (56–68px) si lo quieres más/menos */
+  width:auto;
+  display:block;
+  object-fit:contain;
+}
+
+/* Contenedor centrado TOTAL (vertical y horizontal) */
+.container{
+  flex:1;                         /* ocupa todo el alto restante */
+  display:grid;
+  place-items:center;             /* centra la tarjeta */
+  padding-block:24px;             /* respiro en pantallas chicas */
+}
+
+/* Tarjeta/columna */
+.card{
+  width:420px;                    /* coincide con el mockup */
+  display:grid;
+  gap:12px;
+}
+
+/* Avatar */
+.avatar{
+  display:grid;
+  place-content:center;
+  margin:8px auto 8px;
+}
+
+/* Título y etiquetas */
+h1{
+  font-size:26px;
+  font-weight:700;
+  margin:8px 0 18px;
+}
+.label{
+  font-size:14px;
+  margin:10px 0 6px;
+}
+
+/* Inputs */
+.input{
+  width:100%;
+  height:42px;
+  padding:10px 14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  outline:none;
+  font-size:14px;
+}
+.input::placeholder{
+  color:#6b7280;
+  text-align:center;      /* como en el Figma */
+}
+.input:focus{box-shadow:0 0 0 3px rgba(59,130,246,.25);}
+.input--user{background:var(--blue-soft);}
+.input--pass{background:var(--purple-soft);}
+
+/* Link */
+.link{
+  display:block;
+  margin:6px 0 8px;
+  text-align:center;
+  color:#111827;
+  text-decoration:none;
+  font-size:13px;
+}
+.link:hover{text-decoration:underline;}
+
+/* Form en grid para centrar el botón */
+#loginForm{
+  display:grid;
+  gap:10px;
+}
+
+/* Botón centrado */
+.btn{
+  width:180px;
+  height:40px;
+  justify-self:center;    /* centra dentro del grid */
+  margin-top:6px;
+  border:0;
+  border-radius:10px;
+  background:var(--mint);
+  color:#0f172a;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn:hover{ background:var(--mint-h); }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
+
+/* Mensaje de estado */
+.msg{
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+  min-height:18px;
+}
+
+/* Pequeño ajuste responsive */
+@media (max-width: 480px){
+  .card{ width:min(420px, 92vw); }
+  .brand-img{ height:52px; }
+}
